@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+	style="@style/PageContainer"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <ImageView
+        android:id="@+id/iv_home_logo"
+        style="@style/DefaultComponentMargin"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="25dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/icon_diagnosis" />
+        
+    <Button
+        android:id="@+id/btn_checkOut" style="@style/DefaultComponentMargin"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:onClick="launchShowAudits"
+        android:text="@string/create_audit" />
+
+    <Button
+        android:id="@+id/btn_checkIn" style="@style/DefaultComponentMargin"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:onClick="launchCheckIn"
+        android:text="@string/moddify_audit" />
+    
+    <Button style="@style/DefaultComponentMargin" android:layout_marginTop="50dp"
+        android:id="@+id/btn_Signout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:onClick="signOut"
+        android:text="@string/button_sign_out" />
+        
+</LinearLayout>
+
