@@ -23,5 +23,7 @@
     <dimen name="content_left_margin">10dp</dimen>
     <dimen name="content_right_margin">10dp</dimen>
     <dimen name="content_top_margin">10dp</dimen>
-
+    
+    <dimen name="action_button_min_width">56dp</dimen>
+    <dimen name="indeterminate_progress_size">32dp</dimen>
 </resources>

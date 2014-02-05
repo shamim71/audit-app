@@ -48,6 +48,10 @@
     <string name="delete_confirmation_title">Delete confirmation</string>
     <string name="delete_confirmation_message">Want to remove this item?</string>
 
+    <string name="account_name">Audit Service</string>
+    <string name="title_entry_detail">Entry Detail</string>
+    <string name="loading">Waiting for sync...</string>
+    <string name="description_refresh">Refresh</string>
     <string-array name="array_audit_status">
         <item>0/0</item>
         <item>conforming</item>
