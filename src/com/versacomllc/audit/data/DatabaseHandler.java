@@ -22,8 +22,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String TABLE_DEFECTS = "defect";
 	private static final String TABLE_CUSTOMERS = "customer";
 	
+	private static final String ID = "id";
+	private static final String RID = "rid";
 	// Defect Table Columns names
-	private static final String DEFECT_ID = "id";
+
 	private static final String DEFECT_CODE = "code";
 	private static final String DEFECT_CATEGORY = "category";
 	private static final String DEFECT_SUBCATEGORY = "sub_category";
@@ -32,7 +34,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String DEFECT_RECORDID = "rid";
 
 	// Defect Table Columns names
-	private static final String CUSTOMER_ID = "id";
+
 	private static final String CUSTOMER_NAME = "name";
 	private static final String CUSTOMER_RECORDID = "rid";
 	
@@ -45,13 +47,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		
 		String CREATE_TABLE_DEFECTS = "CREATE TABLE " + TABLE_DEFECTS + "("
-				+ DEFECT_ID + " INTEGER PRIMARY KEY," + DEFECT_CODE + " TEXT,"
+				+ ID + " INTEGER PRIMARY KEY," + DEFECT_CODE + " TEXT,"
 				+ DEFECT_CATEGORY + " TEXT, " + DEFECT_SUBCATEGORY + " TEXT, "
-				+ DEFECT_SEVERITY + " TEXT, " + DEFECT_WORKTYPE + " TEXT,"+  DEFECT_RECORDID + " TEXT " +")";
+				+ DEFECT_SEVERITY + " TEXT, " + DEFECT_WORKTYPE + " TEXT,"+  RID + " TEXT " +")";
 		db.execSQL(CREATE_TABLE_DEFECTS);
 		
 		String CREATE_TABLE_CUSTOMER = "CREATE TABLE " + TABLE_CUSTOMERS + "("
-				+ CUSTOMER_ID + " INTEGER PRIMARY KEY," + CUSTOMER_NAME + " TEXT "+" )";
+				+ ID + " INTEGER PRIMARY KEY," + CUSTOMER_NAME + " TEXT,"+  RID + " TEXT " +")";
 		db.execSQL(CREATE_TABLE_CUSTOMER);
 		
 	}
@@ -66,7 +68,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-    void addDefect(Defect defect) {
+   public void addDefect(Defect defect) {
         SQLiteDatabase db = this.getWritableDatabase();
  
         ContentValues values = new ContentValues();
@@ -113,11 +115,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
 
-    void addCustomer(Customer customer) {
+   public void addCustomer(LocalCustomer customer) {
         SQLiteDatabase db = this.getWritableDatabase();
  
         ContentValues values = new ContentValues();
-        values.put(CUSTOMER_ID, customer.getId()); 
+/*        values.put(CUSTOMER_ID, customer.getId()); */
         values.put(CUSTOMER_NAME, customer.getName()); 
         values.put(CUSTOMER_RECORDID, customer.getRid()); 
         // Inserting Row
@@ -125,9 +127,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); 
     }
     
-    public List<Customer> getAllCustomers() {
+    public List<LocalCustomer> getAllCustomers() {
     	
-        List<Customer> customerList = new ArrayList<Customer>();
+        List<LocalCustomer> customerList = new ArrayList<LocalCustomer>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_CUSTOMERS;
  
@@ -137,8 +139,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-            	
-            	Customer customer = new Customer();
+            	LocalCustomer customer = new LocalCustomer();
                 customer.setId(Integer.parseInt(cursor.getString(0)));
                 customer.setName(cursor.getString(1));
                 customer.setRid(cursor.getString(2));

@@ -8,8 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import com.versacomllc.audit.AuditManagement;
+import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.model.AuthenticationResult;
-import com.versacomllc.audit.service.LocationFinderService;
 import com.versacomllc.audit.spice.SpiceRestHelper;
 
 public class BaseActivity extends Activity {
@@ -18,7 +18,7 @@ public class BaseActivity extends Activity {
 	
 	private FinishReceiver finishReceiver;
 	
-	protected LocationFinderService locationFinderService;
+	protected DatabaseHandler dbHandler = null;
 	
 	protected AuditManagement getApplicationState() {
 		return (AuditManagement) getApplication();

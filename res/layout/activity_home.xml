@@ -30,6 +30,13 @@
         android:text="@string/moddify_audit" />
     
     <Button style="@style/DefaultComponentMargin" android:layout_marginTop="50dp"
+        android:id="@+id/btn_sysnchronize_data"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:onClick="synchronizeData"
+        android:text="Synchronize Data" />   
+         
+    <Button style="@style/DefaultComponentMargin" android:layout_marginTop="10dp"
         android:id="@+id/btn_Signout"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"

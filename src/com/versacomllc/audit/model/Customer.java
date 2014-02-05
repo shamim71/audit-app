@@ -3,17 +3,9 @@ package com.versacomllc.audit.model;
 
 public class Customer {
 
-	private String id;
+	private String rid;
 
 	private String name;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -26,6 +18,14 @@ public class Customer {
 	@Override
 	public String toString() {
 		return name ;
+	}
+
+	public String getRid() {
+		return rid;
+	}
+
+	public void setRid(String rid) {
+		this.rid = rid;
 	}
 
 }

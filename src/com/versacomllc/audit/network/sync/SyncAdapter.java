@@ -33,17 +33,33 @@ import android.util.Log;
 
 
 
+
+
+
+
+
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.versacomllc.audit.R;
+import com.versacomllc.audit.data.DatabaseHandler;
+import com.versacomllc.audit.data.LocalCustomer;
+import com.versacomllc.audit.model.Customer;
+import com.versacomllc.audit.model.StringResponse;
 import com.versacomllc.audit.network.sync.provider.FeedContract;
+import com.versacomllc.audit.spice.DefaultProgressIndicatorState;
+import com.versacomllc.audit.spice.GenericGetRequest;
+import com.versacomllc.audit.spice.RestCall;
+import com.versacomllc.audit.spice.RetrySpiceCallback;
+import com.versacomllc.audit.spice.SpiceRestHelper;
+import com.versacomllc.audit.utils.EndPoints;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Define a sync adapter for the app.
@@ -57,6 +73,8 @@ import java.util.List;
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
 
+	protected SpiceRestHelper restHelper = new SpiceRestHelper();
+	
     /**
      * URL to fetch content from during a sync.
      *
@@ -83,6 +101,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * Project used when querying content provider. Returns all known fields.
      */
+    private DatabaseHandler dbHandler = null;
     private static final String[] PROJECTION = new String[] {
             FeedContract.Entry._ID,
             FeedContract.Entry.COLUMN_NAME_ENTRY_ID,
@@ -97,12 +116,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int COLUMN_LINK = 3;
     public static final int COLUMN_PUBLISHED = 4;
 
+    
     /**
      * Constructor. Obtains handle to content resolver for later use.
      */
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         mContentResolver = context.getContentResolver();
+        dbHandler = new DatabaseHandler(context);
     }
 
     /**
@@ -111,6 +132,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
         mContentResolver = context.getContentResolver();
+        dbHandler = new DatabaseHandler(context);
     }
 
     /**
@@ -138,7 +160,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 //updateLocalFeedData(stream, syncResult);
 
-
+                this.loadCustomerList(getContext());
         
         } catch (RuntimeException e) {
             Log.e(TAG, "Error updating database: " + e.toString());
@@ -148,6 +170,38 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.i(TAG, "Network synchronization complete");
     }
 
+    private void loadCustomerList(Context context){
+		String endPoint = EndPoints.REST_CALL_GET_QBASE_CUSTOMERS
+				.getSimpleAddress();
+
+		List<LocalCustomer> customers = dbHandler.getAllCustomers();
+		final Map<String, LocalCustomer> customerMap = new HashMap<String, LocalCustomer>();
+		
+		for(LocalCustomer customer: customers){
+			customerMap.put(customer.getRid(), customer);
+		}
+		restHelper.execute(new GenericGetRequest<Customer[]>(Customer[].class, endPoint), new RetrySpiceCallback<Customer[]>(context) {
+
+			@Override
+			public void onSpiceSuccess(Customer[] response) {
+				if(response != null){
+					for(Customer customer: response){
+						if(!customerMap.containsKey(customer.getRid())){
+							Log.d(TAG, " Adding customer to local db with rid: "+ customer.getRid());
+							dbHandler.addCustomer(new LocalCustomer(customer));
+						}
+					}
+				}
+			}
+
+			@Override
+			public void onSpiceError(RestCall<Customer[]> restCall,
+					StringResponse response) {
+			
+				
+			}
+		}, new DefaultProgressIndicatorState());
+    }
     /**
      * Read XML from an input stream, storing it into the content provider.
      *

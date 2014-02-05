@@ -12,14 +12,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.versacomllc.audit.R;
 import com.versacomllc.audit.model.AuthenticationRequest;
 import com.versacomllc.audit.model.AuthenticationResponse;
 import com.versacomllc.audit.model.StringResponse;
+import com.versacomllc.audit.network.sync.SyncUtils;
 import com.versacomllc.audit.spice.GenericPostRequest;
 import com.versacomllc.audit.spice.RestCall;
 import com.versacomllc.audit.spice.RetrySpiceCallback;
 import com.versacomllc.audit.utils.EndPoints;
-import com.versacomllc.audit.R;
 
 public class LoginActivity extends BaseActivity {
 
@@ -32,6 +33,11 @@ public class LoginActivity extends BaseActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_login);
 
+
+		
+        // Create account, if needed
+        SyncUtils.CreateSyncAccount(this);
+        
 		initComponents();
 
 		registerActivityFinishSignal();
@@ -59,7 +65,7 @@ public class LoginActivity extends BaseActivity {
 
 		tvAppName.setTypeface(myTypeface);
 
-		//TODO. REMOVE LATER
+
 		etEmailAddress.setText("admin@versacomllc.com");
 	}
 

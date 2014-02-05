@@ -4,6 +4,8 @@ import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
 
 
+
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -27,6 +29,8 @@ import android.widget.Toast;
 
 import com.versacomllc.audit.R;
 import com.versacomllc.audit.adapter.SimpleDropDownListAdapter;
+import com.versacomllc.audit.data.DatabaseHandler;
+import com.versacomllc.audit.data.LocalCustomer;
 import com.versacomllc.audit.model.Configuration;
 import com.versacomllc.audit.model.Customer;
 import com.versacomllc.audit.model.InternalAudit;
@@ -55,9 +59,11 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 		setContentView(R.layout.activity_site_audit);
 		setTitle(getString(R.string.app_name));
 		
+		dbHandler = new DatabaseHandler(this);
+		
 		this.initComponents();
 		
-		this.initServiceData();
+		this.initCustomerData();
 		
 		Calendar cal = Calendar.getInstance();
 		int year = cal.get(Calendar.YEAR);
@@ -171,7 +177,11 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 		spinner.setOnItemSelectedListener(listener);
 	}
 
-	private void initServiceData() {
+	private void initCustomerData(){
+		List<LocalCustomer> customers = 	dbHandler.getAllCustomers();
+		populateCustomerList(customers.toArray(new Customer [customers.size()]));
+	}
+	private void initServiceDatax() {
 		String endPoint = EndPoints.REST_CALL_GET_QBASE_CUSTOMERS
 				.getSimpleAddress();
 
@@ -268,10 +278,10 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
             int position, long id) {
 	
 		Customer customer =  adapter.getItem(position);
-		Log.d(LOG_TAG, customer.getId());
+
 		Log.d(LOG_TAG, customer.getName());
 		
-		audit.setCustomer(customer.getId());
+		audit.setCustomer(customer.getRid());
 
 
 	}
