@@ -6,6 +6,7 @@ import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
 
 
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import com.versacomllc.audit.R;
 import com.versacomllc.audit.adapter.SimpleDropDownListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
+import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalCustomer;
 import com.versacomllc.audit.model.Configuration;
 import com.versacomllc.audit.model.Customer;
@@ -124,11 +126,11 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 			audit.setAuditDate(mEditAuditDate.getText().toString());
 		}
 		if(!TextUtils.isEmpty(mEditSiteId.getText())){
-			audit.setSiteAccessId(mEditSiteId.getText().toString());
+			audit.setSiteId(mEditSiteId.getText().toString());
 		}
 		Log.d(LOG_TAG, audit.toString());
 
-		this.createInternalAudit(audit);
+		this.createLocalAudit(audit);
 		
 	}
     public void selectDate(View view) {
@@ -181,59 +183,13 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 		List<LocalCustomer> customers = 	dbHandler.getAllCustomers();
 		populateCustomerList(customers.toArray(new Customer [customers.size()]));
 	}
-	private void initServiceDatax() {
-		String endPoint = EndPoints.REST_CALL_GET_QBASE_CUSTOMERS
-				.getSimpleAddress();
 
-		restHelper.execute(new GenericGetRequest<Customer[]>(Customer[].class, endPoint), new RetrySpiceCallback<Customer[]>(this) {
 
-			@Override
-			public void onSpiceSuccess(Customer[] response) {
-				
-				
-				if(response != null){
-					//getApplicationState().saveInventorySites(response);
-				}
-				
-
-				
-				populateCustomerList(response);
-				
-			}
-
-			@Override
-			public void onSpiceError(RestCall<Customer[]> restCall,
-					StringResponse response) {
-			
-				
-			}
-		}, new DefaultProgressIndicatorState(
-				getString(R.string.processing)));
-
+	private void createLocalAudit(final InternalAudit audit){
+		Log.i(LOG_TAG, "Adding records to internal audit table ");
+		dbHandler.addInternalAudit(new LocalAudit(audit));
 	}
-
-	private void initConfigurationData() {
-		String endPoint = EndPoints.REST_CALL_GET_ADJUSTMENT_CONF
-				.getSimpleAddress();
-
-		restHelper.execute(new GenericGetRequest<Configuration>(Configuration.class, endPoint), new RetrySpiceCallback<Configuration>(this) {
-
-			@Override
-			public void onSpiceSuccess(Configuration response) {
-
-	
-			}
-
-			@Override
-			public void onSpiceError(RestCall<Configuration> restCall,
-					StringResponse response) {
-				
-			}
-		}, new DefaultProgressIndicatorState());
-
-	}
-
-	private void createInternalAudit(final InternalAudit audit) {
+	private void createInternalAuditx(final InternalAudit audit) {
 		String endPoint = EndPoints.REST_CALL_POST_AUDITS
 				.getSimpleAddress();
 

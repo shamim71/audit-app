@@ -17,6 +17,7 @@ import com.versacomllc.audit.network.sync.accounts.GenericAccountService;
 import com.versacomllc.audit.network.sync.provider.FeedContract;
 import com.versacomllc.audit.utils.Constants;
 import com.versacomllc.audit.R;
+import com.versacomllc.audit.UserAuditListActivity;
 
 public class HomeActivity extends BaseActivity {
 
@@ -39,8 +40,8 @@ public class HomeActivity extends BaseActivity {
 	}
 
 	public void launchShowAudits(View v) {
-		Intent intent = new Intent(this, SiteAuditActivity.class);
-		intent.putExtra(Constants.EXTRA_TRANSACTION_TYPE, true);
+		Intent intent = new Intent(this, UserAuditListActivity.class);
+
 		startActivity(intent);
 	}
 

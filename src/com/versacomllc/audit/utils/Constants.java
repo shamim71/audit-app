@@ -1,5 +1,8 @@
 package com.versacomllc.audit.utils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public final class Constants {
 
 	//public static final String SERVER_ROOT = "http://dalqbase1.versacomllc.com:8080/quickbooks-gateway-server";
@@ -17,4 +20,6 @@ public final class Constants {
 	public static final String EXTRA_ITEM_ADDED = "com.versacomllc.audit.EXTRA_ITEM_ADDED";
 	public static final String EXTRA_TRANSACTION_TYPE = "com.versacomllc.audit.EXTRA_TRANSACTION_TYPE";
 	public static final String ACTION_FINISH = "com.versacomllc.audit.activity.LoginActivity.ACTION_FINISH";
+	
+	public static final DateFormat US_DATEFORMAT = new SimpleDateFormat("MM/dd/yyyy");
 }

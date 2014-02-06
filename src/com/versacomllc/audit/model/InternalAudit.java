@@ -3,43 +3,32 @@ package com.versacomllc.audit.model;
 public class InternalAudit {
 
 	
-	private String id;
+	protected String rid;
 	
-	private String auditType;
+	protected String auditType;
 	
-	private String auditDate;
+	protected String auditDate;
 	
-	private String auditHour;
+	protected String auditHour;
 
-	private String auditStatus;
+	protected String auditStatus;
 	
-	private String auditedBy;
+	protected String auditedBy;
 	
-	private String auditedByEmployee;
+	protected String auditedByEmployee;
 	
-	private String supervisedBy;
+	protected String supervisedBy;
 
-	private String supervisedByEmployee;
+	protected String supervisedByEmployee;
 	
-	private String managedBy;
+	protected String managedBy;
 
-	private String managedByEmployee;
+	protected String managedByEmployee;
 	
-	private String customer;
+	protected String customer;
 	
-	private String siteId;
+	protected String siteId;
 	
-	private String siteAccessId;
-
-
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public String getAuditType() {
 		return auditType;
@@ -137,17 +126,9 @@ public class InternalAudit {
 		this.siteId = siteId;
 	}
 
-	public String getSiteAccessId() {
-		return siteAccessId;
-	}
-
-	public void setSiteAccessId(String siteAccessId) {
-		this.siteAccessId = siteAccessId;
-	}
-	
 	@Override
 	public String toString() {
-		return "InternalAudit [ id=" + id
+		return "InternalAudit [ id=" + rid
 				+ ", auditType=" + auditType + ", auditDate=" + auditDate
 				+ ", auditHour=" + auditHour + ", auditStatus=" + auditStatus
 				+ ", auditedBy=" + auditedBy + ", auditedByEmployee="
@@ -155,6 +136,14 @@ public class InternalAudit {
 				+ ", supervisedByEmployee=" + supervisedByEmployee
 				+ ", managedBy=" + managedBy + ", managedByEmployee="
 				+ managedByEmployee + ", customer=" + customer + ", siteId="
-				+ siteId + ", siteAccessId=" + siteAccessId + "]";
+				+ siteId + "]";
+	}
+
+	public String getRid() {
+		return rid;
+	}
+
+	public void setRid(String rid) {
+		this.rid = rid;
 	}
 }

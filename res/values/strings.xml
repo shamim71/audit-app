@@ -12,6 +12,7 @@
     <string name="button_manual">Manual</string>
     <string name="moddify_audit">Modify Audit</string>
     <string name="create_audit">Create Audit</string>
+    <string name="label_sync_data">Synchronize Data</string>
     <string name="save">Save</string>
     <string name="hint_customer_site_id">Enter customer site id</string>
     <string name="hint_audit_hours">Enter audit hours</string>
@@ -47,11 +48,11 @@
     <string name="login_enter_authentication">Please enter email address/password</string>
     <string name="delete_confirmation_title">Delete confirmation</string>
     <string name="delete_confirmation_message">Want to remove this item?</string>
-
     <string name="account_name">Audit Service</string>
     <string name="title_entry_detail">Entry Detail</string>
     <string name="loading">Waiting for sync...</string>
     <string name="description_refresh">Refresh</string>
+
     <string-array name="array_audit_status">
         <item>0/0</item>
         <item>conforming</item>
@@ -64,5 +65,7 @@
     </string-array>
 
     <string name="title_audit_list">Audits</string>
+    <string name="title_useraudit_list">UserAudits</string>
+    <string name="title_useraudit_detail">UserAudit Detail</string>
 
 </resources>

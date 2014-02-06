@@ -19,14 +19,14 @@
         android:id="@+id/btn_checkOut" style="@style/DefaultComponentMargin"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:onClick="launchShowAudits"
+        android:onClick="launchCreateAudit"
         android:text="@string/create_audit" />
 
     <Button
         android:id="@+id/btn_checkIn" style="@style/DefaultComponentMargin"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:onClick="launchCheckIn"
+        android:onClick="launchShowAudits"
         android:text="@string/moddify_audit" />
     
     <Button style="@style/DefaultComponentMargin" android:layout_marginTop="50dp"
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:onClick="synchronizeData"
-        android:text="Synchronize Data" />   
+        android:text="@string/label_sync_data" />   
          
     <Button style="@style/DefaultComponentMargin" android:layout_marginTop="10dp"
         android:id="@+id/btn_Signout"
