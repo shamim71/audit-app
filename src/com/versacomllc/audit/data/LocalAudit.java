@@ -8,6 +8,7 @@ public class LocalAudit extends InternalAudit{
 
 	private String customerName;
 	
+	
 	public int getId() {
 		return id;
 	}
@@ -38,5 +39,6 @@ public class LocalAudit extends InternalAudit{
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
+
 	
 }

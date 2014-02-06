@@ -66,7 +66,7 @@ public class LoginActivity extends BaseActivity {
 		tvAppName.setTypeface(myTypeface);
 
 
-		etEmailAddress.setText("admin@versacomllc.com");
+		etEmailAddress.setText("shamim71@gmail.com");
 	}
 
 	public void authenticateUser(View v) {

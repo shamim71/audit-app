@@ -27,7 +27,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String TABLE_DEFECTS = "defect";
 	private static final String TABLE_CUSTOMERS = "customer";
 	private static final String TABLE_INTERNAL_AUDITS = "internal_audit";
-	
+
 	private static final String ID = "id";
 	private static final String RID = "rid";
 	// Defect Table Columns names
@@ -47,10 +47,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String AUDIT_DATE = "audit_date";
 	private static final String AUDIT_HOUR = "audit_hour";
 	private static final String AUDIT_BY = "audited_by";
+	private static final String AUDIT_BY_EMPLOYEE = "audited_by_employee";
 	private static final String AUDIT_SITE_ID = "site_id";
 	private static final String AUDIT_CUSTOMER = "customer_id";
 	private static final String AUDIT_CUSTOMER_NAME = "customer_NAME";
-	
+
 	public DatabaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
@@ -58,22 +59,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// Creating Tables
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		
+
 		String CREATE_TABLE_DEFECTS = "CREATE TABLE " + TABLE_DEFECTS + "("
 				+ ID + " INTEGER PRIMARY KEY," + DEFECT_CODE + " TEXT,"
 				+ DEFECT_CATEGORY + " TEXT, " + DEFECT_SUBCATEGORY + " TEXT, "
-				+ DEFECT_SEVERITY + " TEXT, " + DEFECT_WORKTYPE + " TEXT,"+  RID + " TEXT " +")";
+				+ DEFECT_SEVERITY + " TEXT, " + DEFECT_WORKTYPE + " TEXT,"
+				+ RID + " TEXT " + ")";
 		db.execSQL(CREATE_TABLE_DEFECTS);
-		
+
 		String CREATE_TABLE_CUSTOMER = "CREATE TABLE " + TABLE_CUSTOMERS + "("
-				+ ID + " INTEGER PRIMARY KEY," + CUSTOMER_NAME + " TEXT,"+  RID + " TEXT " +")";
+				+ ID + " INTEGER PRIMARY KEY," + CUSTOMER_NAME + " TEXT," + RID
+				+ " TEXT " + ")";
 		db.execSQL(CREATE_TABLE_CUSTOMER);
-		
+
 		// Create audit table
-		String CREATE_TABLE_AUDITS = "CREATE TABLE " + TABLE_INTERNAL_AUDITS + "("
-				+ ID + " INTEGER PRIMARY KEY," + AUDIT_TYPE + " TEXT,"
+		String CREATE_TABLE_AUDITS = "CREATE TABLE " + TABLE_INTERNAL_AUDITS
+				+ "(" + ID + " INTEGER PRIMARY KEY," + AUDIT_TYPE + " TEXT,"
 				+ AUDIT_STATUS + " TEXT, " + AUDIT_DATE + " INTEGER, "
-				+ AUDIT_HOUR + " TEXT, " + AUDIT_BY + " TEXT,"+ AUDIT_SITE_ID + " TEXT,"+ AUDIT_CUSTOMER + " TEXT,"+ AUDIT_CUSTOMER_NAME + " TEXT,"+ RID + " TEXT " +")";
+				+ AUDIT_HOUR + " TEXT, " + AUDIT_BY + " TEXT,"
+				+ AUDIT_BY_EMPLOYEE + " TEXT," + AUDIT_SITE_ID + " TEXT,"
+				+ AUDIT_CUSTOMER + " TEXT," + AUDIT_CUSTOMER_NAME + " TEXT,"
+				+ RID + " TEXT " + ")";
 		db.execSQL(CREATE_TABLE_AUDITS);
 	}
 
@@ -88,140 +94,177 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-   public void addDefect(Defect defect) {
-        SQLiteDatabase db = this.getWritableDatabase();
- 
-        ContentValues values = new ContentValues();
-        values.put(DEFECT_CODE, defect.getCode()); 
-        values.put(DEFECT_CATEGORY, defect.getCategory()); 
-        values.put(DEFECT_SUBCATEGORY, defect.getSubCategory()); 
-        values.put(DEFECT_SEVERITY, defect.getSeverity()); 
-        values.put(DEFECT_CODE, defect.getCode()); 
-        values.put(DEFECT_WORKTYPE, defect.getWorkType()); 
-        values.put(DEFECT_RECORDID, defect.getRid());
-        // Inserting Row
-        db.insert(TABLE_DEFECTS, null, values);
-        db.close(); 
-    }
- 
-     
-    // Getting All Contacts
-    public List<Defect> getAllDefects() {
-    	
-        List<Defect> defectList = new ArrayList<Defect>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_DEFECTS;
- 
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
- 
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-            	
-            	Defect defect = new Defect();
-                defect.setId(Integer.parseInt(cursor.getString(0)));
-                defect.setCode(cursor.getString(1));
-                defect.setCategory(cursor.getString(2));
-                defect.setSubCategory(cursor.getString(3));
-                defect.setSeverity(cursor.getString(4));
-                defect.setWorkType(cursor.getString(5));
-                defect.setRid(cursor.getString(6));
-                defectList.add(defect);
-            } while (cursor.moveToNext());
-        }
- 
-        return defectList;
-    }
-    
+	public void addDefect(Defect defect) {
+		SQLiteDatabase db = this.getWritableDatabase();
 
-   public void addCustomer(LocalCustomer customer) {
-        SQLiteDatabase db = this.getWritableDatabase();
- 
-        ContentValues values = new ContentValues();
-/*        values.put(CUSTOMER_ID, customer.getId()); */
-        values.put(CUSTOMER_NAME, customer.getName()); 
-        values.put(RID, customer.getRid()); 
-        // Inserting Row
-        db.insert(TABLE_CUSTOMERS, null, values);
-        db.close(); 
-    }
-    
-    public List<LocalCustomer> getAllCustomers() {
-    	
-        List<LocalCustomer> customerList = new ArrayList<LocalCustomer>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_CUSTOMERS;
- 
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
- 
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-            	LocalCustomer customer = new LocalCustomer();
-                customer.setId(Integer.parseInt(cursor.getString(0)));
-                customer.setName(cursor.getString(1));
-                customer.setRid(cursor.getString(2));
-                customerList.add(customer);
-                
-            } while (cursor.moveToNext());
-        }
+		ContentValues values = new ContentValues();
+		values.put(DEFECT_CODE, defect.getCode());
+		values.put(DEFECT_CATEGORY, defect.getCategory());
+		values.put(DEFECT_SUBCATEGORY, defect.getSubCategory());
+		values.put(DEFECT_SEVERITY, defect.getSeverity());
+		values.put(DEFECT_CODE, defect.getCode());
+		values.put(DEFECT_WORKTYPE, defect.getWorkType());
+		values.put(DEFECT_RECORDID, defect.getRid());
+		// Inserting Row
+		db.insert(TABLE_DEFECTS, null, values);
+		db.close();
+	}
 
-        return customerList;
-    }
-    public void addInternalAudit(LocalAudit audit) {
-        SQLiteDatabase db = this.getWritableDatabase();
- 
-        ContentValues values = new ContentValues();
-        
-        values.put(AUDIT_TYPE, audit.getAuditType()); 
-        values.put(AUDIT_STATUS, audit.getAuditStatus()); 
-        values.put(AUDIT_HOUR, audit.getAuditHour());
-        values.put(AUDIT_DATE, String.valueOf(getDateAsInt(audit.getAuditDate())));
-        values.put(AUDIT_BY, audit.getAuditedBy());
-        values.put(AUDIT_SITE_ID, audit.getSiteId());
-        values.put(AUDIT_CUSTOMER, audit.getCustomer());
-        values.put(AUDIT_CUSTOMER_NAME, audit.getCustomerName());
-        values.put(RID, audit.getRid()); 
-        // Inserting Row
-        db.insert(TABLE_INTERNAL_AUDITS, null, values);
-        db.close(); 
-    }
-    private long getDateAsInt(String date){
-    	try {
-		Date dt = 	Constants.US_DATEFORMAT.parse(date);
-		return dt.getTime();
+	// Getting All Contacts
+	public List<Defect> getAllDefects() {
+
+		List<Defect> defectList = new ArrayList<Defect>();
+		// Select All Query
+		String selectQuery = "SELECT  * FROM " + TABLE_DEFECTS;
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (cursor.moveToFirst()) {
+			do {
+
+				Defect defect = new Defect();
+				defect.setId(Integer.parseInt(cursor.getString(0)));
+				defect.setCode(cursor.getString(1));
+				defect.setCategory(cursor.getString(2));
+				defect.setSubCategory(cursor.getString(3));
+				defect.setSeverity(cursor.getString(4));
+				defect.setWorkType(cursor.getString(5));
+				defect.setRid(cursor.getString(6));
+				defectList.add(defect);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		db.close();
+		return defectList;
+	}
+
+	public void addCustomer(LocalCustomer customer) {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+		/* values.put(CUSTOMER_ID, customer.getId()); */
+		values.put(CUSTOMER_NAME, customer.getName());
+		values.put(RID, customer.getRid());
+		// Inserting Row
+		db.insert(TABLE_CUSTOMERS, null, values);
+		db.close();
+	}
+
+	public List<LocalCustomer> getAllCustomers() {
+
+		List<LocalCustomer> customerList = new ArrayList<LocalCustomer>();
+		// Select All Query
+		String selectQuery = "SELECT  * FROM " + TABLE_CUSTOMERS;
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (cursor.moveToFirst()) {
+			do {
+				LocalCustomer customer = new LocalCustomer();
+				customer.setId(Integer.parseInt(cursor.getString(0)));
+				customer.setName(cursor.getString(1));
+				customer.setRid(cursor.getString(2));
+				customerList.add(customer);
+
+			} while (cursor.moveToNext());
+		}
+
+		return customerList;
+	}
+
+	public void addInternalAudit(LocalAudit audit) {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+
+		values.put(AUDIT_TYPE, audit.getAuditType());
+		values.put(AUDIT_STATUS, audit.getAuditStatus());
+		values.put(AUDIT_DATE,
+				String.valueOf(getDateAsInt(audit.getAuditDate())));
+		values.put(AUDIT_HOUR, audit.getAuditHour());
+		values.put(AUDIT_BY, audit.getAuditedBy());
+		values.put(AUDIT_BY_EMPLOYEE, audit.getAuditedByEmployee());
+		values.put(AUDIT_SITE_ID, audit.getSiteId());
+		values.put(AUDIT_CUSTOMER, audit.getCustomer());
+		values.put(AUDIT_CUSTOMER_NAME, audit.getCustomerName());
+		values.put(RID, audit.getRid());
+		// Inserting Row
+		db.insert(TABLE_INTERNAL_AUDITS, null, values);
+		db.close();
+	}
+
+	private long getDateAsInt(String date) {
+		try {
+			Date dt = Constants.US_DATEFORMAT.parse(date);
+			return dt.getTime();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return 0;
 		}
-    }
-    
-    public List<LocalAudit> getAllInternalAudits() {
-    	
-        List<LocalAudit> auditList = new ArrayList<LocalAudit>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS;
- 
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
- 
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-            	LocalAudit audit = new LocalAudit();
-            	audit.setId(Integer.parseInt(cursor.getString(0)));
-            	audit.setAuditType(cursor.getString(1));
-            	audit.setAuditStatus(cursor.getString(2));
-            	audit.setRid(cursor.getString(2));
-                auditList.add(audit);
-                
-            } while (cursor.moveToNext());
-        }
+	}
 
-        return auditList;
-    }
-    
+	private String getLongAsDate(long val) {
+		Date dt = new Date(val);
+		return Constants.US_DATEFORMAT.format(dt);
+	}
+
+	public List<LocalAudit> getAllInternalAudits() {
+
+		// Select All Query
+		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS;
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		List<LocalAudit> auditList = loadAudits(cursor);
+		cursor.close();
+		db.close();
+		return auditList;
+	}
+	public List<LocalAudit> getAllInternalAuditsByEmployee(final String userId) {
+
+		// Select All Query
+		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS + " where "+ AUDIT_BY_EMPLOYEE + "='"+ userId + "'";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		List<LocalAudit> auditList = loadAudits(cursor);
+		cursor.close();
+		db.close();
+		return auditList;
+	}
+
+	private List<LocalAudit> loadAudits(Cursor cursor) {
+		List<LocalAudit> auditList = new ArrayList<LocalAudit>();
+		// looping through all rows and adding to list
+		if (cursor.moveToFirst()) {
+			do {
+				int index = 0;
+				LocalAudit audit = new LocalAudit();
+				audit.setId(Integer.parseInt(cursor.getString(index++)));
+				audit.setAuditType(cursor.getString(index++));
+				audit.setAuditStatus(cursor.getString(index++));
+
+				long auditTime = Long.parseLong(cursor.getString(index++));
+				audit.setAuditDate(getLongAsDate(auditTime));
+
+				audit.setAuditHour(cursor.getString(index++));
+				audit.setAuditedBy(cursor.getString(index++));
+				audit.setAuditedByEmployee(cursor.getString(index++));
+				audit.setSiteId(cursor.getString(index++));
+				audit.setCustomer(cursor.getString(index++));
+				audit.setCustomerName(cursor.getString(index++));
+
+				audit.setRid(cursor.getString(index++));
+				auditList.add(audit);
+
+			} while (cursor.moveToNext());
+		}
+
+		return auditList;
+	}
 }

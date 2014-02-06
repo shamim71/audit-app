@@ -2,11 +2,6 @@ package com.versacomllc.audit.activity;
 
 import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
-
-
-
-
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -33,12 +28,10 @@ import com.versacomllc.audit.adapter.SimpleDropDownListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalCustomer;
-import com.versacomllc.audit.model.Configuration;
 import com.versacomllc.audit.model.Customer;
 import com.versacomllc.audit.model.InternalAudit;
 import com.versacomllc.audit.model.StringResponse;
 import com.versacomllc.audit.spice.DefaultProgressIndicatorState;
-import com.versacomllc.audit.spice.GenericGetRequest;
 import com.versacomllc.audit.spice.GenericPostRequest;
 import com.versacomllc.audit.spice.RestCall;
 import com.versacomllc.audit.spice.RetrySpiceCallback;
@@ -47,13 +40,12 @@ import com.versacomllc.audit.utils.EndPoints;
 
 public class SiteAuditActivity extends BaseActivity implements OnItemSelectedListener {
 
-
 	ArrayAdapter<Customer> adapter = null;
 	EditText mEditSiteId;
 	EditText mEditAuditHour;
 	EditText mEditAuditDate;
 	
-	InternalAudit audit = new InternalAudit();
+	LocalAudit audit = new LocalAudit();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +102,8 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 		auditor.setText(auditUser);
 		
 		audit.setAuditedByEmployee(currentUser().getqBaseRef());
+		audit.setAuditedBy(currentUser().getFirstName() + " "+ currentUser().getLastName());
+		
 	}
 	private void initComponents(){
 		mEditAuditDate = (EditText)findViewById(R.id.editText1);
@@ -129,8 +123,9 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 			audit.setSiteId(mEditSiteId.getText().toString());
 		}
 		Log.d(LOG_TAG, audit.toString());
-
-		this.createLocalAudit(audit);
+			
+		
+		this.createLocalAudit();
 		
 	}
     public void selectDate(View view) {
@@ -185,9 +180,10 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 	}
 
 
-	private void createLocalAudit(final InternalAudit audit){
+	private void createLocalAudit(){
 		Log.i(LOG_TAG, "Adding records to internal audit table ");
-		dbHandler.addInternalAudit(new LocalAudit(audit));
+
+		dbHandler.addInternalAudit(audit);
 	}
 	private void createInternalAuditx(final InternalAudit audit) {
 		String endPoint = EndPoints.REST_CALL_POST_AUDITS
@@ -238,7 +234,7 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 		Log.d(LOG_TAG, customer.getName());
 		
 		audit.setCustomer(customer.getRid());
-
+		audit.setCustomerName(customer.getName());
 
 	}
 

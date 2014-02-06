@@ -52,7 +52,11 @@
     <string name="title_entry_detail">Entry Detail</string>
     <string name="loading">Waiting for sync...</string>
     <string name="description_refresh">Refresh</string>
-
+	<string name="label_customer">Customer: </string>
+	<string name="label_site_id">Site ID: </string>
+	<string name="label_audited_by">Audited by: </string>
+	<string name="label_status">Status: </string>
+		<string name="label_audit_date">Audited on: </string>		
     <string-array name="array_audit_status">
         <item>0/0</item>
         <item>conforming</item>

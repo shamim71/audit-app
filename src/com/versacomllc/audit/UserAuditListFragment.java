@@ -7,7 +7,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.versacomllc.audit.dummy.DummyContent;
+import com.versacomllc.audit.data.AuditListContent;
+
 
 /**
  * A list fragment representing a list of UserAudits. This fragment also
@@ -70,10 +71,17 @@ public class UserAuditListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+	
+		
 		// TODO: replace with a real list adapter.
-		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+		setListAdapter(new ArrayAdapter<AuditListContent.AuditListPanel>(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, DummyContent.ITEMS));
+				android.R.id.text1, AuditListContent.ITEMS));
+		
+		
+       
+	//	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
 	}
 
 	@Override
@@ -116,7 +124,7 @@ public class UserAuditListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+		mCallbacks.onItemSelected(AuditListContent.ITEMS.get(position).id);
 	}
 
 	@Override
@@ -148,5 +156,15 @@ public class UserAuditListFragment extends ListFragment {
 		}
 
 		mActivatedPosition = position;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+
+		super.onActivityCreated(savedInstanceState);
+		//getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		setActivateOnItemClick(true);
+		setActivatedPosition(0);
+		mCallbacks.onItemSelected(AuditListContent.ITEMS.get(0).id);
 	}
 }
