@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scv_main_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        style="@style/PageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout android:id="@+id/ll_topContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:gravity="left"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tv_Customer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_select_customer" />
+
+            <Spinner
+                android:id="@+id/sp_customer_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:id="@+id/tv_customerSiteAccess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/customer_site_id" />
+
+            <EditText
+                android:id="@+id/et_customerSiteID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/hint_customer_site_id"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/tv_AuditDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/audit_date" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:onClick="selectDate" >
+
+                <EditText
+                    android:id="@+id/et_audit_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:ems="10"
+                    android:inputType="date" >
+                </EditText>
+
+                <ImageButton
+                    android:id="@+id/ibtn_date_selector"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:layout_alignBottom="@+id/et_audit_date"
+                    android:layout_toRightOf="@+id/et_audit_date"
+                    android:contentDescription="@string/app_name"
+                    android:cropToPadding="true"
+                    android:onClick="selectDate"
+                    android:src="@drawable/ic_action_go_to_today" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_auditHour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/label_audit_hours" />
+
+            <EditText
+                android:id="@+id/et_auditHour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/hint_audit_hours"
+                android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/tv_auditType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/label_audit_type" />
+
+            <Spinner
+                android:id="@+id/sp_auditType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:id="@+id/tv_auditStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/label_audit_status" />
+
+            <Spinner
+                android:id="@+id/sp_auditStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:id="@+id/tv_auditor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/bottom_bar"
+            android:layout_below="@id/ll_topContainer"
+  			android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:padding="5dp"
+            >
+
+            <Button
+                android:id="@+id/btn_save_audit_master"
+                style="@style/BottomBarBtnStyle2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:text="@string/button_save" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</ScrollView>

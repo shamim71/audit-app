@@ -8,18 +8,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.versacomllc.audit.data.AuditListContent;
-
+import com.versacomllc.audit.dummy.DummyContent;
 
 /**
- * A list fragment representing a list of UserAudits. This fragment also
+ * A list fragment representing a list of InternalAudit. This fragment also
  * supports tablet devices by allowing list items to be given an 'activated'
  * state upon selection. This helps indicate which item is currently being
- * viewed in a {@link UserAuditDetailFragment}.
+ * viewed in a {@link InternalAuditDetailFragment}.
  * <p>
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class UserAuditListFragment extends ListFragment {
+public class InternalAuditListFragment extends ListFragment {
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -64,24 +64,17 @@ public class UserAuditListFragment extends ListFragment {
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
-	public UserAuditListFragment() {
+	public InternalAuditListFragment() {
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-	
-		
 		// TODO: replace with a real list adapter.
-		setListAdapter(new ArrayAdapter<AuditListContent.AuditListPanel>(getActivity(),
+		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, AuditListContent.ITEMS));
-		
-		
-       
-	//	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
+				android.R.id.text1, DummyContent.ITEMS));
 	}
 
 	@Override
@@ -124,7 +117,7 @@ public class UserAuditListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(AuditListContent.ITEMS.get(position).id);
+		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
 	}
 
 	@Override
@@ -160,11 +153,11 @@ public class UserAuditListFragment extends ListFragment {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-
+		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-
-		setActivateOnItemClick(true);
+		//setActivateOnItemClick(true);
 		setActivatedPosition(0);
 		mCallbacks.onItemSelected(AuditListContent.ITEMS.get(0).id);
 	}
+	
 }

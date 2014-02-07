@@ -1,23 +1,24 @@
 package com.versacomllc.audit.activity;
 
 import static com.versacomllc.audit.utils.Constants.ACTION_FINISH;
+import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
 import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SyncStatusObserver;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.versacomllc.audit.InternalAuditListActivity;
+import com.versacomllc.audit.R;
+import com.versacomllc.audit.UserAuditListActivity;
 import com.versacomllc.audit.model.ItemInventory;
 import com.versacomllc.audit.network.sync.SyncUtils;
 import com.versacomllc.audit.network.sync.accounts.GenericAccountService;
 import com.versacomllc.audit.network.sync.provider.FeedContract;
 import com.versacomllc.audit.utils.Constants;
-import com.versacomllc.audit.R;
-import com.versacomllc.audit.UserAuditListActivity;
 
 public class HomeActivity extends BaseActivity {
 
@@ -33,10 +34,13 @@ public class HomeActivity extends BaseActivity {
 	}
 
 	public void launchCreateAudit(View v) {
-
+/*
 		Intent intent = new Intent(this, SiteAuditActivity.class);
-		intent.putExtra(Constants.EXTRA_TRANSACTION_TYPE, false);
+		startActivity(intent);*/
+		
+		Intent intent = new Intent(this, InternalAuditListActivity.class);
 		startActivity(intent);
+		
 	}
 
 	public void launchShowAudits(View v) {
@@ -74,8 +78,8 @@ public class HomeActivity extends BaseActivity {
 		// Watch for sync state changes
 		final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING
 				| ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
-		// mSyncObserverHandle = ContentResolver.addStatusChangeListener(mask,
-		// mSyncStatusObserver);
+		
+		// mSyncObserverHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
 	}
 
 	@Override
@@ -101,7 +105,7 @@ public class HomeActivity extends BaseActivity {
 	}
 
 	/**
-	 * Crfate a new anonymous SyncStatusObserver. It's attached to the app's
+	 * Create a new anonymous SyncStatusObserver. It's attached to the app's
 	 * ContentResolver in onResume(), and removed in onPause(). If status
 	 * changes, it sets the state of the Refresh button. If a sync is active or
 	 * pending, the Refresh button is replaced by an indeterminate ProgressBar;

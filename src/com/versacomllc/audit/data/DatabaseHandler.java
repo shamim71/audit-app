@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.versacomllc.audit.data.impl.AuditDaoImpl;
 import com.versacomllc.audit.model.InternalAudit;
 import com.versacomllc.audit.utils.Constants;
 
@@ -41,16 +42,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// CUSTOMER Table Columns names
 	private static final String CUSTOMER_NAME = "name";
 
-	// INTERNAL AUDIT Table Columns names
-	private static final String AUDIT_TYPE = "type";
-	private static final String AUDIT_STATUS = "status";
-	private static final String AUDIT_DATE = "audit_date";
-	private static final String AUDIT_HOUR = "audit_hour";
-	private static final String AUDIT_BY = "audited_by";
-	private static final String AUDIT_BY_EMPLOYEE = "audited_by_employee";
-	private static final String AUDIT_SITE_ID = "site_id";
-	private static final String AUDIT_CUSTOMER = "customer_id";
-	private static final String AUDIT_CUSTOMER_NAME = "customer_NAME";
 
 	public DatabaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -73,14 +64,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TABLE_CUSTOMER);
 
 		// Create audit table
-		String CREATE_TABLE_AUDITS = "CREATE TABLE " + TABLE_INTERNAL_AUDITS
-				+ "(" + ID + " INTEGER PRIMARY KEY," + AUDIT_TYPE + " TEXT,"
-				+ AUDIT_STATUS + " TEXT, " + AUDIT_DATE + " INTEGER, "
-				+ AUDIT_HOUR + " TEXT, " + AUDIT_BY + " TEXT,"
-				+ AUDIT_BY_EMPLOYEE + " TEXT," + AUDIT_SITE_ID + " TEXT,"
-				+ AUDIT_CUSTOMER + " TEXT," + AUDIT_CUSTOMER_NAME + " TEXT,"
-				+ RID + " TEXT " + ")";
-		db.execSQL(CREATE_TABLE_AUDITS);
+
+		db.execSQL(AuditDao.CREATE_TABLE_SCRIPT);
 	}
 
 	// Upgrading database
@@ -89,7 +74,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// Drop older table if existed
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEFECTS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMERS);
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_INTERNAL_AUDITS);
+		db.execSQL(AuditDao.DROP_TABLE_SCRIPT);
 		// Create tables again
 		onCreate(db);
 	}
@@ -176,95 +161,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return customerList;
 	}
 
-	public void addInternalAudit(LocalAudit audit) {
-		SQLiteDatabase db = this.getWritableDatabase();
-
-		ContentValues values = new ContentValues();
-
-		values.put(AUDIT_TYPE, audit.getAuditType());
-		values.put(AUDIT_STATUS, audit.getAuditStatus());
-		values.put(AUDIT_DATE,
-				String.valueOf(getDateAsInt(audit.getAuditDate())));
-		values.put(AUDIT_HOUR, audit.getAuditHour());
-		values.put(AUDIT_BY, audit.getAuditedBy());
-		values.put(AUDIT_BY_EMPLOYEE, audit.getAuditedByEmployee());
-		values.put(AUDIT_SITE_ID, audit.getSiteId());
-		values.put(AUDIT_CUSTOMER, audit.getCustomer());
-		values.put(AUDIT_CUSTOMER_NAME, audit.getCustomerName());
-		values.put(RID, audit.getRid());
-		// Inserting Row
-		db.insert(TABLE_INTERNAL_AUDITS, null, values);
-		db.close();
+	public AuditDao getAuditDao(){
+		return new AuditDaoImpl(this.getWritableDatabase());
+			
 	}
 
-	private long getDateAsInt(String date) {
-		try {
-			Date dt = Constants.US_DATEFORMAT.parse(date);
-			return dt.getTime();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return 0;
-		}
-	}
 
-	private String getLongAsDate(long val) {
-		Date dt = new Date(val);
-		return Constants.US_DATEFORMAT.format(dt);
-	}
 
-	public List<LocalAudit> getAllInternalAudits() {
+	
 
-		// Select All Query
-		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS;
 
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
-		List<LocalAudit> auditList = loadAudits(cursor);
-		cursor.close();
-		db.close();
-		return auditList;
-	}
-	public List<LocalAudit> getAllInternalAuditsByEmployee(final String userId) {
-
-		// Select All Query
-		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS + " where "+ AUDIT_BY_EMPLOYEE + "='"+ userId + "'";
-
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
-		List<LocalAudit> auditList = loadAudits(cursor);
-		cursor.close();
-		db.close();
-		return auditList;
-	}
-
-	private List<LocalAudit> loadAudits(Cursor cursor) {
-		List<LocalAudit> auditList = new ArrayList<LocalAudit>();
-		// looping through all rows and adding to list
-		if (cursor.moveToFirst()) {
-			do {
-				int index = 0;
-				LocalAudit audit = new LocalAudit();
-				audit.setId(Integer.parseInt(cursor.getString(index++)));
-				audit.setAuditType(cursor.getString(index++));
-				audit.setAuditStatus(cursor.getString(index++));
-
-				long auditTime = Long.parseLong(cursor.getString(index++));
-				audit.setAuditDate(getLongAsDate(auditTime));
-
-				audit.setAuditHour(cursor.getString(index++));
-				audit.setAuditedBy(cursor.getString(index++));
-				audit.setAuditedByEmployee(cursor.getString(index++));
-				audit.setSiteId(cursor.getString(index++));
-				audit.setCustomer(cursor.getString(index++));
-				audit.setCustomerName(cursor.getString(index++));
-
-				audit.setRid(cursor.getString(index++));
-				auditList.add(audit);
-
-			} while (cursor.moveToNext());
-		}
-
-		return auditList;
-	}
 }

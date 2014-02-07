@@ -14,16 +14,17 @@
     <string name="create_audit">Create Audit</string>
     <string name="label_sync_data">Synchronize Data</string>
     <string name="save">Save</string>
-    <string name="hint_customer_site_id">Enter customer site id</string>
+    <string name="hint_customer_site_id">Enter Site ID</string>
     <string name="hint_audit_hours">Enter audit hours</string>
     <string name="label_audit_type">Audit type</string>
     <string name="label_audit_status">Audit status</string>
     <string name="button_next">Next</string>
+    <string name="button_save">Save</string>
     <string name="button_sign_out">Signout</string>
     <string name="button_login">Login</string>
     <string name="label_select_site">Select customer: </string>
     <string name="label_select_customer">Select customer: </string>
-    <string name="customer_site_id">Customer Site ID: </string>
+    <string name="customer_site_id">Site ID: </string>
     <string name="label_audit_hours">Audit hours: </string>
     <string name="label_select_item">Enter item name: </string>
     <string name="service_not_avilable">The service is not available. Please contact customer support!</string>
@@ -52,11 +53,12 @@
     <string name="title_entry_detail">Entry Detail</string>
     <string name="loading">Waiting for sync...</string>
     <string name="description_refresh">Refresh</string>
-	<string name="label_customer">Customer: </string>
-	<string name="label_site_id">Site ID: </string>
-	<string name="label_audited_by">Audited by: </string>
-	<string name="label_status">Status: </string>
-		<string name="label_audit_date">Audited on: </string>		
+    <string name="label_customer">Customer: </string>
+    <string name="label_site_id">Site ID: </string>
+    <string name="label_audited_by">Audited by: </string>
+    <string name="label_status">Status: </string>
+    <string name="label_audit_date">Audited on: </string>
+
     <string-array name="array_audit_status">
         <item>0/0</item>
         <item>conforming</item>
@@ -71,5 +73,7 @@
     <string name="title_audit_list">Audits</string>
     <string name="title_useraudit_list">UserAudits</string>
     <string name="title_useraudit_detail">UserAudit Detail</string>
+    <string name="title_internalaudit_list">InternalAudit</string>
+    <string name="title_internalaudit_detail">InternalAudit Detail</string>
 
 </resources>

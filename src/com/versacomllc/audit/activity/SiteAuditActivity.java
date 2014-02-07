@@ -183,7 +183,7 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 	private void createLocalAudit(){
 		Log.i(LOG_TAG, "Adding records to internal audit table ");
 
-		dbHandler.addInternalAudit(audit);
+		dbHandler.getAuditDao().addInternalAudit(audit);
 	}
 	private void createInternalAuditx(final InternalAudit audit) {
 		String endPoint = EndPoints.REST_CALL_POST_AUDITS

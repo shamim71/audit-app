@@ -1,23 +1,35 @@
 package com.versacomllc.audit;
 
+import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
+import static com.versacomllc.audit.utils.Constants.LOG_TAG;
+
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 
 
 
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+
+import com.versacomllc.audit.activity.LoginActivity;
 import com.versacomllc.audit.adapter.AuditListAdapter;
 import com.versacomllc.audit.data.AuditListContent;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.utils.Constants;
+
 
 
 /**
@@ -67,10 +79,10 @@ public class UserAuditDetailFragment extends Fragment {
 				AuditManagement app =	(AuditManagement)	getActivity().getApplication();
 				final String userId = app.getAuthentication().getResult().getqBaseRef();
 				Log.d(Constants.LOG_TAG, "Loading audits by user id: "+ userId);
-				audits = dbHandler.getAllInternalAuditsByEmployee(userId);
+				audits = dbHandler.getAuditDao().getAllInternalAuditsByEmployee(userId);
 			}
 			else{
-				audits = dbHandler.getAllInternalAudits();
+				audits = dbHandler.getAuditDao().getAllInternalAudits();
 			}
 			
 		}
@@ -85,12 +97,66 @@ public class UserAuditDetailFragment extends Fragment {
 		// Show the dummy content as text in a TextView.
 		if (mItem != null) {
 			
-			ListView lstView = (ListView) rootView.findViewById(R.id.lv_audit_list);
+			ListView listViewItems = (ListView) rootView.findViewById(R.id.lv_audit_list);
 			
 			AuditListAdapter adapter = new AuditListAdapter(getActivity(), R.layout.audit_list_item,
 					audits);
-			lstView.setAdapter(adapter);
+			listViewItems.setAdapter(adapter);
 			
+			listViewItems.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					LocalAudit item = (LocalAudit) parent.getAdapter().getItem(position);
+
+					if (item != null) {
+						Log.d(LOG_TAG, "Loading audit with internal id: "+ item.getId());
+						
+						Intent intent = new Intent(getActivity(), InternalAuditListActivity.class);
+						intent.putExtra(EXTRA_AUDIT_ID,String.valueOf(item.getId()));
+						startActivity(intent);
+					}
+
+				}
+			});
+			listViewItems.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+				@Override
+				public boolean onItemLongClick(final AdapterView<?> parent, View view,
+						final int position, long id) {
+					
+					
+					
+					final AlertDialog.Builder builder = new AlertDialog.Builder(
+							getActivity());
+					builder.setMessage(R.string.delete_confirmation_message)
+							.setTitle(R.string.delete_confirmation_title);
+					builder.setPositiveButton(R.string.ok,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									LocalAudit item = (LocalAudit) parent.getAdapter()
+											.getItem(position);
+
+									if (item != null) {
+						
+										//.notifyDataSetChanged();
+
+									}
+								}
+							});
+					builder.setNegativeButton(R.string.cancel,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+
+								}
+							});
+
+					AlertDialog dialog = builder.create();
+					dialog.show();
+					return true;
+				}
+			});
 		}
 
 		return rootView;
