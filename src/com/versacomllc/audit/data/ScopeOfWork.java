@@ -10,7 +10,7 @@ public class ScopeOfWork {
 	
 	private String dateOfWork;
 	
-	private int id;
+	private long id;
 	
 	private String rid;
 	
@@ -48,11 +48,11 @@ public class ScopeOfWork {
 		this.dateOfWork = dateOfWork;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

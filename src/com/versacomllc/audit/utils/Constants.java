@@ -19,6 +19,7 @@ public final class Constants {
 	public static final String EXTRA_BARCODE = "com.versacomllc.audit.EXTRA_BARCODE";
 	public static final String EXTRA_ITEM_ADDED = "com.versacomllc.audit.EXTRA_ITEM_ADDED";
 	public static final String EXTRA_AUDIT_ID = "com.versacomllc.audit.EXTRA_AUDIT_ID";
+	public static final String EXTRA_SOW_ID = "com.versacomllc.audit.EXTRA_SOW_ID";
 	
 	public static final String ACTION_FINISH = "com.versacomllc.audit.activity.LoginActivity.ACTION_FINISH";
 	

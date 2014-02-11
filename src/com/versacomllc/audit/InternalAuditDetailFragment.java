@@ -1,6 +1,7 @@
 package com.versacomllc.audit;
 
 import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
+import static com.versacomllc.audit.utils.Constants.EXTRA_SOW_ID;
 import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
 import java.text.ParseException;
@@ -12,8 +13,11 @@ import java.util.List;
 import org.apache.commons.lang3.LocaleUtils;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -24,17 +28,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.versacomllc.audit.activity.LoginActivity;
+import com.versacomllc.audit.adapter.ScopeOfWorkListAdapter;
 import com.versacomllc.audit.adapter.SimpleDropDownListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.LocalAudit;
@@ -71,11 +79,12 @@ public class InternalAuditDetailFragment extends Fragment {
 	Spinner auditStatusSpinner;
 	Spinner customerSpinner;
 	TextView mTextAuditor;
-	
+
 	LocalAudit audit = new LocalAudit();
 
 	String auditId = null;
 	SimpleDropDownListAdapter customerAdapter;
+	ScopeOfWorkListAdapter scopeOfWorkListAdapter;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -123,37 +132,133 @@ public class InternalAuditDetailFragment extends Fragment {
 
 		return rootView;
 	}
-	private View getSOWView(LayoutInflater inflater,
-			ViewGroup container, Bundle savedInstanceState) {
+
+	private View getSOWView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(
 				R.layout.fragment_internalaudit_detail_sow, container, false);
-		
+
 		Button btnSOW = (Button) rootView.findViewById(R.id.btn_Add_SOW);
 		btnSOW.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				DialogFragment dialog = new ScopeOfWorkDialogFragement() {
-					
-					@Override
-					public void onSave(ScopeOfWork work) {
-						Toast.makeText(getActivity(), "Scope of work added",
-								Toast.LENGTH_LONG).show();
-						
-					}
-				};
-				Bundle arguments = new Bundle();
-				arguments.putString(
-						EXTRA_AUDIT_ID,
-						auditId);
-				dialog.setArguments(arguments);
-		        dialog.show(getActivity().getSupportFragmentManager(), "ScopeOfWorkDialogFragement");
-
-				
+				loadScopeOfWorkDialog(false, -1);
 			}
 		});
+
+		ListView lstScopeOfWork = (ListView) rootView
+				.findViewById(R.id.lv_sow_list);
+
+		List<ScopeOfWork> works = dbHandler.getScopeOfWorkDao()
+				.getScopeOfWorkByAuditId(Long.parseLong(auditId));
+
+		scopeOfWorkListAdapter = new ScopeOfWorkListAdapter(getActivity(),
+				R.layout.sow_list_item, works);
+		lstScopeOfWork.setAdapter(scopeOfWorkListAdapter);
+		lstScopeOfWork.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				ScopeOfWork item = (ScopeOfWork) parent.getAdapter().getItem(
+						position);
+
+				if (item != null) {
+
+					Log.d(LOG_TAG,
+							"Loading scope of work with id: " + item.getId()
+									+ " audit id: " + item.getAuditId());
+
+					loadScopeOfWorkDialog(true, item.getId());
+				}
+
+			}
+		});
+		
+		lstScopeOfWork.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(final AdapterView<?> parent, View view,
+					final int position, long id) {
+				
+				
+				
+				final AlertDialog.Builder builder = new AlertDialog.Builder(
+						getActivity());
+				builder.setMessage(R.string.delete_confirmation_message)
+						.setTitle(R.string.delete_confirmation_title);
+				builder.setPositiveButton(R.string.ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								ScopeOfWork item = (ScopeOfWork) parent.getAdapter()
+										.getItem(position);
+
+								if (item != null) {
+					
+									dbHandler.getScopeOfWorkDao().deleteSOW(item.getId());
+									scopeOfWorkListAdapter.clear();
+									List<ScopeOfWork> works = dbHandler.getScopeOfWorkDao()
+											.getScopeOfWorkByAuditId(Long.parseLong(auditId));
+									scopeOfWorkListAdapter.addAll(works);
+									scopeOfWorkListAdapter.notifyDataSetChanged();
+								}
+							}
+						});
+				builder.setNegativeButton(R.string.cancel,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+
+							}
+						});
+
+				AlertDialog dialog = builder.create();
+				dialog.show();
+				return true;
+			}
+		});
+		
 		return rootView;
 	}
+
+	private void loadScopeOfWorkDialog(final boolean edit, final long id) {
+		DialogFragment dialog = new ScopeOfWorkDialogFragement() {
+
+			@Override
+			public void onSave(ScopeOfWork work) {
+				if (edit) {
+					Toast.makeText(getActivity(), "Scope of work updated",
+							Toast.LENGTH_LONG).show();
+					scopeOfWorkListAdapter.clear();
+					List<ScopeOfWork> works = dbHandler.getScopeOfWorkDao()
+							.getScopeOfWorkByAuditId(Long.parseLong(auditId));
+					scopeOfWorkListAdapter.addAll(works);
+
+				} 
+				else 
+				{
+					Toast.makeText(getActivity(), "Scope of work added",
+							Toast.LENGTH_LONG).show();
+					scopeOfWorkListAdapter.insert(work,
+							scopeOfWorkListAdapter.getCount());
+
+					int pos = scopeOfWorkListAdapter.getPosition(work);
+
+					Log.d(LOG_TAG, "Item Pos: " + pos);
+
+				}
+				scopeOfWorkListAdapter.notifyDataSetChanged();
+			}
+		};
+		Bundle arguments = new Bundle();
+		arguments.putString(EXTRA_AUDIT_ID, auditId);
+		arguments.putLong(EXTRA_SOW_ID, id);
+		dialog.setArguments(arguments);
+		dialog.show(getActivity().getSupportFragmentManager(),
+				"ScopeOfWorkDialogFragement");
+
+	}
+
 	private View getAuditMasterView(LayoutInflater inflater,
 			ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(
@@ -248,7 +353,8 @@ public class InternalAuditDetailFragment extends Fragment {
 		populateCustomerList(rootView,
 				customers.toArray(new Customer[customers.size()]));
 
-		LocalAudit existingAudit = dbHandler.getAuditDao().getInternalAuditsById(auditId);
+		LocalAudit existingAudit = dbHandler.getAuditDao()
+				.getInternalAuditsById(auditId);
 
 		updateAuditMasterUI(existingAudit);
 
@@ -260,7 +366,7 @@ public class InternalAuditDetailFragment extends Fragment {
 			return;
 		}
 		audit = lAudit;
-		
+
 		customerSpinner.setSelection(getCustomerIndex(lAudit.getCustomer()));
 		mEditSiteId.setText(lAudit.getSiteId());
 
@@ -276,26 +382,30 @@ public class InternalAuditDetailFragment extends Fragment {
 			e.printStackTrace();
 		}
 		mEditAuditHour.setText(lAudit.getAuditHour());
-		
-		int index = getItemIndex(lAudit.getAuditType(), (ArrayAdapter)auditTypeSpinner.getAdapter());
+
+		int index = getItemIndex(lAudit.getAuditType(),
+				(ArrayAdapter) auditTypeSpinner.getAdapter());
 		auditTypeSpinner.setSelection(index);
-		
-		int statusIndex = getItemIndex(lAudit.getAuditStatus(), (ArrayAdapter)auditStatusSpinner.getAdapter());
+
+		int statusIndex = getItemIndex(lAudit.getAuditStatus(),
+				(ArrayAdapter) auditStatusSpinner.getAdapter());
 		auditStatusSpinner.setSelection(statusIndex);
-		
+
 		mTextAuditor.setText(lAudit.getAuditedBy());
 
 	}
-	private int getItemIndex(String value,ArrayAdapter adapter){
+
+	private int getItemIndex(String value, ArrayAdapter adapter) {
 		int size = adapter.getCount();
 		for (int i = 0; i < size; i++) {
-			String  itm = (String) adapter.getItem(i);
-			if (itm.equals(value)){
+			String itm = (String) adapter.getItem(i);
+			if (itm.equals(value)) {
 				return i;
 			}
 		}
 		return 0;
 	}
+
 	private int getCustomerIndex(String customerId) {
 		int size = customerAdapter.getCount();
 		for (int i = 0; i < size; i++) {
@@ -380,9 +490,9 @@ public class InternalAuditDetailFragment extends Fragment {
 		Log.i(LOG_TAG, "Adding records to internal audit table ");
 
 		long id = dbHandler.getAuditDao().addInternalAudit(audit);
-		
+
 		auditId = String.valueOf(id);
-		
+
 		Toast.makeText(getActivity(), "Audit master record created",
 				Toast.LENGTH_LONG).show();
 	}

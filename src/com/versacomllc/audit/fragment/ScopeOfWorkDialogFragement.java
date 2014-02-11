@@ -1,9 +1,12 @@
 package com.versacomllc.audit.fragment;
 
 import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
+import static com.versacomllc.audit.utils.Constants.EXTRA_SOW_ID;
 import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -33,6 +36,8 @@ import com.versacomllc.audit.adapter.EmployeeAutocompleteListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.Employee;
 import com.versacomllc.audit.data.ScopeOfWork;
+import com.versacomllc.audit.model.Customer;
+import com.versacomllc.audit.utils.Constants;
 
 
 public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
@@ -44,7 +49,8 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 	AutoCompleteTextView autoCompleteTextView;
 	DatabaseHandler dbHandler;
 	private ScopeOfWork scopeOfWork = null;
-	private long mAid;
+	private long mAid =-1;
+	private long mId = -1;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -54,6 +60,13 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 		if (getArguments().containsKey(EXTRA_AUDIT_ID)) {
 			String aid = getArguments().getString(EXTRA_AUDIT_ID);
 			mAid = Long.parseLong(aid);
+		}
+		if(getArguments().containsKey(EXTRA_SOW_ID)){
+			mId = getArguments().getLong(EXTRA_SOW_ID);
+		}
+		
+		if(mId != -1){
+			scopeOfWork = dbHandler.getScopeOfWorkDao().getScopeOfWorkById(mId);
 		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -71,10 +84,14 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								ScopeOfWork sow = getScopeOfWork();
-
-								Log.d(LOG_TAG, sow.toString());
 								
-								dbHandler.getScopeOfWorkDao().addSOW(sow);
+								Log.d(LOG_TAG, sow.toString());
+								if(mId == -1){
+									dbHandler.getScopeOfWorkDao().addSOW(sow);
+								}
+								else{
+									dbHandler.getScopeOfWorkDao().updateSOW(sow);
+								}
 								
 								onSave(sow);
 							}
@@ -112,7 +129,7 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 			}
 		};
 		spWorkList.setOnItemSelectedListener(typeListener);
-
+		
 		autoCompleteTextView = (AutoCompleteTextView) contentView
 				.findViewById(R.id.sp_employee_list);
 		List<Employee> employees = dbHandler.getEmployeeDao().getAllEmployees();
@@ -161,8 +178,40 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 						"DatePicker");
 			}
 		});
-
+		if(scopeOfWork != null && mId != -1){
+			updateUI(scopeOfWork);
+		}
 		return dlg;
+	}
+	private void updateUI(ScopeOfWork work){
+		int position = getItemIndex(work.getWorkType(), (ArrayAdapter<?>) spWorkList.getAdapter());
+		spWorkList.setSelection(position);
+		
+		String empName = work.getTechName();
+		autoCompleteTextView.setText(empName);
+		
+		try {
+			Date auditDate = Constants.US_DATEFORMAT.parse(work.getDateOfWork());
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(auditDate);
+			populateSetDate(cal.get(Calendar.YEAR),
+					cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+	
+	}
+	private int getItemIndex(String value,ArrayAdapter adapter){
+		int size = adapter.getCount();
+		for (int i = 0; i < size; i++) {
+			String  itm = (String) adapter.getItem(i);
+			if (itm.equals(value)){
+				return i;
+			}
+		}
+		return 0;
 	}
 
 	public void populateSetDate(int year, int month, int day) {
@@ -187,6 +236,7 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 	}
 
 	private ScopeOfWork getScopeOfWork() {
+
 		if (scopeOfWork == null) {
 			scopeOfWork = new ScopeOfWork();
 		}

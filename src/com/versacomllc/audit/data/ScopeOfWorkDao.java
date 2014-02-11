@@ -1,5 +1,7 @@
 package com.versacomllc.audit.data;
 
+import java.util.List;
+
 public interface ScopeOfWorkDao {
 	public static final String TABLE_NAME = "scope_of_work";
 
@@ -23,5 +25,12 @@ public interface ScopeOfWorkDao {
 			+ TABLE_NAME;
 
 	void addSOW(ScopeOfWork scopeOfWork);
+	
+	void updateSOW(ScopeOfWork scopeOfWork);
 
+	void deleteSOW(long id);
+	
+	List<ScopeOfWork> getScopeOfWorkByAuditId(final long auditId);
+	
+	ScopeOfWork getScopeOfWorkById(final long id);
 }

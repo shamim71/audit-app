@@ -149,8 +149,7 @@ public class EmployeeAutocompleteListAdapter extends ArrayAdapter<Employee> {
 		protected void publishResults(CharSequence constraint,
 				FilterResults results) {
 				
-			Log.d(LOG_TAG, " Result cout: "+ results.count );
-				
+	
 			 mActivitiesList = (List<Employee>) results.values;
 
              if (results.count > 0) {

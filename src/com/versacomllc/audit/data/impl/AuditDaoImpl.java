@@ -61,7 +61,12 @@ public class AuditDaoImpl implements AuditDao{
 		Log.d(LOG_TAG, "Record updated: "+ rowEffected);
 		
 	}
+	public void deleteInternalAudit(long id) {
 
+		int rowEffected =  db.delete(TABLE_INTERNAL_AUDITS,  ID + " = ?",	new String[] { String.valueOf(id) });
+		Log.d(LOG_TAG, "Record deleted: "+ rowEffected);
+		
+	}
 	@Override
 	public List<LocalAudit> getAllInternalAudits() {
 		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS;
