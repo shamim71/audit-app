@@ -1,19 +1,18 @@
 package com.versacomllc.audit.data;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import com.versacomllc.audit.data.impl.AuditDaoImpl;
-import com.versacomllc.audit.model.InternalAudit;
-import com.versacomllc.audit.utils.Constants;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.versacomllc.audit.data.impl.AuditDaoImpl;
+import com.versacomllc.audit.data.impl.EmployeeDaoImpl;
+import com.versacomllc.audit.data.impl.ScopeOfWorkDaoImpl;
+import com.versacomllc.audit.data.impl.SiteWorkTypeDaoImpl;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -27,7 +26,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// tableS name
 	private static final String TABLE_DEFECTS = "defect";
 	private static final String TABLE_CUSTOMERS = "customer";
-	private static final String TABLE_INTERNAL_AUDITS = "internal_audit";
+
 
 	private static final String ID = "id";
 	private static final String RID = "rid";
@@ -66,6 +65,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// Create audit table
 
 		db.execSQL(AuditDao.CREATE_TABLE_SCRIPT);
+		db.execSQL(SiteWorkTypeDao.CREATE_TABLE_SCRIPT);
+		db.execSQL(EmployeeDao.CREATE_TABLE_SCRIPT);
+		db.execSQL(ScopeOfWorkDao.CREATE_TABLE_SCRIPT);
 	}
 
 	// Upgrading database
@@ -75,6 +77,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEFECTS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMERS);
 		db.execSQL(AuditDao.DROP_TABLE_SCRIPT);
+		db.execSQL(SiteWorkTypeDao.DROP_TABLE_SCRIPT);
+		db.execSQL(EmployeeDao.DROP_TABLE_SCRIPT);
+		db.execSQL(ScopeOfWorkDao.DROP_TABLE_SCRIPT);
+		
 		// Create tables again
 		onCreate(db);
 	}
@@ -128,15 +134,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void addCustomer(LocalCustomer customer) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
-		ContentValues values = new ContentValues();
-		/* values.put(CUSTOMER_ID, customer.getId()); */
-		values.put(CUSTOMER_NAME, customer.getName());
-		values.put(RID, customer.getRid());
-		// Inserting Row
-		db.insert(TABLE_CUSTOMERS, null, values);
+		boolean exist = isCustomerExist(db, customer.getRid());
+		if(!exist){
+			ContentValues values = new ContentValues();
+			/* values.put(CUSTOMER_ID, customer.getId()); */
+			values.put(CUSTOMER_NAME, customer.getName());
+			values.put(RID, customer.getRid());
+			// Inserting Row
+			db.insert(TABLE_CUSTOMERS, null, values);
+		}
+
 		db.close();
 	}
 
+	public boolean isCustomerExist(SQLiteDatabase db, String rid) {
+
+		String selectQuery = "SELECT  * FROM " + TABLE_CUSTOMERS + " where " + RID
+				+ "='" + rid + "'";
+		boolean found = false;
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		if (cursor.moveToFirst()) {
+			found = true;
+		}
+		cursor.close();
+
+		return found;
+	}
 	public List<LocalCustomer> getAllCustomers() {
 
 		List<LocalCustomer> customerList = new ArrayList<LocalCustomer>();
@@ -157,15 +180,41 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 			} while (cursor.moveToNext());
 		}
-
+		cursor.close();
+		db.close();
 		return customerList;
+
 	}
 
 	public AuditDao getAuditDao(){
 		return new AuditDaoImpl(this.getWritableDatabase());
-			
+	}
+	
+	SiteWorkTypeDao siteWorkTypeDao;
+	public SiteWorkTypeDao getSiteWorkDao(){
+		if(siteWorkTypeDao == null){
+			siteWorkTypeDao = new SiteWorkTypeDaoImpl(this);
+		}
+		return siteWorkTypeDao;
+	}
+	
+	EmployeeDao employeeDao;
+	public EmployeeDao getEmployeeDao(){
+		if(employeeDao == null){
+			employeeDao = new EmployeeDaoImpl(this);
+		}
+		return employeeDao;
 	}
 
+	ScopeOfWorkDao scopeOfWorkDao;
+
+
+	public ScopeOfWorkDao getScopeOfWorkDao() {
+		if(scopeOfWorkDao == null){
+			scopeOfWorkDao = new ScopeOfWorkDaoImpl(this);
+		}
+		return scopeOfWorkDao;
+	}
 
 
 	

@@ -39,7 +39,9 @@ import com.versacomllc.audit.adapter.SimpleDropDownListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalCustomer;
+import com.versacomllc.audit.data.ScopeOfWork;
 import com.versacomllc.audit.dummy.DummyContent;
+import com.versacomllc.audit.fragment.ScopeOfWorkDialogFragement;
 import com.versacomllc.audit.model.AuthenticationResult;
 import com.versacomllc.audit.model.Customer;
 import com.versacomllc.audit.utils.Constants;
@@ -107,6 +109,9 @@ public class InternalAuditDetailFragment extends Fragment {
 		if (mItem != null && mItem.id.equals("1")) {
 			return getAuditMasterView(inflater, container, savedInstanceState);
 		}
+		if (mItem != null && mItem.id.equals("2")) {
+			return getSOWView(inflater, container, savedInstanceState);
+		}
 		View rootView = inflater.inflate(
 				R.layout.fragment_internalaudit_detail, container, false);
 
@@ -118,7 +123,37 @@ public class InternalAuditDetailFragment extends Fragment {
 
 		return rootView;
 	}
+	private View getSOWView(LayoutInflater inflater,
+			ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(
+				R.layout.fragment_internalaudit_detail_sow, container, false);
+		
+		Button btnSOW = (Button) rootView.findViewById(R.id.btn_Add_SOW);
+		btnSOW.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DialogFragment dialog = new ScopeOfWorkDialogFragement() {
+					
+					@Override
+					public void onSave(ScopeOfWork work) {
+						Toast.makeText(getActivity(), "Scope of work added",
+								Toast.LENGTH_LONG).show();
+						
+					}
+				};
+				Bundle arguments = new Bundle();
+				arguments.putString(
+						EXTRA_AUDIT_ID,
+						auditId);
+				dialog.setArguments(arguments);
+		        dialog.show(getActivity().getSupportFragmentManager(), "ScopeOfWorkDialogFragement");
 
+				
+			}
+		});
+		return rootView;
+	}
 	private View getAuditMasterView(LayoutInflater inflater,
 			ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(
@@ -228,7 +263,7 @@ public class InternalAuditDetailFragment extends Fragment {
 		
 		customerSpinner.setSelection(getCustomerIndex(lAudit.getCustomer()));
 		mEditSiteId.setText(lAudit.getSiteId());
-		lAudit.getAuditDate();
+
 		try {
 			Date auditDate = Constants.US_DATEFORMAT.parse(lAudit
 					.getAuditDate());
@@ -344,8 +379,10 @@ public class InternalAuditDetailFragment extends Fragment {
 	private void createLocalAudit() {
 		Log.i(LOG_TAG, "Adding records to internal audit table ");
 
-		dbHandler.getAuditDao().addInternalAudit(audit);
-
+		long id = dbHandler.getAuditDao().addInternalAudit(audit);
+		
+		auditId = String.valueOf(id);
+		
 		Toast.makeText(getActivity(), "Audit master record created",
 				Toast.LENGTH_LONG).show();
 	}

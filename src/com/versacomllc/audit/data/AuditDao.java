@@ -31,7 +31,7 @@ public interface AuditDao {
 	
 	public static final String DROP_TABLE_SCRIPT = "DROP TABLE IF EXISTS " + TABLE_INTERNAL_AUDITS;
 	
-	void addInternalAudit(LocalAudit audit);
+	long addInternalAudit(LocalAudit audit);
 	
 	void updateInternalAudit(LocalAudit audit);
 	

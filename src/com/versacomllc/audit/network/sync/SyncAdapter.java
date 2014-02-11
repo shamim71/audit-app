@@ -38,25 +38,37 @@ import android.util.Log;
 
 
 
+
+
+
+
+
+
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.versacomllc.audit.R;
 import com.versacomllc.audit.data.DatabaseHandler;
+import com.versacomllc.audit.data.Employee;
 import com.versacomllc.audit.data.LocalCustomer;
 import com.versacomllc.audit.model.Customer;
 import com.versacomllc.audit.model.StringResponse;
 import com.versacomllc.audit.network.sync.provider.FeedContract;
 import com.versacomllc.audit.spice.DefaultProgressIndicatorState;
 import com.versacomllc.audit.spice.GenericGetRequest;
+import com.versacomllc.audit.spice.GenericSpiceCallback;
 import com.versacomllc.audit.spice.RestCall;
 import com.versacomllc.audit.spice.RetrySpiceCallback;
+import com.versacomllc.audit.spice.SpiceCallbackInterface;
 import com.versacomllc.audit.spice.SpiceRestHelper;
 import com.versacomllc.audit.utils.EndPoints;
+import com.versacomllc.audit.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,8 +171,19 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.i(TAG, "Streaming data from network: ");
 
                 //updateLocalFeedData(stream, syncResult);
-
-                this.loadCustomerList(getContext());
+                
+                /** Should sync when Internet connection is available */
+                if(Utils.isOnline(getContext())){
+                	
+                	//Sync customer 
+                	 this.loadCustomerList(getContext());
+                	 
+                	 //Add stie work types
+                	 this.loadSiteWorkTypesList(getContext());
+                	 
+                	 this.loadEmployeeList(getContext());
+                }
+               
         
         } catch (RuntimeException e) {
             Log.e(TAG, "Error updating database: " + e.toString());
@@ -169,7 +192,60 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         Log.i(TAG, "Network synchronization complete");
     }
+    
+    private void loadEmployeeList(Context context){
+		String endPoint = EndPoints.REST_CALL_GET_QBASE_EMPLOYEES
+				.getSimpleAddress();
+		Log.d(TAG, "Importing employees;");
+		GenericSpiceCallback<Employee[]> callBackInterface = new GenericSpiceCallback<Employee[]>(context) {
 
+			@Override
+			public void onSpiceSuccess(Employee[] response) {
+				if(response != null){
+						dbHandler.getEmployeeDao().addEmployeeList(Arrays.asList(response));
+				}
+			}
+
+			@Override
+			public void onSpiceError(RestCall<Employee[]> restCall,
+					StringResponse response) {
+			}
+
+			@Override
+			public void onSpiceError(RestCall<Employee[]> restCall, int reason,
+					Throwable exception) {
+			}
+		};
+		restHelper.execute(new GenericGetRequest<Employee[]>(Employee[].class, endPoint), callBackInterface);
+    }
+    private void loadSiteWorkTypesList(Context context){
+		String endPoint = EndPoints.REST_CALL_GET_QBASE_SITE_WORK_TYPES
+				.getSimpleAddress();
+		Log.d(TAG, "Importing site work type;");
+		GenericSpiceCallback<String[]> callBackInterface = new GenericSpiceCallback<String[]>(context) {
+
+			@Override
+			public void onSpiceSuccess(String[] response) {
+				if(response != null){
+						dbHandler.getSiteWorkDao().addWorkTypes(Arrays.asList(response));
+				}
+			}
+
+			@Override
+			public void onSpiceError(RestCall<String[]> restCall,
+					StringResponse response) {
+			}
+
+			@Override
+			public void onSpiceError(RestCall<String[]> restCall, int reason,
+					Throwable exception) {
+			}
+		};
+		restHelper.execute(new GenericGetRequest<String[]>(String[].class, endPoint), callBackInterface);
+    }
+    /**
+     * @param context
+     */
     private void loadCustomerList(Context context){
 		String endPoint = EndPoints.REST_CALL_GET_QBASE_CUSTOMERS
 				.getSimpleAddress();
@@ -180,7 +256,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		for(LocalCustomer customer: customers){
 			customerMap.put(customer.getRid(), customer);
 		}
-		restHelper.execute(new GenericGetRequest<Customer[]>(Customer[].class, endPoint), new RetrySpiceCallback<Customer[]>(context) {
+		
+		GenericSpiceCallback<Customer[]> callBackInterface = new GenericSpiceCallback<Customer[]>(context) {
 
 			@Override
 			public void onSpiceSuccess(Customer[] response) {
@@ -192,15 +269,23 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 						}
 					}
 				}
+				
 			}
 
 			@Override
 			public void onSpiceError(RestCall<Customer[]> restCall,
 					StringResponse response) {
-			
-				
 			}
-		}, new DefaultProgressIndicatorState());
+
+			@Override
+			public void onSpiceError(RestCall<Customer[]> restCall, int reason,
+					Throwable exception) {
+			}
+			
+		};
+		
+		restHelper.execute(new GenericGetRequest<Customer[]>(Customer[].class, endPoint), callBackInterface);
+		
     }
     /**
      * Read XML from an input stream, storing it into the content provider.
@@ -225,93 +310,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void updateLocalFeedData(final InputStream stream, final SyncResult syncResult)
             throws IOException, XmlPullParserException, RemoteException,
             OperationApplicationException, ParseException {
-        final FeedParser feedParser = new FeedParser();
-        final ContentResolver contentResolver = getContext().getContentResolver();
-
-        Log.i(TAG, "Parsing stream as Atom feed");
-        final List<FeedParser.Entry> entries = feedParser.parse(stream);
-        Log.i(TAG, "Parsing complete. Found " + entries.size() + " entries");
-
-
-        ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
-
-        // Build hash table of incoming entries
-        HashMap<String, FeedParser.Entry> entryMap = new HashMap<String, FeedParser.Entry>();
-        for (FeedParser.Entry e : entries) {
-            entryMap.put(e.id, e);
-        }
-
-        // Get list of all items
-        Log.i(TAG, "Fetching local entries for merge");
-        Uri uri = FeedContract.Entry.CONTENT_URI; // Get all entries
-        Cursor c = contentResolver.query(uri, PROJECTION, null, null, null);
-        assert c != null;
-        Log.i(TAG, "Found " + c.getCount() + " local entries. Computing merge solution...");
-
-        // Find stale data
-        int id;
-        String entryId;
-        String title;
-        String link;
-        long published;
-        while (c.moveToNext()) {
-            syncResult.stats.numEntries++;
-            id = c.getInt(COLUMN_ID);
-            entryId = c.getString(COLUMN_ENTRY_ID);
-            title = c.getString(COLUMN_TITLE);
-            link = c.getString(COLUMN_LINK);
-            published = c.getLong(COLUMN_PUBLISHED);
-            FeedParser.Entry match = entryMap.get(entryId);
-            if (match != null) {
-                // Entry exists. Remove from entry map to prevent insert later.
-                entryMap.remove(entryId);
-                // Check to see if the entry needs to be updated
-                Uri existingUri = FeedContract.Entry.CONTENT_URI.buildUpon()
-                        .appendPath(Integer.toString(id)).build();
-                if ((match.title != null && !match.title.equals(title)) ||
-                        (match.link != null && !match.link.equals(link)) ||
-                        (match.published != published)) {
-                    // Update existing record
-                    Log.i(TAG, "Scheduling update: " + existingUri);
-                    batch.add(ContentProviderOperation.newUpdate(existingUri)
-                            .withValue(FeedContract.Entry.COLUMN_NAME_TITLE, title)
-                            .withValue(FeedContract.Entry.COLUMN_NAME_LINK, link)
-                            .withValue(FeedContract.Entry.COLUMN_NAME_PUBLISHED, published)
-                            .build());
-                    syncResult.stats.numUpdates++;
-                } else {
-                    Log.i(TAG, "No action: " + existingUri);
-                }
-            } else {
-                // Entry doesn't exist. Remove it from the database.
-                Uri deleteUri = FeedContract.Entry.CONTENT_URI.buildUpon()
-                        .appendPath(Integer.toString(id)).build();
-                Log.i(TAG, "Scheduling delete: " + deleteUri);
-                batch.add(ContentProviderOperation.newDelete(deleteUri).build());
-                syncResult.stats.numDeletes++;
-            }
-        }
-        c.close();
-
-        // Add new items
-        for (FeedParser.Entry e : entryMap.values()) {
-            Log.i(TAG, "Scheduling insert: entry_id=" + e.id);
-            batch.add(ContentProviderOperation.newInsert(FeedContract.Entry.CONTENT_URI)
-                    .withValue(FeedContract.Entry.COLUMN_NAME_ENTRY_ID, e.id)
-                    .withValue(FeedContract.Entry.COLUMN_NAME_TITLE, e.title)
-                    .withValue(FeedContract.Entry.COLUMN_NAME_LINK, e.link)
-                    .withValue(FeedContract.Entry.COLUMN_NAME_PUBLISHED, e.published)
-                    .build());
-            syncResult.stats.numInserts++;
-        }
-        Log.i(TAG, "Merge solution ready. Applying batch update");
-        mContentResolver.applyBatch(FeedContract.CONTENT_AUTHORITY, batch);
-        mContentResolver.notifyChange(
-                FeedContract.Entry.CONTENT_URI, // URI where data was modified
-                null,                           // No local observer
-                false);                         // IMPORTANT: Do not sync to network
-        // This sample doesn't support uploads, but if *your* code does, make sure you set
-        // syncToNetwork=false in the line above to prevent duplicate syncs.
+       
     }
 
 

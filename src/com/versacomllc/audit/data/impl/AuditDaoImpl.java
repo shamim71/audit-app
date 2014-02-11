@@ -25,13 +25,13 @@ public class AuditDaoImpl implements AuditDao{
 	}
 
 	@Override
-	public void addInternalAudit(LocalAudit audit) {
+	public long addInternalAudit(LocalAudit audit) {
 
 		ContentValues values = createContentValues(audit);
 		// Inserting Row
-		db.insert(TABLE_INTERNAL_AUDITS, null, values);
+		long id = db.insert(TABLE_INTERNAL_AUDITS, null, values);
 		db.close();
-		
+		return id;
 	}
 
 	private ContentValues createContentValues(LocalAudit audit){

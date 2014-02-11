@@ -5,14 +5,32 @@
     android:layout_height="match_parent" >
 
     <RelativeLayout
-        style="@style/PageContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <LinearLayout android:id="@+id/ll_topContainer"
+        <RelativeLayout
+            android:id="@+id/top_bar"
+            style="@style/PanelTitleStyle"
+            android:layout_alignParentTop="true" >
+
+            <TextView
+                android:id="@+id/tv_panel_title"
+                style="@style/BigTitleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="4dp"
+                android:text="Audit Master" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_topContainer"
+            style="@style/PageContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/top_bar"
             android:gravity="left"
             android:orientation="vertical" >
 
@@ -53,7 +71,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:onClick="selectDate" >
+              	>
 
                 <EditText
                     android:id="@+id/et_audit_date"
@@ -73,7 +91,6 @@
                     android:layout_toRightOf="@+id/et_audit_date"
                     android:contentDescription="@string/app_name"
                     android:cropToPadding="true"
-                    android:onClick="selectDate"
                     android:src="@drawable/ic_action_go_to_today" />
             </RelativeLayout>
 
@@ -127,18 +144,16 @@
 
         <RelativeLayout
             android:id="@+id/bottom_bar"
-            android:layout_below="@id/ll_topContainer"
-  			android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:padding="5dp"
-            >
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_topContainer"
+            android:padding="5dp" >
 
             <Button
                 android:id="@+id/btn_save_audit_master"
                 style="@style/BottomBarBtnStyle2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:text="@string/button_save" />
         </RelativeLayout>
     </RelativeLayout>

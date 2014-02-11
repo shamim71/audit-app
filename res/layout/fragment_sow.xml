@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/PageContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_work_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_scope_of_work" />
+
+    <Spinner
+        android:id="@+id/sp_work_type_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/tv_date_of_work"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/label_work_date" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:onClick="selectDate" >
+
+        <EditText
+            android:id="@+id/et_work_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:ems="10"
+            android:inputType="date" >
+        </EditText>
+
+        <ImageButton
+            android:id="@+id/ibtn_work_date"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_alignBottom="@+id/et_work_date"
+            android:layout_toRightOf="@+id/et_work_date"
+            android:contentDescription="@string/app_name"
+            android:cropToPadding="true"
+            android:src="@drawable/ic_action_go_to_today" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_employee_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_select_tech" />
+
+<!--     <Spinner
+        android:id="@+id/sp_employee_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp" /> -->
+
+    <AutoCompleteTextView
+        android:id="@+id/sp_employee_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp" />
+
+</LinearLayout>

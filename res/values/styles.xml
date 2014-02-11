@@ -3,13 +3,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -22,6 +22,12 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="PanelTitleStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@color/Header_Background</item>
     </style>
 
     <style name="PageContainer">
@@ -51,7 +57,7 @@
     <!--
 		=============================
 			TEXT
-    	=============================
+    	=============================
     -->
 
     <style name="BlackText">
@@ -126,6 +132,10 @@
         <item name="android:textColor">#606060</item>
     </style>
 
+    <style name="BigTitleText">
+        <item name="android:textSize">@dimen/extra_huge_text</item>
+        <item name="android:textColor">@color/Black</item>
+    </style>
     <!-- For the passcode entry screen -->
     <style name="SingleCharPasscode">
         <item name="android:textAppearance">?android:textAppearanceLarge</item>
@@ -139,11 +149,11 @@
     <!--
 		=============================
 			BUTTONS
-    	=============================
+    	=============================
     -->
     <!--
          Default button text style. Don't use this one in your layout, 
-    	use either GenericButtonDark or GenericButtonDefault
+    	use either GenericButtonDark or GenericButtonDefault
     -->
     <style name="GenericButtonBase">
         <item name="android:layout_width">match_parent</item>
@@ -198,7 +208,7 @@
     		- CommonsPaymentActivity : the Activity containing the payment buttons
     		- CommonsPaymentButton : the root style for Payment buttons
     		- CommonsPaymentButton.PayPal : Paypal button (e.g : if text/icon should be changed
-    		- CommonsPaymentButton.CreditCard : Credit Card button (e.g : if text/icon should be changed
+    		- CommonsPaymentButton.CreditCard : Credit Card button (e.g : if text/icon should be changed
     -->
 
     <style name="CommonsButtonBar" parent="@style/ZaqZaqButtonBar" />
@@ -264,14 +274,14 @@
     <!--
 		=============================
 			PROGRESS DIALOGS
-    	=============================
+    	=============================
     -->
 
 
     <!--
 		=============================
 			LAYOUTS
-    	=============================
+    	=============================
     -->
     <style name="PaddedSides">
         <item name="android:paddingLeft">10dp</item>

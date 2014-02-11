@@ -24,6 +24,10 @@
     <string name="button_login">Login</string>
     <string name="label_select_site">Select customer: </string>
     <string name="label_select_customer">Select customer: </string>
+    <string name="label_select_tech">Select Tech: </string>
+    <string name="label_work_date">Work Date:</string>
+      <string name="title_scope_of_work">Scope of Works </string>
+    <string name="label_scope_of_work">Scope of work: </string>
     <string name="customer_site_id">Site ID: </string>
     <string name="label_audit_hours">Audit hours: </string>
     <string name="label_select_item">Enter item name: </string>

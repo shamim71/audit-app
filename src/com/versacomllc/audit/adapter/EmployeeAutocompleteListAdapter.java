@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.versacomllc.audit.data.Employee;
 
-public class ItemAutocompleteListAdapter extends ArrayAdapter<Employee> {
+public class EmployeeAutocompleteListAdapter extends ArrayAdapter<Employee> {
 
 	private Context mContext;
 	private int resourceId;
@@ -30,7 +30,7 @@ public class ItemAutocompleteListAdapter extends ArrayAdapter<Employee> {
     private List<Employee> mActivitiesList;
     private Filter mFilter;
     
-	public ItemAutocompleteListAdapter(Context context, int resource, List<Employee> objects) {
+	public EmployeeAutocompleteListAdapter(Context context, int resource, List<Employee> objects) {
 		super(context, resource, objects);
 		this.mContext = context;
 		this.resourceId = resource;
@@ -152,9 +152,7 @@ public class ItemAutocompleteListAdapter extends ArrayAdapter<Employee> {
 			Log.d(LOG_TAG, " Result cout: "+ results.count );
 				
 			 mActivitiesList = (List<Employee>) results.values;
-			 for(Employee i: mActivitiesList){
-				 Log.d(LOG_TAG, " Item : "+ i.getName() );
-			 }
+
              if (results.count > 0) {
                  notifyDataSetChanged();
              } else {
