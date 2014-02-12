@@ -7,19 +7,20 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.versacomllc.audit.data.AuditListContent;
-import com.versacomllc.audit.dummy.DummyContent;
+import com.versacomllc.audit.dummy.AuditDefectContent;
+
+
 
 /**
- * A list fragment representing a list of InternalAudit. This fragment also
+ * A list fragment representing a list of AuditDefects. This fragment also
  * supports tablet devices by allowing list items to be given an 'activated'
  * state upon selection. This helps indicate which item is currently being
- * viewed in a {@link InternalAuditDetailFragment}.
+ * viewed in a {@link AuditDefectDetailFragment}.
  * <p>
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class InternalAuditListFragment extends ListFragment {
+public class AuditDefectListFragment extends ListFragment {
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -38,8 +39,6 @@ public class InternalAuditListFragment extends ListFragment {
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 
-	static long mId = -1;
-	
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
@@ -49,7 +48,7 @@ public class InternalAuditListFragment extends ListFragment {
 		/**
 		 * Callback for when an item has been selected.
 		 */
-		public void onItemSelected(String id,long auditId);
+		public void onItemSelected(String id);
 	}
 
 	/**
@@ -58,8 +57,7 @@ public class InternalAuditListFragment extends ListFragment {
 	 */
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void onItemSelected(String id, final long auditId) {
-			mId = auditId;
+		public void onItemSelected(String id) {
 		}
 	};
 
@@ -67,7 +65,7 @@ public class InternalAuditListFragment extends ListFragment {
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
-	public InternalAuditListFragment() {
+	public AuditDefectListFragment() {
 	}
 
 	@Override
@@ -75,9 +73,9 @@ public class InternalAuditListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 
 		// TODO: replace with a real list adapter.
-		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+		setListAdapter(new ArrayAdapter<AuditDefectContent.DefectTab>(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, DummyContent.ITEMS));
+				android.R.id.text1, AuditDefectContent.ITEMS));
 	}
 
 	@Override
@@ -118,10 +116,9 @@ public class InternalAuditListFragment extends ListFragment {
 			long id) {
 		super.onListItemClick(listView, view, position, id);
 
-	
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id,mId);
+		mCallbacks.onItemSelected(AuditDefectContent.ITEMS.get(position).id);
 	}
 
 	@Override
@@ -154,14 +151,4 @@ public class InternalAuditListFragment extends ListFragment {
 
 		mActivatedPosition = position;
 	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onActivityCreated(savedInstanceState);
-		//setActivateOnItemClick(true);
-		setActivatedPosition(0);
-		mCallbacks.onItemSelected(AuditListContent.ITEMS.get(0).id, mId);
-	}
-	
 }

@@ -1,6 +1,8 @@
-package com.versacomllc.audit.data;
+package com.versacomllc.audit.dao;
 
 import java.util.List;
+
+import com.versacomllc.audit.data.Employee;
 
 public interface EmployeeDao {
 	public static final String TABLE_NAME = "employee";

@@ -4,31 +4,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-        <RelativeLayout
-            android:id="@+id/top_bar"
-            style="@style/PanelTitleStyle"
-            android:layout_alignParentTop="true" >
+    <RelativeLayout
+        android:id="@+id/top_bar"
+        style="@style/PanelTitleStyle"
+        android:layout_alignParentTop="true" >
 
         <TextView
             android:id="@+id/tv_scope_of_work"
+            style="@style/BigTitleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_marginTop="4dp"
             android:layout_marginLeft="5dp"
-            style="@style/BigTitleText"
-            android:text="@string/title_scope_of_work" />
+            android:layout_marginTop="4dp"
+            android:text="@string/title_audit_defects" />
 
         <Button
-            android:id="@+id/btn_Add_SOW"
-           	android:layout_height="wrap_content"
-           	android:layout_width="wrap_content"
+            android:id="@+id/btn_add_defect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="@string/button_add_sow" />
+            android:text="@string/button_add_defect" />
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/lv_sow_list"
+        android:id="@+id/lv_defect_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"

@@ -1,4 +1,4 @@
-package com.versacomllc.audit.data.impl;
+package com.versacomllc.audit.dao.impl;
 
 import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
@@ -11,8 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.versacomllc.audit.dao.ScopeOfWorkDao;
 import com.versacomllc.audit.data.ScopeOfWork;
-import com.versacomllc.audit.data.ScopeOfWorkDao;
 
 public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDao {
 

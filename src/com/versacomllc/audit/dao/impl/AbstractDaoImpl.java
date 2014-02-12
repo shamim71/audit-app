@@ -1,4 +1,4 @@
-package com.versacomllc.audit.data.impl;
+package com.versacomllc.audit.dao.impl;
 
 import java.text.ParseException;
 import java.util.Date;

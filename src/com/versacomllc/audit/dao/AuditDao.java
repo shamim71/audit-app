@@ -1,6 +1,8 @@
-package com.versacomllc.audit.data;
+package com.versacomllc.audit.dao;
 
 import java.util.List;
+
+import com.versacomllc.audit.data.LocalAudit;
 
 public interface AuditDao {
 
@@ -34,6 +36,8 @@ public interface AuditDao {
 	long addInternalAudit(LocalAudit audit);
 	
 	void updateInternalAudit(LocalAudit audit);
+	
+	void deleteInternalAudit(long id);
 	
 	List<LocalAudit> getAllInternalAudits();
 	

@@ -1,4 +1,4 @@
-package com.versacomllc.audit.data.impl;
+package com.versacomllc.audit.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
-import com.versacomllc.audit.data.SiteWorkTypeDao;
+
+import com.versacomllc.audit.dao.SiteWorkTypeDao;
 
 public class SiteWorkTypeDaoImpl implements SiteWorkTypeDao {
 

@@ -4,13 +4,13 @@ import com.versacomllc.audit.model.AuthenticationResult;
 
 public class Employee extends AuthenticationResult{
 
-	private int localId;
+	private long localId;
 
-	public int getLocalId() {
+	public long getLocalId() {
 		return localId;
 	}
 
-	public void setLocalId(int localId) {
+	public void setLocalId(long localId) {
 		this.localId = localId;
 	}
 

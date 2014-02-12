@@ -1,0 +1,8 @@
+<resources>
+    <string name="label_choose_defect">Select Defect:</string>
+    <string name="label_defect_count">Defect Count:</string>
+    <string name="hint_defect_count">Enter defect count</string>
+    <string name="hint_defect_note">Enter defect note</string>
+    <string name="label_defect_note">Defect Note:</string>
+    <string name="label_responsible_tech">Responsible Tech:</string>
+</resources>

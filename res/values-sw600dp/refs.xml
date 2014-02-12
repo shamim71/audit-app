@@ -10,5 +10,6 @@
     -->
     <item name="activity_useraudit_list" type="layout">@layout/activity_useraudit_twopane</item>
     <item name="activity_internalaudit_list" type="layout">@layout/activity_internalaudit_twopane</item>
+    <item name="activity_auditdefect_list" type="layout">@layout/activity_auditdefect_twopane</item>
 
 </resources>

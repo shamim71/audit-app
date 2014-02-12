@@ -1,32 +1,26 @@
 package com.versacomllc.audit;
 
-
-import com.versacomllc.audit.utils.Constants;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.MenuItem;
 
 /**
- * An activity representing a single InternalAudit detail screen. This activity
- * is only used on handset devices. On tablet-size devices, item details are
+ * An activity representing a single AuditDefect detail screen. This activity is
+ * only used on handset devices. On tablet-size devices, item details are
  * presented side-by-side with a list of items in a
- * {@link InternalAuditListActivity}.
+ * {@link AuditDefectListActivity}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing more than
- * a {@link InternalAuditDetailFragment}.
+ * a {@link AuditDefectDetailFragment}.
  */
-public class InternalAuditDetailActivity extends FragmentActivity {
+public class AuditDefectDetailActivity extends FragmentActivity {
 
-	private long mAId;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_internalaudit_detail);
+		setContentView(R.layout.activity_auditdefect_detail);
 
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -45,14 +39,13 @@ public class InternalAuditDetailActivity extends FragmentActivity {
 			// using a fragment transaction.
 			Bundle arguments = new Bundle();
 			arguments.putString(
-					InternalAuditDetailFragment.ARG_ITEM_ID,
+					AuditDefectDetailFragment.ARG_ITEM_ID,
 					getIntent().getStringExtra(
-							InternalAuditDetailFragment.ARG_ITEM_ID));
-			InternalAuditDetailFragment fragment = new InternalAuditDetailFragment();
+							AuditDefectDetailFragment.ARG_ITEM_ID));
+			AuditDefectDetailFragment fragment = new AuditDefectDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.internalaudit_detail_container, fragment)
-					.commit();
+					.add(R.id.auditdefect_detail_container, fragment).commit();
 		}
 	}
 
@@ -68,11 +61,9 @@ public class InternalAuditDetailActivity extends FragmentActivity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			NavUtils.navigateUpTo(this, new Intent(this,
-					InternalAuditListActivity.class));
+					AuditDefectListActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-
 }

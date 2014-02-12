@@ -138,6 +138,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".InternalAuditListActivity" />
         </activity>
+        <activity
+            android:name="com.versacomllc.audit.AuditDefectListActivity"
+            android:label="@string/title_auditdefect_list"
+            android:parentActivityName="com.versacomllc.audit.InternalAuditDetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.versacomllc.audit.InternalAuditDetailActivity" />
+        </activity>
+        <activity
+            android:name="com.versacomllc.audit.AuditDefectDetailActivity"
+            android:label="@string/title_auditdefect_detail"
+            android:parentActivityName=".AuditDefectListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AuditDefectListActivity" />
+        </activity>
     </application>
 
 </manifest>

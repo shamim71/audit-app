@@ -14,7 +14,7 @@ import android.widget.Button;
 import com.versacomllc.audit.InternalAuditListActivity;
 import com.versacomllc.audit.R;
 import com.versacomllc.audit.UserAuditListActivity;
-import com.versacomllc.audit.model.ItemInventory;
+
 import com.versacomllc.audit.network.sync.SyncUtils;
 import com.versacomllc.audit.network.sync.accounts.GenericAccountService;
 import com.versacomllc.audit.network.sync.provider.FeedContract;
@@ -58,7 +58,6 @@ public class HomeActivity extends BaseActivity {
 
 		getApplicationState().saveAuthentication(null);
 
-		getApplicationState().saveInventoryItems(new ItemInventory[0]);
 
 		// getApplicationState().saveInventorySites(new InventorySite[0]);
 

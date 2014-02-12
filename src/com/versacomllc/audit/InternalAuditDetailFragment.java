@@ -10,9 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.LocaleUtils;
-
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -41,7 +40,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.versacomllc.audit.activity.LoginActivity;
 import com.versacomllc.audit.adapter.ScopeOfWorkListAdapter;
 import com.versacomllc.audit.adapter.SimpleDropDownListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
@@ -70,7 +68,9 @@ public class InternalAuditDetailFragment extends Fragment {
 	 * The dummy content this fragment is presenting.
 	 */
 	private DummyContent.DummyItem mItem;
+	
 
+	
 	DatabaseHandler dbHandler = null;
 	EditText mEditSiteId;
 	EditText mEditAuditHour;
@@ -86,6 +86,7 @@ public class InternalAuditDetailFragment extends Fragment {
 	SimpleDropDownListAdapter customerAdapter;
 	ScopeOfWorkListAdapter scopeOfWorkListAdapter;
 
+	
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -93,6 +94,9 @@ public class InternalAuditDetailFragment extends Fragment {
 	public InternalAuditDetailFragment() {
 	}
 
+	private AuditManagement getAppState(){
+		return (AuditManagement) getActivity().getApplication();
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -109,18 +113,27 @@ public class InternalAuditDetailFragment extends Fragment {
 		if (getArguments().containsKey(EXTRA_AUDIT_ID)) {
 			auditId = getArguments().getString(EXTRA_AUDIT_ID);
 		}
+		else{
+			if(getAppState().getCurrentAudit() != -1){
+				auditId = String.valueOf(getAppState().getCurrentAudit());
+			}
+		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+		
 		if (mItem != null && mItem.id.equals("1")) {
 			return getAuditMasterView(inflater, container, savedInstanceState);
 		}
 		if (mItem != null && mItem.id.equals("2")) {
 			return getSOWView(inflater, container, savedInstanceState);
 		}
+		if (mItem != null && mItem.id.equals("3")) {
+			return getDefectListView(inflater, container, savedInstanceState);
+		}
+		
 		View rootView = inflater.inflate(
 				R.layout.fragment_internalaudit_detail, container, false);
 
@@ -132,12 +145,35 @@ public class InternalAuditDetailFragment extends Fragment {
 
 		return rootView;
 	}
+	private View getDefectListView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(
+				R.layout.fragment_internalaudit_detail_defects, container, false);
+		
+		Button btnAddDefect = (Button) rootView.findViewById(R.id.btn_add_defect);
+		btnAddDefect.setOnClickListener(new OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), AuditDefectListActivity.class);
+				intent.putExtra(EXTRA_AUDIT_ID, auditId);
+				startActivity(intent);
+			}
+		});
+		
+
+		
+		return rootView;
+	}
+	
 	private View getSOWView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(
 				R.layout.fragment_internalaudit_detail_sow, container, false);
 
+		if(TextUtils.isEmpty(auditId)){
+			return rootView;
+		}
 		Button btnSOW = (Button) rootView.findViewById(R.id.btn_Add_SOW);
 		btnSOW.setOnClickListener(new OnClickListener() {
 
@@ -149,7 +185,9 @@ public class InternalAuditDetailFragment extends Fragment {
 
 		ListView lstScopeOfWork = (ListView) rootView
 				.findViewById(R.id.lv_sow_list);
+		
 
+		
 		List<ScopeOfWork> works = dbHandler.getScopeOfWorkDao()
 				.getScopeOfWorkByAuditId(Long.parseLong(auditId));
 
@@ -493,8 +531,12 @@ public class InternalAuditDetailFragment extends Fragment {
 
 		auditId = String.valueOf(id);
 
+		getAppState().setCurrentAudit(id);
+		
 		Toast.makeText(getActivity(), "Audit master record created",
 				Toast.LENGTH_LONG).show();
+		
+
 	}
 
 	private void saveAuditMaster(View view) {
@@ -525,4 +567,6 @@ public class InternalAuditDetailFragment extends Fragment {
 		}
 
 	}
+
+
 }

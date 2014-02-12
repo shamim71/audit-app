@@ -25,8 +25,10 @@
     <string name="label_select_site">Select customer: </string>
     <string name="label_select_customer">Select customer: </string>
     <string name="label_select_tech">Select Tech: </string>
+
     <string name="label_work_date">Work Date:</string>
-      <string name="title_scope_of_work">Scope of Works </string>
+    <string name="title_scope_of_work">Scope of Works </string>
+    <string name="title_audit_defects">Audit Defects</string>
     <string name="label_scope_of_work">Scope of work: </string>
     <string name="customer_site_id">Site ID: </string>
     <string name="label_audit_hours">Audit hours: </string>
@@ -62,6 +64,9 @@
     <string name="label_audited_by">Audited by: </string>
     <string name="label_status">Status: </string>
     <string name="label_audit_date">Audited on: </string>
+    <!-- Button labels -->
+    <string name="button_add_sow">Add SOW</string>
+    <string name="button_add_defect">Add Defect</string>
 
     <string-array name="array_audit_status">
         <item>0/0</item>
@@ -79,5 +84,8 @@
     <string name="title_useraudit_detail">UserAudit Detail</string>
     <string name="title_internalaudit_list">InternalAudit</string>
     <string name="title_internalaudit_detail">InternalAudit Detail</string>
+    <string name="title_auditdefect_list">AuditDefects</string>
+    <string name="title_auditdefect_detail">AuditDefect Detail</string>
+
 
 </resources>

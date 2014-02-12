@@ -4,16 +4,16 @@ import com.versacomllc.audit.model.InternalAudit;
 
 public class LocalAudit extends InternalAudit{
 
-	private int id;
+	private long id;
 
 	private String customerName;
 	
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

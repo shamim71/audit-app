@@ -1,4 +1,4 @@
-package com.versacomllc.audit.data.impl;
+package com.versacomllc.audit.dao.impl;
 
 import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
@@ -12,7 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.versacomllc.audit.data.AuditDao;
+import com.versacomllc.audit.dao.AuditDao;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.utils.Constants;
 
@@ -110,7 +110,7 @@ public class AuditDaoImpl implements AuditDao{
 			do {
 				int index = 0;
 				LocalAudit audit = new LocalAudit();
-				audit.setId(Integer.parseInt(cursor.getString(index++)));
+				audit.setId(cursor.getLong(index++));
 				audit.setAuditType(cursor.getString(index++));
 				audit.setAuditStatus(cursor.getString(index++));
 

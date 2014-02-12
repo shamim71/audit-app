@@ -1,4 +1,4 @@
-package com.versacomllc.audit.data.impl;
+package com.versacomllc.audit.dao.impl;
 
 import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
@@ -11,8 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.versacomllc.audit.dao.EmployeeDao;
 import com.versacomllc.audit.data.Employee;
-import com.versacomllc.audit.data.EmployeeDao;
 
 
 public class EmployeeDaoImpl implements EmployeeDao {
@@ -108,7 +108,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			do {
 				int index = 0;
 				Employee emp = new Employee();
-				emp.setLocalId(Integer.parseInt(cursor.getString(index++)));
+				emp.setLocalId(cursor.getLong(index++));
 				emp.setFirstName(cursor.getString(index++));
 				emp.setLastName(cursor.getString(index++));
 				emp.setEmail(cursor.getString(index++));

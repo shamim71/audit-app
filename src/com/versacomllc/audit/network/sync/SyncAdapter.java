@@ -45,6 +45,7 @@ import android.util.Log;
 
 
 
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.versacomllc.audit.R;
@@ -52,6 +53,7 @@ import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.Employee;
 import com.versacomllc.audit.data.LocalCustomer;
 import com.versacomllc.audit.model.Customer;
+import com.versacomllc.audit.model.Defect;
 import com.versacomllc.audit.model.StringResponse;
 import com.versacomllc.audit.network.sync.provider.FeedContract;
 import com.versacomllc.audit.spice.DefaultProgressIndicatorState;
@@ -182,6 +184,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 	 this.loadSiteWorkTypesList(getContext());
                 	 
                 	 this.loadEmployeeList(getContext());
+                	 
+                	 this.loadDefectList(getContext());
                 }
                
         
@@ -218,6 +222,33 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		};
 		restHelper.execute(new GenericGetRequest<Employee[]>(Employee[].class, endPoint), callBackInterface);
     }
+    
+    private void loadDefectList(Context context){
+		String endPoint = EndPoints.REST_CALL_GET_QBASE_DEFECTS
+				.getSimpleAddress();
+		Log.d(TAG, "Importing defect list;");
+		GenericSpiceCallback<Defect[]> callBackInterface = new GenericSpiceCallback<Defect[]>(context) {
+
+			@Override
+			public void onSpiceSuccess(Defect[] response) {
+				if(response != null){
+					dbHandler.getDefectDao().addDefectList(Arrays.asList(response));
+				}
+			}
+
+			@Override
+			public void onSpiceError(RestCall<Defect[]> restCall,
+					StringResponse response) {
+			}
+
+			@Override
+			public void onSpiceError(RestCall<Defect[]> restCall, int reason,
+					Throwable exception) {
+			}
+		};
+		restHelper.execute(new GenericGetRequest<Defect[]>(Defect[].class, endPoint), callBackInterface);
+    }
+    
     private void loadSiteWorkTypesList(Context context){
 		String endPoint = EndPoints.REST_CALL_GET_QBASE_SITE_WORK_TYPES
 				.getSimpleAddress();

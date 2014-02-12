@@ -1,4 +1,4 @@
-package com.versacomllc.audit.data;
+package com.versacomllc.audit.dao;
 
 import java.util.List;
 

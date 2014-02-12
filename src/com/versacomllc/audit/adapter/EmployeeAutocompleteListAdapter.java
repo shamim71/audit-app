@@ -1,14 +1,11 @@
 package com.versacomllc.audit.adapter;
 
 
-import static com.versacomllc.audit.utils.Constants.LOG_TAG;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,17 +122,15 @@ public class EmployeeAutocompleteListAdapter extends ArrayAdapter<Employee> {
                  for (int i = 0; i < count; i++) {
                 	 Employee item = values.get(i);
 
-                     String[] words = item.getName().toString().toLowerCase().split(" ");
-                     int wordCount = words.length;
+                	 if(item.getFirstName().toLowerCase().contains(prefixString)){
+                		  newValues.add(item);
+                		  continue;
+                	 }
+                	 if(item.getLastName().toLowerCase().contains(prefixString)){
+               		  newValues.add(item);
+               		  continue;
+                	 }
 
-                     for (int k = 0; k < wordCount; k++) {
-                         final String word = words[k];
-
-                         if (word.startsWith(prefixString)) {
-                             newValues.add(item);
-                             break;
-                         }
-                     }
                  }
 
                  results.values = newValues;

@@ -9,10 +9,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.versacomllc.audit.data.impl.AuditDaoImpl;
-import com.versacomllc.audit.data.impl.EmployeeDaoImpl;
-import com.versacomllc.audit.data.impl.ScopeOfWorkDaoImpl;
-import com.versacomllc.audit.data.impl.SiteWorkTypeDaoImpl;
+import com.versacomllc.audit.dao.AuditDao;
+import com.versacomllc.audit.dao.DefectDao;
+import com.versacomllc.audit.dao.EmployeeDao;
+import com.versacomllc.audit.dao.ScopeOfWorkDao;
+import com.versacomllc.audit.dao.SiteWorkTypeDao;
+import com.versacomllc.audit.dao.impl.AuditDaoImpl;
+import com.versacomllc.audit.dao.impl.DefectDaoImpl;
+import com.versacomllc.audit.dao.impl.EmployeeDaoImpl;
+import com.versacomllc.audit.dao.impl.ScopeOfWorkDaoImpl;
+import com.versacomllc.audit.dao.impl.SiteWorkTypeDaoImpl;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -30,13 +36,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	private static final String ID = "id";
 	private static final String RID = "rid";
-	// Defect Table Columns names
-	private static final String DEFECT_CODE = "code";
-	private static final String DEFECT_CATEGORY = "category";
-	private static final String DEFECT_SUBCATEGORY = "sub_category";
-	private static final String DEFECT_SEVERITY = "severity";
-	private static final String DEFECT_WORKTYPE = "work_type";
-	private static final String DEFECT_RECORDID = "rid";
+
 
 	// CUSTOMER Table Columns names
 	private static final String CUSTOMER_NAME = "name";
@@ -50,12 +50,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 
-		String CREATE_TABLE_DEFECTS = "CREATE TABLE " + TABLE_DEFECTS + "("
-				+ ID + " INTEGER PRIMARY KEY," + DEFECT_CODE + " TEXT,"
-				+ DEFECT_CATEGORY + " TEXT, " + DEFECT_SUBCATEGORY + " TEXT, "
-				+ DEFECT_SEVERITY + " TEXT, " + DEFECT_WORKTYPE + " TEXT,"
-				+ RID + " TEXT " + ")";
-		db.execSQL(CREATE_TABLE_DEFECTS);
 
 		String CREATE_TABLE_CUSTOMER = "CREATE TABLE " + TABLE_CUSTOMERS + "("
 				+ ID + " INTEGER PRIMARY KEY," + CUSTOMER_NAME + " TEXT," + RID
@@ -68,6 +62,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(SiteWorkTypeDao.CREATE_TABLE_SCRIPT);
 		db.execSQL(EmployeeDao.CREATE_TABLE_SCRIPT);
 		db.execSQL(ScopeOfWorkDao.CREATE_TABLE_SCRIPT);
+		db.execSQL(DefectDao.CREATE_TABLE_SCRIPT);
 	}
 
 	// Upgrading database
@@ -80,56 +75,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(SiteWorkTypeDao.DROP_TABLE_SCRIPT);
 		db.execSQL(EmployeeDao.DROP_TABLE_SCRIPT);
 		db.execSQL(ScopeOfWorkDao.DROP_TABLE_SCRIPT);
-		
+		db.execSQL(DefectDao.DROP_TABLE_SCRIPT);
 		// Create tables again
 		onCreate(db);
 	}
 
-	public void addDefect(Defect defect) {
-		SQLiteDatabase db = this.getWritableDatabase();
 
-		ContentValues values = new ContentValues();
-		values.put(DEFECT_CODE, defect.getCode());
-		values.put(DEFECT_CATEGORY, defect.getCategory());
-		values.put(DEFECT_SUBCATEGORY, defect.getSubCategory());
-		values.put(DEFECT_SEVERITY, defect.getSeverity());
-		values.put(DEFECT_CODE, defect.getCode());
-		values.put(DEFECT_WORKTYPE, defect.getWorkType());
-		values.put(DEFECT_RECORDID, defect.getRid());
-		// Inserting Row
-		db.insert(TABLE_DEFECTS, null, values);
-		db.close();
-	}
-
-	// Getting All Contacts
-	public List<Defect> getAllDefects() {
-
-		List<Defect> defectList = new ArrayList<Defect>();
-		// Select All Query
-		String selectQuery = "SELECT  * FROM " + TABLE_DEFECTS;
-
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
-
-		// looping through all rows and adding to list
-		if (cursor.moveToFirst()) {
-			do {
-
-				Defect defect = new Defect();
-				defect.setId(Integer.parseInt(cursor.getString(0)));
-				defect.setCode(cursor.getString(1));
-				defect.setCategory(cursor.getString(2));
-				defect.setSubCategory(cursor.getString(3));
-				defect.setSeverity(cursor.getString(4));
-				defect.setWorkType(cursor.getString(5));
-				defect.setRid(cursor.getString(6));
-				defectList.add(defect);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		db.close();
-		return defectList;
-	}
 
 	public void addCustomer(LocalCustomer customer) {
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -207,15 +158,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	ScopeOfWorkDao scopeOfWorkDao;
-
-
 	public ScopeOfWorkDao getScopeOfWorkDao() {
 		if(scopeOfWorkDao == null){
 			scopeOfWorkDao = new ScopeOfWorkDaoImpl(this);
 		}
 		return scopeOfWorkDao;
 	}
-
+	
+	DefectDao defectDao;
+	public DefectDao getDefectDao() {
+		if(defectDao == null){
+			defectDao = new DefectDaoImpl(this);
+		}
+		return defectDao;
+	}
 
 	
 

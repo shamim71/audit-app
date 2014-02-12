@@ -74,20 +74,23 @@ public class UserAuditDetailFragment extends Fragment {
 			
 			mItem = AuditListContent.ITEM_MAP.get(getArguments().getString(
 					ARG_ITEM_ID));
-			Log.d(Constants.LOG_TAG, "Selected tab id: "+ tabKey);
-			if(tabKey.equals("2")){
-				AuditManagement app =	(AuditManagement)	getActivity().getApplication();
-				final String userId = app.getAuthentication().getResult().getqBaseRef();
-				Log.d(Constants.LOG_TAG, "Loading audits by user id: "+ userId);
-				audits = dbHandler.getAuditDao().getAllInternalAuditsByEmployee(userId);
-			}
-			else{
-				audits = dbHandler.getAuditDao().getAllInternalAudits();
-			}
+			reloadAudits(tabKey);
 			
 		}
 	}
 
+	private void reloadAudits(final String tabKey){
+		Log.d(Constants.LOG_TAG, "Selected tab id: "+ tabKey);
+		if(tabKey.equals("2")){
+			AuditManagement app =	(AuditManagement)	getActivity().getApplication();
+			final String userId = app.getAuthentication().getResult().getqBaseRef();
+			Log.d(Constants.LOG_TAG, "Loading audits by user id: "+ userId);
+			audits = dbHandler.getAuditDao().getAllInternalAuditsByEmployee(userId);
+		}
+		else{
+			audits = dbHandler.getAuditDao().getAllInternalAudits();
+		}
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -140,7 +143,16 @@ public class UserAuditDetailFragment extends Fragment {
 
 									if (item != null) {
 						
-										//.notifyDataSetChanged();
+										dbHandler.getAuditDao().deleteInternalAudit(item.getId());
+										
+										AuditListAdapter adapter = (AuditListAdapter) parent.getAdapter();
+										adapter.clear();
+										
+										final String tabKey = getArguments().getString(ARG_ITEM_ID);
+										
+										reloadAudits(tabKey);
+										adapter.addAll(audits);
+										adapter.notifyDataSetChanged();
 
 									}
 								}

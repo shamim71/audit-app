@@ -20,6 +20,8 @@ public enum EndPoints {
 	
 	REST_CALL_GET_QBASE_SITE_WORK_TYPES("/qbase/audit/siteworks"),
 	
+	REST_CALL_GET_QBASE_DEFECTS("/qbase/defects"),
+	
 	REST_CALL_GET_QBASE_EMPLOYEES("/qbase/employees"),
 	
 	REST_CALL_GET_ADJUSTMENT_CONF("/configurations"),
