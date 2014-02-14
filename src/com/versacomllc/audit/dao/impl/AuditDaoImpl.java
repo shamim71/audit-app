@@ -10,23 +10,25 @@ import java.util.List;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.versacomllc.audit.dao.AuditDao;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.utils.Constants;
 
-public class AuditDaoImpl implements AuditDao{
-	
-	private SQLiteDatabase db;
-	
-	public AuditDaoImpl(SQLiteDatabase db) {
-		this.db = db;
+public class AuditDaoImpl implements AuditDao {
+
+	private SQLiteOpenHelper helper;
+
+	public AuditDaoImpl(SQLiteOpenHelper helper) {
+		this.helper = helper;
+
 	}
 
 	@Override
 	public long addInternalAudit(LocalAudit audit) {
-
+		SQLiteDatabase db = helper.getWritableDatabase();
 		ContentValues values = createContentValues(audit);
 		// Inserting Row
 		long id = db.insert(TABLE_INTERNAL_AUDITS, null, values);
@@ -34,7 +36,7 @@ public class AuditDaoImpl implements AuditDao{
 		return id;
 	}
 
-	private ContentValues createContentValues(LocalAudit audit){
+	private ContentValues createContentValues(LocalAudit audit) {
 		ContentValues values = new ContentValues();
 
 		values.put(AUDIT_TYPE, audit.getAuditType());
@@ -50,44 +52,50 @@ public class AuditDaoImpl implements AuditDao{
 		values.put(RID, audit.getRid());
 		return values;
 	}
-	
+
 	@Override
 	public void updateInternalAudit(LocalAudit audit) {
-		
+
 		ContentValues values = createContentValues(audit);
 		// updating row
-
-		int rowEffected =  db.update(TABLE_INTERNAL_AUDITS, values, ID + " = ?",	new String[] { String.valueOf(audit.getId()) });
-		Log.d(LOG_TAG, "Record updated: "+ rowEffected);
-		
+		SQLiteDatabase db = helper.getWritableDatabase();
+		int rowEffected = db.update(TABLE_INTERNAL_AUDITS, values, ID + " = ?",
+				new String[] { String.valueOf(audit.getId()) });
+		Log.d(LOG_TAG, "Record updated: " + rowEffected);
+		db.close();
 	}
+
 	public void deleteInternalAudit(long id) {
-
-		int rowEffected =  db.delete(TABLE_INTERNAL_AUDITS,  ID + " = ?",	new String[] { String.valueOf(id) });
-		Log.d(LOG_TAG, "Record deleted: "+ rowEffected);
-		
+		SQLiteDatabase db = helper.getWritableDatabase();
+		int rowEffected = db.delete(TABLE_INTERNAL_AUDITS, ID + " = ?",
+				new String[] { String.valueOf(id) });
+		Log.d(LOG_TAG, "Record deleted: " + rowEffected);
+		db.close();
 	}
+
 	@Override
 	public List<LocalAudit> getAllInternalAudits() {
 		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS;
+		SQLiteDatabase db = helper.getReadableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 		List<LocalAudit> auditList = loadAudits(cursor);
 		cursor.close();
 		db.close();
-		
+
 		return auditList;
 	}
 
 	@Override
 	public LocalAudit getInternalAuditsById(String id) {
 		// Select All Query
-		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS + " where "+ ID + "="+ id + "";
-	
+		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS
+				+ " where " + ID + "=" + id + "";
+		SQLiteDatabase db = helper.getReadableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 		List<LocalAudit> auditList = loadAudits(cursor);
 		cursor.close();
 		db.close();
-		if(auditList.size() >0){
+		if (auditList.size() > 0) {
 			return auditList.get(0);
 		}
 		return null;
@@ -95,14 +103,16 @@ public class AuditDaoImpl implements AuditDao{
 
 	@Override
 	public List<LocalAudit> getAllInternalAuditsByEmployee(String userId) {
-		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS + " where "+ AUDIT_BY_EMPLOYEE + "='"+ userId + "'";
-
+		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS
+				+ " where " + AUDIT_BY_EMPLOYEE + "='" + userId + "'";
+		SQLiteDatabase db = helper.getReadableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 		List<LocalAudit> auditList = loadAudits(cursor);
 		cursor.close();
 		db.close();
 		return auditList;
 	}
+
 	private List<LocalAudit> loadAudits(Cursor cursor) {
 		List<LocalAudit> auditList = new ArrayList<LocalAudit>();
 		// looping through all rows and adding to list
@@ -132,7 +142,7 @@ public class AuditDaoImpl implements AuditDao{
 
 		return auditList;
 	}
-	
+
 	private long getDateAsInt(String date) {
 		try {
 			Date dt = Constants.US_DATEFORMAT.parse(date);

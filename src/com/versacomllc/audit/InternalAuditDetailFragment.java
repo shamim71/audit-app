@@ -1,5 +1,6 @@
 package com.versacomllc.audit;
 
+import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_DEFECT_ID;
 import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
 import static com.versacomllc.audit.utils.Constants.EXTRA_SOW_ID;
 import static com.versacomllc.audit.utils.Constants.LOG_TAG;
@@ -40,11 +41,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.versacomllc.audit.adapter.AuditDefectListAdapter;
+import com.versacomllc.audit.adapter.AuditListAdapter;
 import com.versacomllc.audit.adapter.ScopeOfWorkListAdapter;
 import com.versacomllc.audit.adapter.SimpleDropDownListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.LocalAudit;
+import com.versacomllc.audit.data.LocalAuditDefect;
 import com.versacomllc.audit.data.LocalCustomer;
+import com.versacomllc.audit.data.LocalDefect;
 import com.versacomllc.audit.data.ScopeOfWork;
 import com.versacomllc.audit.dummy.DummyContent;
 import com.versacomllc.audit.fragment.ScopeOfWorkDialogFragement;
@@ -68,9 +73,7 @@ public class InternalAuditDetailFragment extends Fragment {
 	 * The dummy content this fragment is presenting.
 	 */
 	private DummyContent.DummyItem mItem;
-	
 
-	
 	DatabaseHandler dbHandler = null;
 	EditText mEditSiteId;
 	EditText mEditAuditHour;
@@ -86,7 +89,6 @@ public class InternalAuditDetailFragment extends Fragment {
 	SimpleDropDownListAdapter customerAdapter;
 	ScopeOfWorkListAdapter scopeOfWorkListAdapter;
 
-	
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -94,9 +96,10 @@ public class InternalAuditDetailFragment extends Fragment {
 	public InternalAuditDetailFragment() {
 	}
 
-	private AuditManagement getAppState(){
+	private AuditManagement getAppState() {
 		return (AuditManagement) getActivity().getApplication();
 	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -112,9 +115,8 @@ public class InternalAuditDetailFragment extends Fragment {
 		}
 		if (getArguments().containsKey(EXTRA_AUDIT_ID)) {
 			auditId = getArguments().getString(EXTRA_AUDIT_ID);
-		}
-		else{
-			if(getAppState().getCurrentAudit() != -1){
+		} else {
+			if (getAppState().getCurrentAudit() != -1) {
 				auditId = String.valueOf(getAppState().getCurrentAudit());
 			}
 		}
@@ -123,7 +125,7 @@ public class InternalAuditDetailFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+
 		if (mItem != null && mItem.id.equals("1")) {
 			return getAuditMasterView(inflater, container, savedInstanceState);
 		}
@@ -133,7 +135,7 @@ public class InternalAuditDetailFragment extends Fragment {
 		if (mItem != null && mItem.id.equals("3")) {
 			return getDefectListView(inflater, container, savedInstanceState);
 		}
-		
+
 		View rootView = inflater.inflate(
 				R.layout.fragment_internalaudit_detail, container, false);
 
@@ -145,33 +147,117 @@ public class InternalAuditDetailFragment extends Fragment {
 
 		return rootView;
 	}
-	private View getDefectListView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+
+	private View getDefectListView(LayoutInflater inflater,
+			ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(
-				R.layout.fragment_internalaudit_detail_defects, container, false);
-		
-		Button btnAddDefect = (Button) rootView.findViewById(R.id.btn_add_defect);
+				R.layout.fragment_internalaudit_detail_defects, container,
+				false);
+
+		Button btnAddDefect = (Button) rootView
+				.findViewById(R.id.btn_add_defect);
 		btnAddDefect.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(getActivity(), AuditDefectListActivity.class);
+				Intent intent = new Intent(getActivity(),
+						AuditDefectListActivity.class);
 				intent.putExtra(EXTRA_AUDIT_ID, auditId);
 				startActivity(intent);
 			}
 		});
-		
 
-		
+		List<LocalAuditDefect> localAuditDefects = dbHandler
+				.getAuditDefectDao().getAuditDefectByAuditId(auditId);
+
+		ListView listViewDefects = (ListView) rootView
+				.findViewById(R.id.lv_defect_list);
+
+		AuditDefectListAdapter adapter = new AuditDefectListAdapter(
+				getActivity(), R.layout.audit_defect_list_item,
+				localAuditDefects);
+		listViewDefects.setAdapter(adapter);
+
+		listViewDefects.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				LocalAuditDefect item = (LocalAuditDefect) parent.getAdapter()
+						.getItem(position);
+
+				if (item != null) {
+					Log.d(LOG_TAG, "Loading audit defect with internal id: "
+							+ item.getLocalId());
+
+					Intent intent = new Intent(getActivity(),
+							AuditDefectListActivity.class);
+					intent.putExtra(EXTRA_AUDIT_ID,
+							String.valueOf(item.getAuditId()));
+					intent.putExtra(EXTRA_AUDIT_DEFECT_ID,
+							item.getLocalId());
+					startActivity(intent);
+				}
+
+			}
+		});
+		listViewDefects
+				.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+					@Override
+					public boolean onItemLongClick(final AdapterView<?> parent,
+							View view, final int position, long id) {
+
+						final AlertDialog.Builder builder = new AlertDialog.Builder(
+								getActivity());
+						builder.setMessage(R.string.delete_confirmation_message)
+								.setTitle(R.string.delete_confirmation_title);
+						builder.setPositiveButton(R.string.ok,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										LocalAuditDefect item = (LocalAuditDefect) parent
+												.getAdapter().getItem(position);
+
+										if (item != null) {
+											dbHandler.getAuditDefectDao()
+													.deleteAuditDefect(
+															item.getLocalId());
+											AuditDefectListAdapter adapter = (AuditDefectListAdapter) parent
+													.getAdapter();
+											adapter.clear();
+											List<LocalAuditDefect> localAuditDefects = dbHandler
+													.getAuditDefectDao()
+													.getAuditDefectByAuditId(
+															auditId);
+											adapter.addAll(localAuditDefects);
+											adapter.notifyDataSetChanged();
+
+										}
+									}
+								});
+						builder.setNegativeButton(R.string.cancel,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+
+									}
+								});
+
+						AlertDialog dialog = builder.create();
+						dialog.show();
+						return true;
+					}
+				});
 		return rootView;
 	}
-	
+
 	private View getSOWView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(
 				R.layout.fragment_internalaudit_detail_sow, container, false);
 
-		if(TextUtils.isEmpty(auditId)){
+		if (TextUtils.isEmpty(auditId)) {
 			return rootView;
 		}
 		Button btnSOW = (Button) rootView.findViewById(R.id.btn_Add_SOW);
@@ -185,9 +271,7 @@ public class InternalAuditDetailFragment extends Fragment {
 
 		ListView lstScopeOfWork = (ListView) rootView
 				.findViewById(R.id.lv_sow_list);
-		
 
-		
 		List<ScopeOfWork> works = dbHandler.getScopeOfWorkDao()
 				.getScopeOfWorkByAuditId(Long.parseLong(auditId));
 
@@ -213,49 +297,55 @@ public class InternalAuditDetailFragment extends Fragment {
 
 			}
 		});
-		
-		lstScopeOfWork.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-			@Override
-			public boolean onItemLongClick(final AdapterView<?> parent, View view,
-					final int position, long id) {
-				
-				
-				
-				final AlertDialog.Builder builder = new AlertDialog.Builder(
-						getActivity());
-				builder.setMessage(R.string.delete_confirmation_message)
-						.setTitle(R.string.delete_confirmation_title);
-				builder.setPositiveButton(R.string.ok,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								ScopeOfWork item = (ScopeOfWork) parent.getAdapter()
-										.getItem(position);
+		lstScopeOfWork
+				.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-								if (item != null) {
-					
-									dbHandler.getScopeOfWorkDao().deleteSOW(item.getId());
-									scopeOfWorkListAdapter.clear();
-									List<ScopeOfWork> works = dbHandler.getScopeOfWorkDao()
-											.getScopeOfWorkByAuditId(Long.parseLong(auditId));
-									scopeOfWorkListAdapter.addAll(works);
-									scopeOfWorkListAdapter.notifyDataSetChanged();
-								}
-							}
-						});
-				builder.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
+					@Override
+					public boolean onItemLongClick(final AdapterView<?> parent,
+							View view, final int position, long id) {
 
-							}
-						});
+						final AlertDialog.Builder builder = new AlertDialog.Builder(
+								getActivity());
+						builder.setMessage(R.string.delete_confirmation_message)
+								.setTitle(R.string.delete_confirmation_title);
+						builder.setPositiveButton(R.string.ok,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										ScopeOfWork item = (ScopeOfWork) parent
+												.getAdapter().getItem(position);
 
-				AlertDialog dialog = builder.create();
-				dialog.show();
-				return true;
-			}
-		});
-		
+										if (item != null) {
+
+											dbHandler.getScopeOfWorkDao()
+													.deleteSOW(item.getId());
+											scopeOfWorkListAdapter.clear();
+											List<ScopeOfWork> works = dbHandler
+													.getScopeOfWorkDao()
+													.getScopeOfWorkByAuditId(
+															Long.parseLong(auditId));
+											scopeOfWorkListAdapter
+													.addAll(works);
+											scopeOfWorkListAdapter
+													.notifyDataSetChanged();
+										}
+									}
+								});
+						builder.setNegativeButton(R.string.cancel,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+
+									}
+								});
+
+						AlertDialog dialog = builder.create();
+						dialog.show();
+						return true;
+					}
+				});
+
 		return rootView;
 	}
 
@@ -272,9 +362,7 @@ public class InternalAuditDetailFragment extends Fragment {
 							.getScopeOfWorkByAuditId(Long.parseLong(auditId));
 					scopeOfWorkListAdapter.addAll(works);
 
-				} 
-				else 
-				{
+				} else {
 					Toast.makeText(getActivity(), "Scope of work added",
 							Toast.LENGTH_LONG).show();
 					scopeOfWorkListAdapter.insert(work,
@@ -532,10 +620,9 @@ public class InternalAuditDetailFragment extends Fragment {
 		auditId = String.valueOf(id);
 
 		getAppState().setCurrentAudit(id);
-		
+
 		Toast.makeText(getActivity(), "Audit master record created",
 				Toast.LENGTH_LONG).show();
-		
 
 	}
 
@@ -567,6 +654,5 @@ public class InternalAuditDetailFragment extends Fragment {
 		}
 
 	}
-
 
 }

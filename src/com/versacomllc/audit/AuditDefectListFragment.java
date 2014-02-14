@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.versacomllc.audit.data.AuditListContent;
 import com.versacomllc.audit.dummy.AuditDefectContent;
 
 
@@ -150,5 +151,13 @@ public class AuditDefectListFragment extends ListFragment {
 		}
 
 		mActivatedPosition = position;
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+
+		super.onActivityCreated(savedInstanceState);
+		setActivatedPosition(0);
+		mCallbacks.onItemSelected(AuditListContent.ITEMS.get(0).id);
 	}
 }

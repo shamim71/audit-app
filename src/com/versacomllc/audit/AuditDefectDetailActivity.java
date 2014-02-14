@@ -1,5 +1,6 @@
 package com.versacomllc.audit;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -23,7 +24,11 @@ public class AuditDefectDetailActivity extends FragmentActivity {
 		setContentView(R.layout.activity_auditdefect_detail);
 
 		// Show the Up button in the action bar.
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		//getActionBar().setDisplayHomeAsUpEnabled(true);
+		 ActionBar actionBar = getActionBar();
+		 actionBar.setDisplayHomeAsUpEnabled(true);
+		// actionBar.setDisplayShowHomeEnabled(true);
+
 
 		// savedInstanceState is non-null when there is fragment state
 		// saved from previous configurations of this activity

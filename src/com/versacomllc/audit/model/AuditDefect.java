@@ -10,11 +10,18 @@ public class AuditDefect {
 
 	private String Id;
 	
+	private String techId;
+	
 	private String defectCode;
 	
 	private String defectSeverity;
 	
 	private String defectDescription;
+	
+	private String defectPicBeforeOnServer;
+	
+	private String defectPicAfteOnServer;
+	
 	
 	public String getCount() {
 		return count;
@@ -70,6 +77,14 @@ public class AuditDefect {
 
 	public void setDefectDescription(String defectDescription) {
 		this.defectDescription = defectDescription;
+	}
+
+	public String getTechId() {
+		return techId;
+	}
+
+	public void setTechId(String techId) {
+		this.techId = techId;
 	}
 	
 }

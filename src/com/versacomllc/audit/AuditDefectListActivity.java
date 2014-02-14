@@ -1,5 +1,8 @@
 package com.versacomllc.audit;
 
+import static com.versacomllc.audit.AuditDefectDetailFragment.ARG_ITEM_ID;
+import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_DEFECT_ID;
+import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -30,7 +33,10 @@ public class AuditDefectListActivity extends FragmentActivity implements
 	 * device.
 	 */
 	private boolean mTwoPane;
-
+	private String auditId;
+	private long localId = -1;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,6 +44,18 @@ public class AuditDefectListActivity extends FragmentActivity implements
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
+		Intent intent = getIntent();
+		if (intent != null && intent.getExtras() != null
+				&& intent.getExtras().containsKey(EXTRA_AUDIT_ID)) {
+
+			auditId = intent.getExtras().getString(EXTRA_AUDIT_ID);
+		}
+		if (intent != null && intent.getExtras() != null
+				&& intent.getExtras().containsKey(EXTRA_AUDIT_DEFECT_ID)) {
+
+			localId = intent.getExtras().getLong(EXTRA_AUDIT_DEFECT_ID);
+		}
+		
 		if (findViewById(R.id.auditdefect_detail_container) != null) {
 			// The detail container view will be present only in the
 			// large-screen layouts (res/values-large and
@@ -84,7 +102,13 @@ public class AuditDefectListActivity extends FragmentActivity implements
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
 			Bundle arguments = new Bundle();
-			arguments.putString(AuditDefectDetailFragment.ARG_ITEM_ID, id);
+			arguments.putString(ARG_ITEM_ID, id);
+			if (auditId != null) {
+				arguments.putString(EXTRA_AUDIT_ID, auditId);
+			}
+			if(localId != -1){
+				arguments.putLong(EXTRA_AUDIT_DEFECT_ID, localId);
+			}
 			AuditDefectDetailFragment fragment = new AuditDefectDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
@@ -96,7 +120,15 @@ public class AuditDefectListActivity extends FragmentActivity implements
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this,
 					AuditDefectDetailActivity.class);
-			detailIntent.putExtra(AuditDefectDetailFragment.ARG_ITEM_ID, id);
+			if (auditId != null) {
+				detailIntent.putExtra(EXTRA_AUDIT_ID, auditId);
+			}
+			if(localId != -1){
+				detailIntent.putExtra(EXTRA_AUDIT_DEFECT_ID, localId);
+			}
+			
+			detailIntent.putExtra(ARG_ITEM_ID, id);
+			
 			startActivity(detailIntent);
 		}
 	}

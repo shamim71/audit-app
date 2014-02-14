@@ -10,11 +10,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.versacomllc.audit.dao.AuditDao;
+import com.versacomllc.audit.dao.AuditDefectDao;
 import com.versacomllc.audit.dao.DefectDao;
 import com.versacomllc.audit.dao.EmployeeDao;
 import com.versacomllc.audit.dao.ScopeOfWorkDao;
 import com.versacomllc.audit.dao.SiteWorkTypeDao;
 import com.versacomllc.audit.dao.impl.AuditDaoImpl;
+import com.versacomllc.audit.dao.impl.AuditDefectDaoImpl;
 import com.versacomllc.audit.dao.impl.DefectDaoImpl;
 import com.versacomllc.audit.dao.impl.EmployeeDaoImpl;
 import com.versacomllc.audit.dao.impl.ScopeOfWorkDaoImpl;
@@ -29,8 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// Database Name
 	private static final String DATABASE_NAME = "AuditManagement";
 
-	// tableS name
-	private static final String TABLE_DEFECTS = "defect";
+
 	private static final String TABLE_CUSTOMERS = "customer";
 
 
@@ -63,19 +64,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(EmployeeDao.CREATE_TABLE_SCRIPT);
 		db.execSQL(ScopeOfWorkDao.CREATE_TABLE_SCRIPT);
 		db.execSQL(DefectDao.CREATE_TABLE_SCRIPT);
+		db.execSQL(AuditDefectDao.CREATE_TABLE_SCRIPT);
 	}
 
 	// Upgrading database
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// Drop older table if existed
-		db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEFECTS);
+
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMERS);
+		
 		db.execSQL(AuditDao.DROP_TABLE_SCRIPT);
 		db.execSQL(SiteWorkTypeDao.DROP_TABLE_SCRIPT);
 		db.execSQL(EmployeeDao.DROP_TABLE_SCRIPT);
 		db.execSQL(ScopeOfWorkDao.DROP_TABLE_SCRIPT);
 		db.execSQL(DefectDao.DROP_TABLE_SCRIPT);
+		db.execSQL(AuditDefectDao.DROP_TABLE_SCRIPT);
 		// Create tables again
 		onCreate(db);
 	}
@@ -137,8 +141,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	}
 
+	AuditDao auditDao;
+	
 	public AuditDao getAuditDao(){
-		return new AuditDaoImpl(this.getWritableDatabase());
+		if(auditDao ==null){
+			auditDao = new AuditDaoImpl(this);
+		}
+		return auditDao;
 	}
 	
 	SiteWorkTypeDao siteWorkTypeDao;
@@ -173,7 +182,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return defectDao;
 	}
 
-	
+	AuditDefectDao auditDefectDao;
+	public AuditDefectDao getAuditDefectDao() {
+		if(auditDefectDao == null){
+			auditDefectDao = new AuditDefectDaoImpl(this);
+		}
+		return auditDefectDao;
+	}
 
 
 }

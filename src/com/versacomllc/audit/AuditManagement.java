@@ -65,5 +65,17 @@ public class AuditManagement extends Application {
 		AuditManagement.currentAudit = currentAudit;
 	}
 
+	private static long currentAuditDefect = -1;
+
+	public  long getCurrentAuditDefect() {
+		return currentAuditDefect;
+	}
+
+
+
+	public  void setCurrentAuditDefect(long currentAuditDefect) {
+		AuditManagement.currentAuditDefect = currentAuditDefect;
+	}
+	
 
 }
