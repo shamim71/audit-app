@@ -50,11 +50,13 @@ import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalAuditDefect;
 import com.versacomllc.audit.data.LocalCustomer;
 import com.versacomllc.audit.data.LocalDefect;
-import com.versacomllc.audit.data.ScopeOfWork;
+import com.versacomllc.audit.data.LocalScopeOfWork;
+
 import com.versacomllc.audit.dummy.DummyContent;
 import com.versacomllc.audit.fragment.ScopeOfWorkDialogFragement;
 import com.versacomllc.audit.model.AuthenticationResult;
 import com.versacomllc.audit.model.Customer;
+import com.versacomllc.audit.model.InternalAudit;
 import com.versacomllc.audit.utils.Constants;
 
 /**
@@ -160,6 +162,7 @@ public class InternalAuditDetailFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
+				getAppState().setCurrentAuditDefect(-1);
 				Intent intent = new Intent(getActivity(),
 						AuditDefectListActivity.class);
 				intent.putExtra(EXTRA_AUDIT_ID, auditId);
@@ -194,8 +197,7 @@ public class InternalAuditDetailFragment extends Fragment {
 							AuditDefectListActivity.class);
 					intent.putExtra(EXTRA_AUDIT_ID,
 							String.valueOf(item.getAuditId()));
-					intent.putExtra(EXTRA_AUDIT_DEFECT_ID,
-							item.getLocalId());
+					intent.putExtra(EXTRA_AUDIT_DEFECT_ID, item.getLocalId());
 					startActivity(intent);
 				}
 
@@ -272,7 +274,7 @@ public class InternalAuditDetailFragment extends Fragment {
 		ListView lstScopeOfWork = (ListView) rootView
 				.findViewById(R.id.lv_sow_list);
 
-		List<ScopeOfWork> works = dbHandler.getScopeOfWorkDao()
+		List<LocalScopeOfWork> works = dbHandler.getScopeOfWorkDao()
 				.getScopeOfWorkByAuditId(Long.parseLong(auditId));
 
 		scopeOfWorkListAdapter = new ScopeOfWorkListAdapter(getActivity(),
@@ -283,7 +285,7 @@ public class InternalAuditDetailFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				ScopeOfWork item = (ScopeOfWork) parent.getAdapter().getItem(
+				LocalScopeOfWork item = (LocalScopeOfWork) parent.getAdapter().getItem(
 						position);
 
 				if (item != null) {
@@ -313,7 +315,7 @@ public class InternalAuditDetailFragment extends Fragment {
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
-										ScopeOfWork item = (ScopeOfWork) parent
+										LocalScopeOfWork item = (LocalScopeOfWork) parent
 												.getAdapter().getItem(position);
 
 										if (item != null) {
@@ -321,7 +323,7 @@ public class InternalAuditDetailFragment extends Fragment {
 											dbHandler.getScopeOfWorkDao()
 													.deleteSOW(item.getId());
 											scopeOfWorkListAdapter.clear();
-											List<ScopeOfWork> works = dbHandler
+											List<LocalScopeOfWork> works = dbHandler
 													.getScopeOfWorkDao()
 													.getScopeOfWorkByAuditId(
 															Long.parseLong(auditId));
@@ -353,13 +355,15 @@ public class InternalAuditDetailFragment extends Fragment {
 		DialogFragment dialog = new ScopeOfWorkDialogFragement() {
 
 			@Override
-			public void onSave(ScopeOfWork work) {
+			public void onSave(LocalScopeOfWork work) {
 				if (edit) {
 					Toast.makeText(getActivity(), "Scope of work updated",
 							Toast.LENGTH_LONG).show();
 					scopeOfWorkListAdapter.clear();
-					List<ScopeOfWork> works = dbHandler.getScopeOfWorkDao()
+					
+					List<LocalScopeOfWork> works = dbHandler.getScopeOfWorkDao()
 							.getScopeOfWorkByAuditId(Long.parseLong(auditId));
+					
 					scopeOfWorkListAdapter.addAll(works);
 
 				} else {
@@ -448,6 +452,7 @@ public class InternalAuditDetailFragment extends Fragment {
 			public void onClick(View v) {
 
 				saveAuditMaster(v);
+
 			}
 		});
 
@@ -615,6 +620,7 @@ public class InternalAuditDetailFragment extends Fragment {
 	private void createLocalAudit() {
 		Log.i(LOG_TAG, "Adding records to internal audit table ");
 
+		audit.setRid("-1");
 		long id = dbHandler.getAuditDao().addInternalAudit(audit);
 
 		auditId = String.valueOf(id);

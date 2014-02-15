@@ -29,6 +29,7 @@ public class AuditDaoImpl implements AuditDao {
 	@Override
 	public long addInternalAudit(LocalAudit audit) {
 		SQLiteDatabase db = helper.getWritableDatabase();
+	
 		ContentValues values = createContentValues(audit);
 		// Inserting Row
 		long id = db.insert(TABLE_INTERNAL_AUDITS, null, values);
@@ -49,13 +50,15 @@ public class AuditDaoImpl implements AuditDao {
 		values.put(AUDIT_SITE_ID, audit.getSiteId());
 		values.put(AUDIT_CUSTOMER, audit.getCustomer());
 		values.put(AUDIT_CUSTOMER_NAME, audit.getCustomerName());
+		values.put(SYNC, audit.getSyn());
 		values.put(RID, audit.getRid());
 		return values;
 	}
 
 	@Override
-	public void updateInternalAudit(LocalAudit audit) {
+	public int updateInternalAudit(LocalAudit audit) {
 
+		audit.setSyn(0);
 		ContentValues values = createContentValues(audit);
 		// updating row
 		SQLiteDatabase db = helper.getWritableDatabase();
@@ -63,8 +66,20 @@ public class AuditDaoImpl implements AuditDao {
 				new String[] { String.valueOf(audit.getId()) });
 		Log.d(LOG_TAG, "Record updated: " + rowEffected);
 		db.close();
+		return rowEffected;
 	}
+	@Override
+	public int updateInternalAuditByRid(LocalAudit audit) {
 
+		ContentValues values = createContentValues(audit);
+		// updating row
+		SQLiteDatabase db = helper.getWritableDatabase();
+		int rowEffected = db.update(TABLE_INTERNAL_AUDITS, values, RID + " = ?",
+				new String[] { String.valueOf(audit.getRid()) });
+		Log.d(LOG_TAG, "Record updated: " + rowEffected);
+		db.close();
+		return rowEffected;
+	}
 	public void deleteInternalAudit(long id) {
 		SQLiteDatabase db = helper.getWritableDatabase();
 		int rowEffected = db.delete(TABLE_INTERNAL_AUDITS, ID + " = ?",
@@ -133,8 +148,10 @@ public class AuditDaoImpl implements AuditDao {
 				audit.setSiteId(cursor.getString(index++));
 				audit.setCustomer(cursor.getString(index++));
 				audit.setCustomerName(cursor.getString(index++));
-
+				
+				audit.setSyn(cursor.getInt(index++));
 				audit.setRid(cursor.getString(index++));
+
 				auditList.add(audit);
 
 			} while (cursor.moveToNext());
@@ -157,5 +174,17 @@ public class AuditDaoImpl implements AuditDao {
 	private String getLongAsDate(long val) {
 		Date dt = new Date(val);
 		return Constants.US_DATEFORMAT.format(dt);
+	}
+
+	@Override
+	public List<LocalAudit> getAllPendingInternalAudits() {
+		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS
+				+ " where " + SYNC + "=0";
+		SQLiteDatabase db = helper.getReadableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		List<LocalAudit> auditList = loadAudits(cursor);
+		cursor.close();
+		db.close();
+		return auditList;
 	}
 }

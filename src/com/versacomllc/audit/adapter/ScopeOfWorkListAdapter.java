@@ -14,17 +14,18 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.versacomllc.audit.R;
-import com.versacomllc.audit.data.ScopeOfWork;
+import com.versacomllc.audit.data.LocalScopeOfWork;
+
 import com.versacomllc.audit.utils.Constants;
 
-public class ScopeOfWorkListAdapter extends ArrayAdapter<ScopeOfWork> {
+public class ScopeOfWorkListAdapter extends ArrayAdapter<LocalScopeOfWork> {
 
 	private Context mContext;
 	private int resourceId;
-	private List<ScopeOfWork> works;
+	private List<LocalScopeOfWork> works;
 
 	public ScopeOfWorkListAdapter(Context context, int resource,
-			List<ScopeOfWork> objects) {
+			List<LocalScopeOfWork> objects) {
 		super(context, resource, objects);
 		this.mContext = context;
 		this.resourceId = resource;
@@ -56,7 +57,7 @@ public class ScopeOfWorkListAdapter extends ArrayAdapter<ScopeOfWork> {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		ScopeOfWork item = works.get(position);
+		LocalScopeOfWork item = works.get(position);
 
 		holder.workType.setText("Work Type: "+ item.getWorkType());
 

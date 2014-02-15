@@ -25,7 +25,6 @@
     <string name="label_select_site">Select customer: </string>
     <string name="label_select_customer">Select customer: </string>
     <string name="label_select_tech">Select Tech: </string>
-
     <string name="label_work_date">Work Date:</string>
     <string name="title_scope_of_work">Scope of Works </string>
     <string name="title_audit_defects">Audit Defects</string>
@@ -78,6 +77,12 @@
         <item>Final</item>
         <item>Others</item>
     </string-array>
+    <string-array name="array_defect_status">
+        <item>Yes</item>
+        <item>No</item>
+        <item>Observation</item>
+        <item>Pending</item>
+    </string-array>
 
     <string name="title_audit_list">Audits</string>
     <string name="title_useraudit_list">UserAudits</string>
@@ -86,6 +91,5 @@
     <string name="title_internalaudit_detail">InternalAudit Detail</string>
     <string name="title_auditdefect_list">AuditDefects</string>
     <string name="title_auditdefect_detail">AuditDefect Detail</string>
-
 
 </resources>

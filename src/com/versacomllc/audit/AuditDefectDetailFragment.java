@@ -28,10 +28,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,7 +74,8 @@ public class AuditDefectDetailFragment extends Fragment {
 
 	ImageView mImageDefectBefore;
 	ImageView mImageDefectAfter;
-
+	Spinner mSpinnerFixed;
+	
 	String auditId = null;
 	long localId = -1;
 
@@ -322,13 +326,43 @@ public class AuditDefectDetailFragment extends Fragment {
 	
 		return path;
 	}
+	private void populateSpinner(Spinner spinner, int arrayId,
+			OnItemSelectedListener listener) {
 
+		// Create an ArrayAdapter using the string array and a default spinner
+		// layout
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				getActivity(), arrayId, android.R.layout.simple_spinner_item);
+		// Specify the layout to use when the list of choices appears
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// Apply the adapter to the spinner
+		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener(listener);
+	}
 	private View getDefectMasterView(LayoutInflater inflater,
 			ViewGroup container, Bundle savedInstanceState) {
 
 		View rootView = inflater.inflate(
 				R.layout.fragment_auditdefect_detail_main, container, false);
 
+		OnItemSelectedListener statusListener = new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				Object item = parent.getAdapter().getItem(position);
+				auditDefect.setFixed(item.toString());
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		};
+
+		 mSpinnerFixed = (Spinner) rootView.findViewById(R.id.sp_defect_fixed_status);
+		mSpinnerFixed.setOnItemSelectedListener(statusListener);
+		populateSpinner(mSpinnerFixed, R.array.array_defect_status, statusListener);
+		
 		mEditTextDefect = (EditText) rootView
 				.findViewById(R.id.et_defect_count);
 		mEditTextNote = (EditText) rootView.findViewById(R.id.et_defect_notes);
@@ -426,7 +460,16 @@ public class AuditDefectDetailFragment extends Fragment {
 		}
 		return rootView;
 	}
-
+	private int getItemIndex(String value, ArrayAdapter adapter) {
+		int size = adapter.getCount();
+		for (int i = 0; i < size; i++) {
+			String itm = (String) adapter.getItem(i);
+			if (itm.equals(value)) {
+				return i;
+			}
+		}
+		return 0;
+	}
 	private void renderAuditDefect(LocalAuditDefect defect) {
 
 		autoCompleteTextView.setText(defect.getDefectCode());
@@ -439,6 +482,10 @@ public class AuditDefectDetailFragment extends Fragment {
 		mEditTextDefect.setText(defect.getCount());
 		mEditTextNote.setText(defect.getNote());
 		mATextViewTech.setText(defect.getTechName());
+		if(!TextUtils.isEmpty(defect.getFixed())){
+			int position = getItemIndex(defect.getFixed(), (ArrayAdapter)mSpinnerFixed.getAdapter());
+			mSpinnerFixed.setSelection(position);
+		}
 
 	}
 

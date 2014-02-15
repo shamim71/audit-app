@@ -21,26 +21,28 @@ public interface AuditDefectDao {
 	public static final String PIC_BEFORE = "pic_b";
 	public static final String PIC_AFTER = "pic_a";
 	public static final String RID = "rid";
-	
+	public static final String FIXED = "fixed";
+	public static final String SYNC = "sync";
+
 	// Create audit table
 	public static final String CREATE_TABLE_SCRIPT = "CREATE TABLE "
 			+ TABLE_NAME + "(" + ID + " INTEGER PRIMARY KEY," + AUDIT_RID
-			+ " TEXT," + DEFECT_RID + " TEXT, " + TECH_RID + " TEXT, " +  TECH_NAME + " TEXT, " + DEFECT_COUNT
-			+ " INTEGER," + DEFECT_NOTE + " TEXT, " + CODE + " TEXT, " + DESCRIPTION
-			+ " TEXT, " + SEVERITY	+ " TEXT, " + PIC_BEFORE + " TEXT, " + PIC_AFTER + " TEXT, " + RID + " TEXT " + ")";
+			+ " TEXT," + DEFECT_RID + " TEXT, " + TECH_RID + " TEXT, "
+			+ TECH_NAME + " TEXT, " + DEFECT_COUNT + " INTEGER," + DEFECT_NOTE
+			+ " TEXT, " + CODE + " TEXT, " + DESCRIPTION + " TEXT, " + SEVERITY
+			+ " TEXT, " + PIC_BEFORE + " TEXT, " + PIC_AFTER + " TEXT, "
+			+ FIXED + " TEXT, " + SYNC + " INTEGER, " + RID + " TEXT " + ")";
 
 	public static final String DROP_TABLE_SCRIPT = "DROP TABLE IF EXISTS "
 			+ TABLE_NAME;
 
-
-
 	public List<LocalAuditDefect> getAuditDefectByAuditId(final String auditId);
-	
+
 	public long addAuditDefect(LocalAuditDefect auditDefect);
-	
+
 	public long updateAuditDefect(LocalAuditDefect auditDefect);
-	
+
 	public int deleteAuditDefect(long localId);
-	
+
 	public LocalAuditDefect getAuditDefectByLocalId(long localId);
 }

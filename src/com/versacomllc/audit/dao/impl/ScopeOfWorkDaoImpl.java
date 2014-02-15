@@ -1,7 +1,5 @@
 package com.versacomllc.audit.dao.impl;
 
-import static com.versacomllc.audit.utils.Constants.LOG_TAG;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,10 +7,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.versacomllc.audit.dao.ScopeOfWorkDao;
-import com.versacomllc.audit.data.ScopeOfWork;
+import com.versacomllc.audit.data.LocalScopeOfWork;
 
 public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDao {
 
@@ -23,7 +20,7 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 		this.helper = helper;
 	}
 
-	private ContentValues createContentValues(ScopeOfWork work){
+	private ContentValues createContentValues(LocalScopeOfWork work){
 		ContentValues values = new ContentValues();
 
 		values.put(WORK_TYPE, work.getWorkType());
@@ -33,13 +30,14 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 		values.put(TECH_NAME, work.getTechName());
 		values.put(TECH_ID, work.getTechId());
 		values.put(AUDIT_ID, work.getAuditId());
+		values.put(SYNC, work.getSync());
 		values.put(RID, work.getRid());
 		return values;
 	}
 	
 	@Override
-	public void addSOW(ScopeOfWork scopeOfWork) {
-		
+	public void addSOW(LocalScopeOfWork scopeOfWork) {
+		scopeOfWork.setRid("-1");
 		SQLiteDatabase db = helper.getWritableDatabase();
 		ContentValues values = createContentValues(scopeOfWork);
 		// Inserting Row
@@ -48,35 +46,36 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 		db.close();
 	}
 	
-	public void updateSOW(ScopeOfWork scopeOfWork) {
+	public void updateSOW(LocalScopeOfWork scopeOfWork) {
 		
 		ContentValues values = createContentValues(scopeOfWork);
 		// updating row
 		SQLiteDatabase db = helper.getWritableDatabase();
 		int rowEffected =  db.update(TABLE_NAME, values, ID + " = ?",	new String[] { String.valueOf(scopeOfWork.getId()) });
-		Log.d(LOG_TAG, "Record updated: "+ rowEffected);
+		//Log.d(LOG_TAG, "Record updated: "+ rowEffected);
 	
 		db.close();
 	}
 	public void deleteSOW(long id) {
 		SQLiteDatabase db = helper.getWritableDatabase();
 		int rowEffected =  db.delete(TABLE_NAME,  ID + " = ?",	new String[] { String.valueOf(id) });
-		Log.d(LOG_TAG, "Record deleted: "+ rowEffected);
+		//Log.d(LOG_TAG, "Record deleted: "+ rowEffected);
 		
 	}
-	private List<ScopeOfWork> loadScopeOfWorks(Cursor cursor){
-		List<ScopeOfWork> scopeofWorks = new ArrayList<ScopeOfWork>();
+	private List<LocalScopeOfWork> loadScopeOfWorks(Cursor cursor){
+		List<LocalScopeOfWork> scopeofWorks = new ArrayList<LocalScopeOfWork>();
 		
 		if (cursor.moveToFirst()) {
 			do {
 				int index = 0;
-				ScopeOfWork work = new ScopeOfWork();
+				LocalScopeOfWork work = new LocalScopeOfWork();
 				work.setId(cursor.getLong(index++));
 				work.setWorkType(cursor.getString(index++));
 				work.setDateOfWork(getLongAsDate(cursor.getLong(index++)));
 				work.setTechName(cursor.getString(index++));
 				work.setTechId(cursor.getString(index++));
 				work.setAuditId(cursor.getLong(index++));
+				work.setSync(cursor.getInt(index++));
 				work.setRid(cursor.getString(index++));
 				scopeofWorks.add(work);
 
@@ -86,13 +85,27 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 		return scopeofWorks;
 	}
 	@Override
-	public List<ScopeOfWork> getScopeOfWorkByAuditId(final long auditId) {
+	public List<LocalScopeOfWork> getScopeOfWorkByAuditId(final long auditId) {
 
 		String selectQuery = "SELECT  * FROM " + TABLE_NAME + " where "+ AUDIT_ID +"=" + auditId;
 		SQLiteDatabase db = helper.getWritableDatabase();
 
 		Cursor cursor = db.rawQuery(selectQuery, null);
-		List<ScopeOfWork> scopeofWorks = loadScopeOfWorks(cursor);
+		List<LocalScopeOfWork> scopeofWorks = loadScopeOfWorks(cursor);
+		cursor.close();
+		db.close();
+
+		return scopeofWorks;
+
+	}
+	@Override
+	public List<LocalScopeOfWork> getPendingScopeOfWorkByAuditId(final long auditId) {
+
+		String selectQuery = "SELECT  * FROM " + TABLE_NAME + " where "+ AUDIT_ID +"=? and "+ SYNC + "=?";
+		SQLiteDatabase db = helper.getWritableDatabase();
+
+		Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(auditId), "0" });
+		List<LocalScopeOfWork> scopeofWorks = loadScopeOfWorks(cursor);
 		cursor.close();
 		db.close();
 
@@ -101,14 +114,13 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 	}
 
 
-
 	@Override
-	public ScopeOfWork getScopeOfWorkById(long id) {
+	public LocalScopeOfWork getScopeOfWorkById(long id) {
 		String selectQuery = "SELECT  * FROM " + TABLE_NAME + " where "+ ID +"=" + id;
 		SQLiteDatabase db = helper.getWritableDatabase();
 
 		Cursor cursor = db.rawQuery(selectQuery, null);
-		List<ScopeOfWork> scopeofWorks = loadScopeOfWorks(cursor);
+		List<LocalScopeOfWork> scopeofWorks = loadScopeOfWorks(cursor);
 		cursor.close();
 		db.close();
 		if(scopeofWorks.size() >0){

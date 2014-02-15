@@ -18,6 +18,9 @@ public class AuditDefect {
 	
 	private String defectDescription;
 	
+	private String fixed;
+	
+	
 	private String defectPicBeforeOnServer;
 	
 	private String defectPicAfteOnServer;
@@ -85,6 +88,14 @@ public class AuditDefect {
 
 	public void setTechId(String techId) {
 		this.techId = techId;
+	}
+
+	public String getFixed() {
+		return fixed;
+	}
+
+	public void setFixed(String fixed) {
+		this.fixed = fixed;
 	}
 	
 }

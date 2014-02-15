@@ -34,9 +34,9 @@ public class HomeActivity extends BaseActivity {
 	}
 
 	public void launchCreateAudit(View v) {
-/*
-		Intent intent = new Intent(this, SiteAuditActivity.class);
-		startActivity(intent);*/
+
+		getApplicationState().setCurrentAudit(-1);
+		getApplicationState().setCurrentAuditDefect(-1);
 		
 		Intent intent = new Intent(this, InternalAuditListActivity.class);
 		startActivity(intent);

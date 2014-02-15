@@ -26,7 +26,11 @@ public enum EndPoints {
 	
 	REST_CALL_GET_ADJUSTMENT_CONF("/configurations"),
 
-	REST_CALL_POST_AUDITS("/audits");
+	REST_CALL_GET_QBASE_AUDITS("/qbase/audits"),
+	
+	REST_CALL_POST_UPDATE_AUDIT("/qbase/audits/{0}"),
+	
+	REST_CALL_POST_AUDITS("/qbase/audits");
 	
 	private final String address;
 

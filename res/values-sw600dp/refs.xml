@@ -6,7 +6,7 @@
     two-pane version on Large screens.
 
     For more on layout aliases, see:
-    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
+    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
     <item name="activity_useraudit_list" type="layout">@layout/activity_useraudit_twopane</item>
     <item name="activity_internalaudit_list" type="layout">@layout/activity_internalaudit_twopane</item>

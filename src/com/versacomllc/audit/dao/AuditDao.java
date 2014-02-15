@@ -21,6 +21,7 @@ public interface AuditDao {
 	public static final String AUDIT_SITE_ID = "site_id";
 	public static final String AUDIT_CUSTOMER = "customer_id";
 	public static final String AUDIT_CUSTOMER_NAME = "customer_NAME";
+	public static final String SYNC = "sync";
 	
 	// Create audit table
 	public static final String CREATE_TABLE_SCRIPT = "CREATE TABLE " + TABLE_INTERNAL_AUDITS
@@ -28,18 +29,23 @@ public interface AuditDao {
 			+ AUDIT_STATUS + " TEXT, " + AUDIT_DATE + " INTEGER, "
 			+ AUDIT_HOUR + " TEXT, " + AUDIT_BY + " TEXT,"
 			+ AUDIT_BY_EMPLOYEE + " TEXT," + AUDIT_SITE_ID + " TEXT,"
-			+ AUDIT_CUSTOMER + " TEXT," + AUDIT_CUSTOMER_NAME + " TEXT,"
+			+ AUDIT_CUSTOMER + " TEXT," + AUDIT_CUSTOMER_NAME + " TEXT," + SYNC + " INTEGER, "
 			+ RID + " TEXT " + ")";
 	
 	public static final String DROP_TABLE_SCRIPT = "DROP TABLE IF EXISTS " + TABLE_INTERNAL_AUDITS;
 	
 	long addInternalAudit(LocalAudit audit);
 	
-	void updateInternalAudit(LocalAudit audit);
+	int updateInternalAudit(LocalAudit audit);
+	
+	int updateInternalAuditByRid(LocalAudit audit);
 	
 	void deleteInternalAudit(long id);
 	
 	List<LocalAudit> getAllInternalAudits();
+	
+	List<LocalAudit> getAllPendingInternalAudits();
+	
 	
 	LocalAudit getInternalAuditsById(final String id);
 	

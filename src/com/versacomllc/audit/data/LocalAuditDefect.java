@@ -14,6 +14,8 @@ public class LocalAuditDefect extends AuditDefect{
 	
 	private String defectPicAfter;
 	
+	private int sync;
+	
 	public long getLocalId() {
 		return localId;
 	}
@@ -52,6 +54,14 @@ public class LocalAuditDefect extends AuditDefect{
 
 	public void setDefectPicAfter(String defectPicAfter) {
 		this.defectPicAfter = defectPicAfter;
+	}
+
+	public int getSync() {
+		return sync;
+	}
+
+	public void setSync(int sync) {
+		this.sync = sync;
 	}
 
 

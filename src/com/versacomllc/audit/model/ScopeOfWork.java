@@ -1,20 +1,18 @@
-package com.versacomllc.audit.data;
+package com.versacomllc.audit.model;
 
 public class ScopeOfWork {
-
-	private String workType;
 	
-	private String techName;
+	protected String workType;
 	
-	private String techId;
+	protected String techName;
 	
-	private String dateOfWork;
+	protected String techId;
 	
-	private long id;
+	protected String dateOfWork;
 	
-	private String rid;
+	protected String rid;
 	
-	private long auditId;
+	protected long auditId;
 
 	public String getWorkType() {
 		return workType;
@@ -48,14 +46,6 @@ public class ScopeOfWork {
 		this.dateOfWork = dateOfWork;
 	}
 
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	public String getRid() {
 		return rid;
 	}
@@ -72,11 +62,8 @@ public class ScopeOfWork {
 		this.auditId = auditId;
 	}
 
-	@Override
-	public String toString() {
-		return "ScopeOfWork [workType=" + workType + ", techName=" + techName
-				+ ", techId=" + techId + ", dateOfWork=" + dateOfWork + ", id="
-				+ id + ", rid=" + rid + ", auditId=" + auditId + "]";
-	}
+	
+
+
 	
 }

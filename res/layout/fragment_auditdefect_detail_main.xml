@@ -53,6 +53,18 @@
                 android:layout_marginTop="5dp" 
                  />
             <TextView
+                android:id="@+id/tv_defecFixedStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Fixed" />
+
+            <Spinner
+                android:id="@+id/sp_defect_fixed_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp" />            
+            <TextView
                 android:id="@+id/tv_defect_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,7 +75,7 @@
                 android:id="@+id/et_defect_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:hint="@string/hint_defect_count"
                 android:inputType="number" />
 
@@ -71,14 +83,14 @@
                 android:id="@+id/tv_defect_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/label_defect_note" />
 
             <EditText
                 android:id="@+id/et_defect_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:hint="@string/hint_defect_note"
                 android:inputType="text" />
 

@@ -3,10 +3,14 @@ package com.versacomllc.audit;
 import static com.versacomllc.audit.AuditDefectDetailFragment.ARG_ITEM_ID;
 import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_DEFECT_ID;
 import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
+
+import com.versacomllc.audit.utils.Constants;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.MenuItem;
 
 /**
@@ -84,8 +88,9 @@ public class AuditDefectListActivity extends FragmentActivity implements
 			//
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
-			NavUtils.navigateUpFromSameTask(this);
-			
+			//NavUtils.navigateUpFromSameTask(this);
+			finish();
+			Log.d(Constants.LOG_TAG, "Navigating back...");
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

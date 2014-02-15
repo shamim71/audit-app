@@ -1,8 +1,9 @@
 package com.versacomllc.audit.model;
 
+import java.util.List;
+
 public class InternalAudit {
 
-	
 	protected String rid;
 	
 	protected String auditType;
@@ -27,9 +28,12 @@ public class InternalAudit {
 	
 	protected String customer;
 	
+	protected String customerName;
+	
 	protected String siteId;
 	
-
+	protected List<ScopeOfWork> siteWorks;
+	
 	public String getAuditType() {
 		return auditType;
 	}
@@ -145,5 +149,21 @@ public class InternalAudit {
 
 	public void setRid(String rid) {
 		this.rid = rid;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public List<ScopeOfWork> getSiteWorks() {
+		return siteWorks;
+	}
+
+	public void setSiteWorks(List<ScopeOfWork> siteWorks) {
+		this.siteWorks = siteWorks;
 	}
 }

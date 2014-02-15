@@ -31,7 +31,8 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 		Cursor cursor = db.rawQuery(selectQuery, null);
 		List<LocalAuditDefect> list = loadAuditDefects(cursor);
 		cursor.close();
-
+		db.close();
+		
 		return list;
 	}
 
@@ -59,6 +60,8 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 		values.put(SEVERITY, ad.getDefectSeverity());
 		values.put(PIC_BEFORE, ad.getDefectPicBefore());
 		values.put(PIC_AFTER, ad.getDefectPicAfter());
+		values.put(FIXED, ad.getFixed());
+		values.put(SYNC, ad.getSync());
 		values.put(RID, ad.getId());
 		
 		return values;
@@ -82,6 +85,8 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 				obj.setDefectSeverity(cursor.getString(index++));
 				obj.setDefectPicBefore(cursor.getString(index++));
 				obj.setDefectPicAfter(cursor.getString(index++));
+				obj.setFixed(cursor.getString(index++));
+				obj.setSync(cursor.getInt(index++));
 				obj.setId(cursor.getString(index++));
 				list.add(obj);
 
@@ -96,7 +101,7 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 		SQLiteDatabase db = helper.getWritableDatabase();
 		int rowEffected = db.delete(TABLE_NAME, ID + " = ?",
 				new String[] { String.valueOf(localId) });
-		Log.d(LOG_TAG, "Record deleted: " + rowEffected);
+		//Log.d(LOG_TAG, "Record deleted: " + rowEffected);
 		db.close();
 		return rowEffected;
 	}
@@ -110,6 +115,7 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 		Cursor cursor = db.rawQuery(selectQuery, null);
 		List<LocalAuditDefect> list = loadAuditDefects(cursor);
 		cursor.close();
+		db.close();
 		
 		if(list.size() > 0){
 			return list.get(0);
@@ -125,7 +131,7 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 		SQLiteDatabase db = helper.getWritableDatabase();
 		int rowEffected = db.update(TABLE_NAME, values, ID + " = ?",
 				new String[] { String.valueOf(auditDefect.getLocalId()) });
-		Log.d(LOG_TAG, "Record updated: " + rowEffected);
+		//Log.d(LOG_TAG, "Record updated: " + rowEffected);
 		db.close();
 		
 		return rowEffected;

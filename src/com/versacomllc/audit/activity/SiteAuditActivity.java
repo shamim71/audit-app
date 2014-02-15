@@ -21,7 +21,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.versacomllc.audit.R;
 import com.versacomllc.audit.adapter.SimpleDropDownListAdapter;
@@ -29,13 +28,6 @@ import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalCustomer;
 import com.versacomllc.audit.model.Customer;
-import com.versacomllc.audit.model.InternalAudit;
-import com.versacomllc.audit.model.StringResponse;
-import com.versacomllc.audit.spice.DefaultProgressIndicatorState;
-import com.versacomllc.audit.spice.GenericPostRequest;
-import com.versacomllc.audit.spice.RestCall;
-import com.versacomllc.audit.spice.RetrySpiceCallback;
-import com.versacomllc.audit.utils.EndPoints;
 
 
 public class SiteAuditActivity extends BaseActivity implements OnItemSelectedListener {
@@ -185,45 +177,7 @@ public class SiteAuditActivity extends BaseActivity implements OnItemSelectedLis
 
 		dbHandler.getAuditDao().addInternalAudit(audit);
 	}
-	private void createInternalAuditx(final InternalAudit audit) {
-		String endPoint = EndPoints.REST_CALL_POST_AUDITS
-				.getSimpleAddress();
 
-		restHelper.execute(new GenericPostRequest<StringResponse>(
-				StringResponse.class, endPoint, audit),
-				new RetrySpiceCallback<StringResponse>(this) {
-
-					@Override
-					public void onSpiceSuccess(
-							StringResponse response) {
-
-						Log.d(LOG_TAG, response + "");
-
-						Toast.makeText(
-								SiteAuditActivity.this,
-								"Txn completed successfully :"
-										+ response.getMessage(),
-								Toast.LENGTH_SHORT).show();
-
-
-						
-						//backToHome();
-						
-					}
-
-					@Override
-					public void onSpiceError(
-							RestCall<StringResponse> restCall,
-							StringResponse response) {
-						Toast.makeText(SiteAuditActivity.this,
-								"Txn completed with error:" + response,
-								Toast.LENGTH_SHORT).show();
-					}
-
-				}, new DefaultProgressIndicatorState(
-						getString(R.string.processing)));
-
-	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, 

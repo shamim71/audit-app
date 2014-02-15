@@ -51,7 +51,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			} else {
 				int rowEffected = db.update(TABLE_NAME, values, RID + " = ?",
 						new String[] { String.valueOf(emp.getqBaseRef()) });
-				Log.d(LOG_TAG, "Record updated: " + rowEffected);
+				//Log.d(LOG_TAG, "Record updated: " + rowEffected);
 			}
 		}
 

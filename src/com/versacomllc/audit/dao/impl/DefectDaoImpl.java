@@ -60,11 +60,11 @@ public class DefectDaoImpl  extends AbstractDaoImpl implements DefectDao{
 			ContentValues values = createContentValues(d);
 			if (existing == null) {
 				long id = db.insert(TABLE_NAME, null, values);
-				Log.d(LOG_TAG, "Defect record added: " + id);
+				//Log.d(LOG_TAG, "Defect record added: " + id);
 			} else {
 				int rowEffected = db.update(TABLE_NAME, values, RID + " = ?",
 						new String[] { String.valueOf(d.getId()) });
-				Log.d(LOG_TAG, "Record updated: " + rowEffected);
+				//Log.d(LOG_TAG, "Record updated: " + rowEffected);
 			}
 		}
 

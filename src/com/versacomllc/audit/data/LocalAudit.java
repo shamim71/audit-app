@@ -1,13 +1,20 @@
 package com.versacomllc.audit.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.text.TextUtils;
+
 import com.versacomllc.audit.model.InternalAudit;
+import com.versacomllc.audit.model.ScopeOfWork;
 
 public class LocalAudit extends InternalAudit{
 
 	private long id;
-
-	private String customerName;
 	
+	private int syn;
+	
+	private List<LocalScopeOfWork> works;
 	
 	public long getId() {
 		return id;
@@ -18,7 +25,7 @@ public class LocalAudit extends InternalAudit{
 	}
 
 	public LocalAudit() {
-		super();
+
 	}
 	public LocalAudit(InternalAudit audit) {
 		this.rid = audit.getRid();
@@ -29,15 +36,48 @@ public class LocalAudit extends InternalAudit{
 		this.auditStatus = audit.getAuditStatus();
 		this.auditType = audit.getAuditType();
 		this.customer = audit.getCustomer();
+		this.customerName = audit.getCustomerName();
 		this.siteId = audit.getSiteId();
+		this.syn = 1;
+		if(TextUtils.isEmpty(audit.getRid())){
+			this.syn = 0;
+		}
 	}
 
-	public String getCustomerName() {
-		return customerName;
+	public InternalAudit toInternalAudit(){
+		
+		InternalAudit iAudit = new InternalAudit();
+		iAudit.setAuditDate(this.auditDate);
+		iAudit.setAuditedBy(this.auditedBy);
+		iAudit.setAuditedByEmployee(this.auditedByEmployee);
+		iAudit.setAuditHour(this.auditHour);
+		iAudit.setAuditStatus(this.auditStatus);
+		iAudit.setAuditType(this.auditType);
+		iAudit.setCustomer(this.customer);
+		iAudit.setCustomerName(this.customerName);
+		iAudit.setRid(this.rid);
+		iAudit.setSiteId(this.siteId);
+		
+		if(this.works != null && this.works.size()>0){
+			iAudit.setSiteWorks(new ArrayList<ScopeOfWork>());
+		}
+		return iAudit;
 	}
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
+	public int getSyn() {
+		return syn;
+	}
+
+	public void setSyn(int syn) {
+		this.syn = syn;
+	}
+
+	public List<LocalScopeOfWork> getWorks() {
+		return works;
+	}
+
+	public void setWorks(List<LocalScopeOfWork> works) {
+		this.works = works;
 	}
 
 	

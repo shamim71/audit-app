@@ -35,8 +35,8 @@ import com.versacomllc.audit.R;
 import com.versacomllc.audit.adapter.EmployeeAutocompleteListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.Employee;
-import com.versacomllc.audit.data.ScopeOfWork;
-import com.versacomllc.audit.model.Customer;
+import com.versacomllc.audit.data.LocalScopeOfWork;
+
 import com.versacomllc.audit.utils.Constants;
 
 
@@ -48,7 +48,7 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 	
 	AutoCompleteTextView autoCompleteTextView;
 	DatabaseHandler dbHandler;
-	private ScopeOfWork scopeOfWork = null;
+	private LocalScopeOfWork scopeOfWork = null;
 	private long mAid =-1;
 	private long mId = -1;
 	
@@ -83,7 +83,7 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								ScopeOfWork sow = getScopeOfWork();
+								LocalScopeOfWork sow = getScopeOfWork();
 								
 								Log.d(LOG_TAG, sow.toString());
 								if(mId == -1){
@@ -183,7 +183,7 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 		}
 		return dlg;
 	}
-	private void updateUI(ScopeOfWork work){
+	private void updateUI(LocalScopeOfWork work){
 		int position = getItemIndex(work.getWorkType(), (ArrayAdapter<?>) spWorkList.getAdapter());
 		spWorkList.setSelection(position);
 		
@@ -235,19 +235,20 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 		}
 	}
 
-	private ScopeOfWork getScopeOfWork() {
+	private LocalScopeOfWork getScopeOfWork() {
 
 		if (scopeOfWork == null) {
-			scopeOfWork = new ScopeOfWork();
+			scopeOfWork = new LocalScopeOfWork();
 		}
 		if (!TextUtils.isEmpty(mEditDateOfWork.getText())) {
 			scopeOfWork.setDateOfWork(mEditDateOfWork.getText().toString());
 		}
 		scopeOfWork.setAuditId(mAid);
+		
 		return scopeOfWork;
 	}
 
 
-	public abstract void onSave(ScopeOfWork work);
+	public abstract void onSave(LocalScopeOfWork work);
 
 }
