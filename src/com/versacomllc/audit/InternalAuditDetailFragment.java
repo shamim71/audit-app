@@ -484,6 +484,8 @@ public class InternalAuditDetailFragment extends Fragment {
 		populateCustomerList(rootView,
 				customers.toArray(new Customer[customers.size()]));
 
+		Log.d(LOG_TAG, "Loading audit id with id: "+ auditId);
+		
 		LocalAudit existingAudit = dbHandler.getAuditDao()
 				.getInternalAuditsById(auditId);
 
@@ -621,6 +623,7 @@ public class InternalAuditDetailFragment extends Fragment {
 		Log.i(LOG_TAG, "Adding records to internal audit table ");
 
 		audit.setRid("-1");
+		audit.setSyn(0);
 		long id = dbHandler.getAuditDao().addInternalAudit(audit);
 
 		auditId = String.valueOf(id);
@@ -653,6 +656,7 @@ public class InternalAuditDetailFragment extends Fragment {
 		} else {
 
 			Log.d(LOG_TAG, "Updating existing audit");
+			audit.setSyn(0);
 			dbHandler.getAuditDao().updateInternalAudit(audit);
 
 			Toast.makeText(getActivity(), "Audit master record updated",

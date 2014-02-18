@@ -14,6 +14,7 @@ import android.util.Log;
 import com.versacomllc.audit.dao.AuditDefectDao;
 import com.versacomllc.audit.data.LocalAuditDefect;
 
+
 public class AuditDefectDaoImpl implements AuditDefectDao {
 
 	private SQLiteOpenHelper helper;
@@ -26,7 +27,7 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 	public List<LocalAuditDefect> getAuditDefectByAuditId(String auditId) {
 		SQLiteDatabase db = helper.getReadableDatabase();
 		String selectQuery = "SELECT  * FROM " + TABLE_NAME + " where "
-				+ AUDIT_RID + "='" + auditId + "'";
+				+ AUDIT_ID + "=" + auditId + "";
 
 		Cursor cursor = db.rawQuery(selectQuery, null);
 		List<LocalAuditDefect> list = loadAuditDefects(cursor);
@@ -40,7 +41,7 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 	public long addAuditDefect(LocalAuditDefect auditDefect) {
 		SQLiteDatabase db = helper.getWritableDatabase();
 		ContentValues values = createContentValues(auditDefect);
-
+		auditDefect.setRid("-1");
 		long id = db.insert(TABLE_NAME, null, values);
 		db.close();
 		return id;
@@ -49,7 +50,7 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 	private ContentValues createContentValues(LocalAuditDefect ad) {
 		
 		ContentValues values = new ContentValues();
-		values.put(AUDIT_RID, ad.getAuditId());
+		values.put(AUDIT_ID, ad.getAuditId());
 		values.put(DEFECT_RID, ad.getDefectId());
 		values.put(TECH_RID, ad.getTechId());
 		values.put(TECH_NAME, ad.getTechName());
@@ -62,7 +63,7 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 		values.put(PIC_AFTER, ad.getDefectPicAfter());
 		values.put(FIXED, ad.getFixed());
 		values.put(SYNC, ad.getSync());
-		values.put(RID, ad.getId());
+		values.put(RID, ad.getRid());
 		
 		return values;
 	}
@@ -74,7 +75,7 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 				int index = 0;
 				LocalAuditDefect obj = new LocalAuditDefect();
 				obj.setLocalId(cursor.getLong(index++));
-				obj.setAuditId(cursor.getString(index++));
+				obj.setAuditId(cursor.getLong(index++));
 				obj.setDefectId(cursor.getString(index++));
 				obj.setTechId(cursor.getString(index++));
 				obj.setTechName(cursor.getString(index++));
@@ -87,7 +88,7 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 				obj.setDefectPicAfter(cursor.getString(index++));
 				obj.setFixed(cursor.getString(index++));
 				obj.setSync(cursor.getInt(index++));
-				obj.setId(cursor.getString(index++));
+				obj.setRid(cursor.getString(index++));
 				list.add(obj);
 
 			} while (cursor.moveToNext());
@@ -105,7 +106,14 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 		db.close();
 		return rowEffected;
 	}
-
+	public int deleteAuditDefectByAuditId(String auditId) {
+		SQLiteDatabase db = helper.getWritableDatabase();
+		int rowEffected = db.delete(TABLE_NAME, AUDIT_ID + " = ?",
+				new String[] { auditId });
+		Log.d(LOG_TAG, "Record deleted by audit id " + rowEffected);
+		db.close();
+		return rowEffected;
+	}
 	@Override
 	public LocalAuditDefect getAuditDefectByLocalId(long localId) {
 		SQLiteDatabase db = helper.getReadableDatabase();
@@ -136,5 +144,19 @@ public class AuditDefectDaoImpl implements AuditDefectDao {
 		
 		return rowEffected;
 	}
+	
+	
+	public List<LocalAuditDefect> getPendingAuditDefectsByAuditId(final long auditId) {
 
+		String selectQuery = "SELECT  * FROM " + TABLE_NAME + " where "+ AUDIT_ID +"=? and "+ SYNC + "=?";
+		SQLiteDatabase db = helper.getWritableDatabase();
+
+		Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(auditId), "0" });
+		List<LocalAuditDefect> defects = loadAuditDefects(cursor);
+		cursor.close();
+		db.close();
+
+		return defects;
+
+	}
 }

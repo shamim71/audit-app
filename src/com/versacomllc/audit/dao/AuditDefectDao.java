@@ -9,7 +9,7 @@ public interface AuditDefectDao {
 	public static final String TABLE_NAME = "audit_defect";
 
 	public static final String ID = "local_id";
-	public static final String AUDIT_RID = "a_rid";
+	public static final String AUDIT_ID = "a_id";
 	public static final String DEFECT_RID = "d_rid";
 	public static final String TECH_RID = "t_rid";
 	public static final String TECH_NAME = "t_name";
@@ -26,8 +26,8 @@ public interface AuditDefectDao {
 
 	// Create audit table
 	public static final String CREATE_TABLE_SCRIPT = "CREATE TABLE "
-			+ TABLE_NAME + "(" + ID + " INTEGER PRIMARY KEY," + AUDIT_RID
-			+ " TEXT," + DEFECT_RID + " TEXT, " + TECH_RID + " TEXT, "
+			+ TABLE_NAME + "(" + ID + " INTEGER PRIMARY KEY," + AUDIT_ID
+			+ " INTEGER," + DEFECT_RID + " TEXT, " + TECH_RID + " TEXT, "
 			+ TECH_NAME + " TEXT, " + DEFECT_COUNT + " INTEGER," + DEFECT_NOTE
 			+ " TEXT, " + CODE + " TEXT, " + DESCRIPTION + " TEXT, " + SEVERITY
 			+ " TEXT, " + PIC_BEFORE + " TEXT, " + PIC_AFTER + " TEXT, "
@@ -45,4 +45,9 @@ public interface AuditDefectDao {
 	public int deleteAuditDefect(long localId);
 
 	public LocalAuditDefect getAuditDefectByLocalId(long localId);
+	
+	public List<LocalAuditDefect> getPendingAuditDefectsByAuditId(final long auditId);
+	
+	public int deleteAuditDefectByAuditId(String auditId);
+	
 }

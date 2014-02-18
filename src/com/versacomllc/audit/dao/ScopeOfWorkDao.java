@@ -38,4 +38,7 @@ public interface ScopeOfWorkDao {
 	public List<LocalScopeOfWork> getPendingScopeOfWorkByAuditId(final long auditId);
 	
 	LocalScopeOfWork getScopeOfWorkById(final long id);
+	
+	public int deleteSOWByAuditId(String auditId);
+	
 }

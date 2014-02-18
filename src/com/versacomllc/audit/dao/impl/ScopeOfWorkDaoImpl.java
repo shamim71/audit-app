@@ -7,9 +7,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.versacomllc.audit.dao.ScopeOfWorkDao;
 import com.versacomllc.audit.data.LocalScopeOfWork;
+import com.versacomllc.audit.utils.Constants;
 
 public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDao {
 
@@ -62,6 +64,14 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 		//Log.d(LOG_TAG, "Record deleted: "+ rowEffected);
 		
 	}
+	
+	public int deleteSOWByAuditId(String auditId) {
+		SQLiteDatabase db = helper.getWritableDatabase();
+		int rowEffected =  db.delete(TABLE_NAME,  AUDIT_ID + " = ?",	new String[] { auditId });
+		Log.d(Constants.LOG_TAG, "Record deleted by audit id "+ rowEffected);
+		return rowEffected;
+	}
+	
 	private List<LocalScopeOfWork> loadScopeOfWorks(Cursor cursor){
 		List<LocalScopeOfWork> scopeofWorks = new ArrayList<LocalScopeOfWork>();
 		

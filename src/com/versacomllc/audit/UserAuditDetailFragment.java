@@ -139,6 +139,8 @@ public class UserAuditDetailFragment extends Fragment {
 									if (item != null) {
 						
 										dbHandler.getAuditDao().deleteInternalAudit(item.getId());
+										dbHandler.getScopeOfWorkDao().deleteSOWByAuditId(String.valueOf(item.getId()));
+										dbHandler.getAuditDefectDao().deleteAuditDefectByAuditId(String.valueOf(item.getId()));
 										
 										AuditListAdapter adapter = (AuditListAdapter) parent.getAdapter();
 										adapter.clear();
@@ -148,6 +150,8 @@ public class UserAuditDetailFragment extends Fragment {
 										reloadAudits(tabKey);
 										adapter.addAll(audits);
 										adapter.notifyDataSetChanged();
+										getAppState().setCurrentAudit(-1);
+										getAppState().setCurrentAuditDefect(-1);
 
 									}
 								}
@@ -161,11 +165,15 @@ public class UserAuditDetailFragment extends Fragment {
 
 					AlertDialog dialog = builder.create();
 					dialog.show();
+					//dialog.dismiss();
 					return true;
 				}
 			});
 		}
 
 		return rootView;
+	}
+	private AuditManagement getAppState() {
+		return (AuditManagement) getActivity().getApplication();
 	}
 }

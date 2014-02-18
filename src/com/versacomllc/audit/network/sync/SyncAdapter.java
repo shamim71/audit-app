@@ -43,11 +43,14 @@ import android.util.Log;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.Employee;
 import com.versacomllc.audit.data.LocalAudit;
+import com.versacomllc.audit.data.LocalAuditDefect;
 import com.versacomllc.audit.data.LocalCustomer;
 import com.versacomllc.audit.data.LocalScopeOfWork;
+import com.versacomllc.audit.model.AuditDefect;
 import com.versacomllc.audit.model.Customer;
 import com.versacomllc.audit.model.Defect;
 import com.versacomllc.audit.model.InternalAudit;
+import com.versacomllc.audit.model.ScopeOfWork;
 import com.versacomllc.audit.model.StringResponse;
 import com.versacomllc.audit.network.sync.provider.FeedContract;
 import com.versacomllc.audit.spice.GenericGetRequest;
@@ -162,20 +165,18 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 			Log.i(TAG, "Streaming data from network: ");
 
-			// updateLocalFeedData(stream, syncResult);
-
 			/** Should sync when Internet connection is available */
 			if (Utils.isOnline(getContext())) {
 
 				// Sync customer
-				 //this.loadCustomerList(getContext());
+				 this.loadCustomerList(getContext());
 
 				// Add stie work types
-				 //this.loadSiteWorkTypesList(getContext());
+				 this.loadSiteWorkTypesList(getContext());
 
-				 //this.loadEmployeeList(getContext());
+				 this.loadEmployeeList(getContext());
 
-				 //this.loadDefectList(getContext());
+				 this.loadDefectList(getContext());
 
 				this.synchronizeAuditRecords(getContext());
 
@@ -204,92 +205,128 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		for(LocalAudit audit: lAudits){
 			if(audit.getRid().equals("-1")){
 				
-				List<LocalScopeOfWork> localScopeOfWorks = dbHandler.getScopeOfWorkDao().getPendingScopeOfWorkByAuditId(audit.getId());
-				audit.setWorks(localScopeOfWorks);
+				loadChildRecords(audit);
+				
 				addLocalAuditToServer(audit, context);	
 			}
 			else{
-				List<LocalScopeOfWork> localScopeOfWorks = dbHandler.getScopeOfWorkDao().getPendingScopeOfWorkByAuditId(audit.getId());
-				audit.setWorks(localScopeOfWorks);
+				
+				loadChildRecords(audit);
+				
 				updateLocalAuditToServer(audit, context);
 			}
-			
 		}
 
 
 	}
+	private void loadChildRecords(LocalAudit audit){
+		/** Scope of works */
+		List<LocalScopeOfWork> localScopeOfWorks = dbHandler.getScopeOfWorkDao().getPendingScopeOfWorkByAuditId(audit.getId());
+		audit.setWorks(localScopeOfWorks);
+		
+		/** Audit defects */
+		List<LocalAuditDefect> auditDefects = dbHandler.getAuditDefectDao().getPendingAuditDefectsByAuditId(audit.getId());
+		audit.setLocalAuditDefects(auditDefects);
+		
+	}
 	private void addLocalAuditToServer(final LocalAudit audit, Context context){
 		String endPoint = EndPoints.REST_CALL_POST_AUDITS.getSimpleAddress();
 
-		GenericSpiceCallback<StringResponse> callBackInterface = new GenericSpiceCallback<StringResponse>(
+		GenericSpiceCallback<InternalAudit> callBackInterface = new GenericSpiceCallback<InternalAudit>(
 				context) {
 
 			@Override
-			public void onSpiceSuccess(StringResponse response) {
+			public void onSpiceSuccess(InternalAudit response) {
 				if (response != null) {
 					Log.d(LOG_TAG,
 							"Response from the server: "
-									+ response.getMessage() + " , rid: "+ response.getResult());
-					String rid = response.getResult();
-					
-					audit.setRid(rid);
-					audit.setSyn(1);
-					
-					dbHandler.getAuditDao().updateInternalAudit(audit);
+									+ response.getRid());
+
+					updateResonse(audit, response);
 
 				}
 
 			}
 
 			@Override
-			public void onSpiceError(RestCall<StringResponse> restCall,
+			public void onSpiceError(RestCall<InternalAudit> restCall,
 					StringResponse response) {
 			}
 
 			@Override
-			public void onSpiceError(RestCall<StringResponse> restCall,
+			public void onSpiceError(RestCall<InternalAudit> restCall,
 					int reason, Throwable exception) {
 			}
 
 		};
-		restHelper.execute(new GenericPostRequest<StringResponse>(
-				StringResponse.class, endPoint, audit.toInternalAudit()), callBackInterface);
+		restHelper.execute(new GenericPostRequest<InternalAudit>(
+				InternalAudit.class, endPoint, audit.toInternalAudit()), callBackInterface);
 		
+	}
+	private void updateResonse(final LocalAudit audit, InternalAudit response){
+		audit.setRid(response.getRid());
+		audit.setSyn(1);
+		
+		dbHandler.getAuditDao().updateInternalAudit(audit);
+		
+		//Update Scope of works
+		if(audit.getWorks() != null && response.getSiteWorks() != null){
+			for(int i=0; i< audit.getWorks().size() ; i++){
+				LocalScopeOfWork w = audit.getWorks().get(i);
+				ScopeOfWork work = response.getSiteWorks().get(i);
+				w.setRid(work.getRid());
+				w.setSync(1);
+				dbHandler.getScopeOfWorkDao().updateSOW(w);
+
+			}
+			List<LocalScopeOfWork> works = 	dbHandler.getScopeOfWorkDao().getPendingScopeOfWorkByAuditId(audit.getId());
+			for(LocalScopeOfWork w: works){
+				Log.d(LOG_TAG, w.toString());
+			}
+		}
+		
+		//Update audit Defects
+		if(audit.getLocalAuditDefects() != null && response.getAuditDefects() != null){
+			for(int i=0; i< audit.getLocalAuditDefects().size() ; i++){
+				LocalAuditDefect d = audit.getLocalAuditDefects().get(i);
+				AuditDefect defect = response.getAuditDefects().get(i);
+				d.setRid(defect.getRid());
+				d.setSync(1);
+				dbHandler.getAuditDefectDao().updateAuditDefect(d);
+			}
+		}
 	}
 	private void updateLocalAuditToServer(final LocalAudit audit, Context context){
 		String endPoint = EndPoints.REST_CALL_POST_UPDATE_AUDIT.getAddress(audit.getRid());
 
-		GenericSpiceCallback<StringResponse> callBackInterface = new GenericSpiceCallback<StringResponse>(
+		GenericSpiceCallback<InternalAudit> callBackInterface = new GenericSpiceCallback<InternalAudit>(
 				context) {
 
 			@Override
-			public void onSpiceSuccess(StringResponse response) {
+			public void onSpiceSuccess(InternalAudit response) {
 				if (response != null) {
 					Log.d(LOG_TAG,
 							"Response from the server: "
-									+ response.getMessage() + " ,update with rid: "+ response.getResult());
+									+ response.getRid());
 						
-					audit.setSyn(1);
-					
-					dbHandler.getAuditDao().updateInternalAudit(audit);
-
+					updateResonse(audit, response);
 				}
 
 			}
 
 			@Override
-			public void onSpiceError(RestCall<StringResponse> restCall,
+			public void onSpiceError(RestCall<InternalAudit> restCall,
 					StringResponse response) {
 			}
 
 			@Override
-			public void onSpiceError(RestCall<StringResponse> restCall,
+			public void onSpiceError(RestCall<InternalAudit> restCall,
 					int reason, Throwable exception) {
 			}
 
 		};
-		restHelper.execute(new GenericPostRequest<StringResponse>(
-				StringResponse.class, endPoint, audit.toInternalAudit()), callBackInterface);
+		restHelper.execute(new GenericPostRequest<InternalAudit>(
+				InternalAudit.class, endPoint, audit.toInternalAudit()), callBackInterface);
 		
 	}
 

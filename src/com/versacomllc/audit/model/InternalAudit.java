@@ -34,6 +34,8 @@ public class InternalAudit {
 	
 	protected List<ScopeOfWork> siteWorks;
 	
+	protected List<AuditDefect> auditDefects;
+	
 	public String getAuditType() {
 		return auditType;
 	}
@@ -130,18 +132,7 @@ public class InternalAudit {
 		this.siteId = siteId;
 	}
 
-	@Override
-	public String toString() {
-		return "InternalAudit [ id=" + rid
-				+ ", auditType=" + auditType + ", auditDate=" + auditDate
-				+ ", auditHour=" + auditHour + ", auditStatus=" + auditStatus
-				+ ", auditedBy=" + auditedBy + ", auditedByEmployee="
-				+ auditedByEmployee + ", supervisedBy=" + supervisedBy
-				+ ", supervisedByEmployee=" + supervisedByEmployee
-				+ ", managedBy=" + managedBy + ", managedByEmployee="
-				+ managedByEmployee + ", customer=" + customer + ", siteId="
-				+ siteId + "]";
-	}
+
 
 	public String getRid() {
 		return rid;
@@ -166,4 +157,15 @@ public class InternalAudit {
 	public void setSiteWorks(List<ScopeOfWork> siteWorks) {
 		this.siteWorks = siteWorks;
 	}
+
+	public List<AuditDefect> getAuditDefects() {
+		return auditDefects;
+	}
+
+	public void setAuditDefects(List<AuditDefect> auditDefects) {
+		this.auditDefects = auditDefects;
+	}
+
+
+	
 }

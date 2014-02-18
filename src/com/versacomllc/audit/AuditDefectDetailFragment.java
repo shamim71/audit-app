@@ -42,6 +42,7 @@ import com.versacomllc.audit.adapter.DefectAutocompleteListAdapter;
 import com.versacomllc.audit.adapter.EmployeeAutocompleteListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.Employee;
+import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalAuditDefect;
 import com.versacomllc.audit.data.LocalDefect;
 import com.versacomllc.audit.dummy.AuditDefectContent;
@@ -126,7 +127,7 @@ public class AuditDefectDetailFragment extends Fragment {
 				localId = getAppState().getCurrentAuditDefect();
 			}
 		}
-		auditDefect.setAuditId(auditId);
+		auditDefect.setAuditId(Long.parseLong(auditId));
 		auditDefect.setLocalId(localId);
 
 	}
@@ -431,7 +432,7 @@ public class AuditDefectDetailFragment extends Fragment {
 			public void onClick(View v) {
 
 				inputData();
-
+				auditDefect.setSync(0);
 				if (localId != -1) {
 					dbHandler.getAuditDefectDao()
 							.updateAuditDefect(auditDefect);
@@ -446,6 +447,12 @@ public class AuditDefectDetailFragment extends Fragment {
 					localId = id;
 					getAppState().setCurrentAuditDefect(localId);
 				}
+				LocalAudit audit = dbHandler.getAuditDao().getInternalAuditsById(String.valueOf(auditId));
+				if(audit != null){
+					audit.setSyn(0);
+					dbHandler.getAuditDao().updateInternalAudit(audit);					
+				}
+				
 
 			}
 		});
@@ -494,7 +501,7 @@ public class AuditDefectDetailFragment extends Fragment {
 			auditDefect.setCount(mEditTextDefect.getText().toString());
 		}
 		auditDefect.setNote(mEditTextNote.getText().toString());
-		auditDefect.setAuditId(auditId);
+		auditDefect.setAuditId(Long.parseLong(auditId));
 
 	}
 }

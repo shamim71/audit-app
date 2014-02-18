@@ -35,8 +35,8 @@ import com.versacomllc.audit.R;
 import com.versacomllc.audit.adapter.EmployeeAutocompleteListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.Employee;
+import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalScopeOfWork;
-
 import com.versacomllc.audit.utils.Constants;
 
 
@@ -86,11 +86,18 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 								LocalScopeOfWork sow = getScopeOfWork();
 								
 								Log.d(LOG_TAG, sow.toString());
+								sow.setSync(0);
 								if(mId == -1){
+									
 									dbHandler.getScopeOfWorkDao().addSOW(sow);
 								}
 								else{
 									dbHandler.getScopeOfWorkDao().updateSOW(sow);
+								}
+								LocalAudit audit = dbHandler.getAuditDao().getInternalAuditsById(String.valueOf(mAid));
+								if(audit != null){
+									audit.setSyn(0);
+									dbHandler.getAuditDao().updateInternalAudit(audit);					
 								}
 								
 								onSave(sow);

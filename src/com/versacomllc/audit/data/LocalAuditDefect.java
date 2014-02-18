@@ -2,34 +2,26 @@ package com.versacomllc.audit.data;
 
 import com.versacomllc.audit.model.AuditDefect;
 
-public class LocalAuditDefect extends AuditDefect{
+public class LocalAuditDefect extends AuditDefect {
 
 	private long localId;
 
-	private String auditId;
-	
+	private long auditId;
+
 	private String techName;
-	
+
 	private String defectPicBefore;
-	
+
 	private String defectPicAfter;
-	
+
 	private int sync;
-	
+
 	public long getLocalId() {
 		return localId;
 	}
 
 	public void setLocalId(long localId) {
 		this.localId = localId;
-	}
-
-	public String getAuditId() {
-		return auditId;
-	}
-
-	public void setAuditId(String auditId) {
-		this.auditId = auditId;
 	}
 
 	public String getTechName() {
@@ -64,7 +56,33 @@ public class LocalAuditDefect extends AuditDefect{
 		this.sync = sync;
 	}
 
+	public long getAuditId() {
+		return auditId;
+	}
 
-		
-	
+	public void setAuditId(long auditId) {
+		this.auditId = auditId;
+	}
+
+	public AuditDefect toAuditDefect() {
+
+		AuditDefect auditDefect = new AuditDefect();
+
+		auditDefect.setCount(this.count);
+		auditDefect.setDefectCode(this.defectCode);
+		auditDefect.setDefectDescription(this.defectDescription);
+		auditDefect.setDefectId(this.defectId);
+		auditDefect.setDefectSeverity(this.defectSeverity);
+
+		auditDefect.setDefectPicAfteOnServer(this.defectPicAfter);
+		auditDefect.setDefectPicBeforeOnServer(defectPicBefore);
+
+		auditDefect.setFixed(fixed);
+		auditDefect.setNote(note);
+		auditDefect.setRid(rid);
+		auditDefect.setTechId(techId);
+
+		return auditDefect;
+	}
+
 }

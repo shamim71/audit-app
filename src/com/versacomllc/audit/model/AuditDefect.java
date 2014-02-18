@@ -2,23 +2,23 @@ package com.versacomllc.audit.model;
 
 public class AuditDefect {
 
-	private String count;
+	protected String count;
 	
-	private String defectId;
+	protected String defectId;
 	
-	private String note;
+	protected String note;
 
-	private String Id;
+	protected String rid;
 	
-	private String techId;
+	protected String techId;
 	
-	private String defectCode;
+	protected String defectCode;
 	
-	private String defectSeverity;
+	protected String defectSeverity;
 	
-	private String defectDescription;
+	protected String defectDescription;
 	
-	private String fixed;
+	protected String fixed;
 	
 	
 	private String defectPicBeforeOnServer;
@@ -50,13 +50,6 @@ public class AuditDefect {
 		this.note = note;
 	}
 
-	public String getId() {
-		return Id;
-	}
-
-	public void setId(String id) {
-		Id = id;
-	}
 
 	public String getDefectCode() {
 		return defectCode;
@@ -96,6 +89,30 @@ public class AuditDefect {
 
 	public void setFixed(String fixed) {
 		this.fixed = fixed;
+	}
+
+	public String getRid() {
+		return rid;
+	}
+
+	public void setRid(String rid) {
+		this.rid = rid;
+	}
+
+	public String getDefectPicBeforeOnServer() {
+		return defectPicBeforeOnServer;
+	}
+
+	public void setDefectPicBeforeOnServer(String defectPicBeforeOnServer) {
+		this.defectPicBeforeOnServer = defectPicBeforeOnServer;
+	}
+
+	public String getDefectPicAfteOnServer() {
+		return defectPicAfteOnServer;
+	}
+
+	public void setDefectPicAfteOnServer(String defectPicAfteOnServer) {
+		this.defectPicAfteOnServer = defectPicAfteOnServer;
 	}
 	
 }

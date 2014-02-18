@@ -58,7 +58,6 @@ public class AuditDaoImpl implements AuditDao {
 	@Override
 	public int updateInternalAudit(LocalAudit audit) {
 
-		audit.setSyn(0);
 		ContentValues values = createContentValues(audit);
 		// updating row
 		SQLiteDatabase db = helper.getWritableDatabase();
@@ -179,7 +178,7 @@ public class AuditDaoImpl implements AuditDao {
 	@Override
 	public List<LocalAudit> getAllPendingInternalAudits() {
 		String selectQuery = "SELECT  * FROM " + TABLE_INTERNAL_AUDITS
-				+ " where " + SYNC + "=0";
+				+ " where " + SYNC + "= 0";
 		SQLiteDatabase db = helper.getReadableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 		List<LocalAudit> auditList = loadAudits(cursor);

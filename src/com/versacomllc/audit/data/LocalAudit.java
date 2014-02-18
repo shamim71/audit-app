@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.text.TextUtils;
 
+import com.versacomllc.audit.model.AuditDefect;
 import com.versacomllc.audit.model.InternalAudit;
 import com.versacomllc.audit.model.ScopeOfWork;
 
@@ -15,6 +16,8 @@ public class LocalAudit extends InternalAudit{
 	private int syn;
 	
 	private List<LocalScopeOfWork> works;
+	
+	private List<LocalAuditDefect> localAuditDefects;
 	
 	public long getId() {
 		return id;
@@ -60,7 +63,18 @@ public class LocalAudit extends InternalAudit{
 		
 		if(this.works != null && this.works.size()>0){
 			iAudit.setSiteWorks(new ArrayList<ScopeOfWork>());
+			for(LocalScopeOfWork w: this.works){
+				iAudit.getSiteWorks().add(w.toScopeofWorks());
+			}
 		}
+		
+		if(this.localAuditDefects != null && this.localAuditDefects.size()>0){
+			iAudit.setAuditDefects(new ArrayList<AuditDefect>());
+			for(LocalAuditDefect w: this.localAuditDefects){
+				iAudit.getAuditDefects().add(w.toAuditDefect());
+			}
+		}
+		
 		return iAudit;
 	}
 
@@ -79,6 +93,32 @@ public class LocalAudit extends InternalAudit{
 	public void setWorks(List<LocalScopeOfWork> works) {
 		this.works = works;
 	}
+
+	public List<LocalAuditDefect> getLocalAuditDefects() {
+		return localAuditDefects;
+	}
+
+	public void setLocalAuditDefects(List<LocalAuditDefect> localAuditDefects) {
+		this.localAuditDefects = localAuditDefects;
+	}
+
+	@Override
+	public String toString() {
+		return "LocalAudit [id=" + id + ", syn=" + syn + ", works=" + works
+				+ ", localAuditDefects=" + localAuditDefects + ", rid=" + rid
+				+ ", auditType=" + auditType + ", auditDate=" + auditDate
+				+ ", auditHour=" + auditHour + ", auditStatus=" + auditStatus
+				+ ", auditedBy=" + auditedBy + ", auditedByEmployee="
+				+ auditedByEmployee + ", supervisedBy=" + supervisedBy
+				+ ", supervisedByEmployee=" + supervisedByEmployee
+				+ ", managedBy=" + managedBy + ", managedByEmployee="
+				+ managedByEmployee + ", customer=" + customer
+				+ ", customerName=" + customerName + ", siteId=" + siteId
+				+ ", siteWorks=" + siteWorks + ", auditDefects=" + auditDefects
+				+ "]";
+	}
+
+
 
 	
 }
