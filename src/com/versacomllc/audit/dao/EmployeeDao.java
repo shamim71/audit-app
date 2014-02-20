@@ -32,4 +32,7 @@ public interface EmployeeDao {
 	void addEmployeeList(List<Employee> employees);
 
 
+	Employee findEmployeeByEmail(final String email);
+	
+	int update(Employee employee);
 }

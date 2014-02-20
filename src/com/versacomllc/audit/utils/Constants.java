@@ -8,6 +8,9 @@ public final class Constants {
 	//public static final String SERVER_ROOT = "http://dalqbase1.versacomllc.com:8080/quickbooks-gateway-server";
 	public static final String SERVER_ROOT = "http://d1mnzch1.versacomllc.com:9080/quickbooks-gateway-server";
 
+	public static final String FILE_UPLOAD_PATH  = "http://d1mnzch1.versacomllc.com:9080/easy-ecm-service/FileUploadServlet?workspace=EasyECM&path=AuditAppPictures";
+	public static final String FILE_CONTENT_PATH = "http://d1mnzch1.versacomllc.com:9080/easy-ecm-service/service/file/content?path=/AuditAppPictures/";
+	
 	public static final String LOG_TAG = "AuditManagement";
 
 	public static final String REST_LOG_TAG = "REST";

@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.versacomllc.audit.dao.EmployeeDao;
@@ -59,20 +60,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
 	}
 
-	public Employee getEmployeeByEmail(String email) {
-
-		String selectQuery = "SELECT  * FROM " + TABLE_NAME + " where " + EMAIL
-				+ "='" + email + "'";
-		SQLiteDatabase db = helper.getReadableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
-		List<Employee> list = loadAllEmployees(cursor);
-		cursor.close();
-		db.close();
-		if (list.size() > 0) {
-			return list.get(0);
-		}
-		return null;
-	}
 
 	public Employee getEmployeeByEmail(SQLiteDatabase db, String email) {
 
@@ -95,7 +82,11 @@ public class EmployeeDaoImpl implements EmployeeDao {
 		values.put(FIRST_NAME, emp.getFirstName());
 		values.put(LAST_NAME, emp.getLastName());
 		values.put(EMAIL, emp.getEmail());
-		values.put(PASSWORD, emp.getPassword());
+		
+		if(!TextUtils.isEmpty(emp.getPassword())){
+			values.put(PASSWORD, emp.getPassword());
+		}
+		
 		values.put(RID, emp.getqBaseRef());
 
 		return values;
@@ -120,6 +111,33 @@ public class EmployeeDaoImpl implements EmployeeDao {
 		}
 
 		return list;
+	}
+
+	@Override
+	public Employee findEmployeeByEmail(String email) {
+		String selectQuery = "SELECT  * FROM " + TABLE_NAME + " where " + EMAIL
+				+ "='" + email + "'";
+		SQLiteDatabase db = helper.getReadableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		List<Employee> list = loadAllEmployees(cursor);
+		cursor.close();
+		db.close();
+		if (list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public int update(Employee employee) {
+		ContentValues values = createContentValues(employee);
+		// updating row
+		SQLiteDatabase db = helper.getWritableDatabase();
+		int rowEffected = db.update(TABLE_NAME, values, ID + " = ?",
+				new String[] { String.valueOf(employee.getLocalId()) });
+		Log.d(LOG_TAG, "Record updated: " + rowEffected);
+		db.close();
+		return rowEffected;
 	}
 
 }

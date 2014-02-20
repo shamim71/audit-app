@@ -21,9 +21,9 @@ public class AuditDefect {
 	protected String fixed;
 	
 	
-	private String defectPicBeforeOnServer;
+	protected String defectPicBeforeOnServer;
 	
-	private String defectPicAfteOnServer;
+	protected String defectPicAfteOnServer;
 	
 	
 	public String getCount() {

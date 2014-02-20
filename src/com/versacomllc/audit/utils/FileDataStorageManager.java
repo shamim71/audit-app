@@ -89,17 +89,22 @@ public class FileDataStorageManager {
 	 */
 	public static String getContentFromFile(Context context, StorageFile name) {
 
+		return getContentFromFile(context, name.toString());
+	}
+
+	public static String getContentFromFile(Context context, String fName) {
+
 		FileInputStream fis = null;
 		String content = null;
 		try {
 			if (isExternalStorageAvailable()) {
 				File file = new File(context.getExternalFilesDir(null),
-						name.toString());
+						fName);
 				if (!file.exists())
 					return null;
 				fis = new FileInputStream(file);
 			} else {
-				fis = context.openFileInput(name.toString());
+				fis = context.openFileInput(fName);
 			}
 			content = convertStreamToString(fis);
 		} catch (IOException e) {
@@ -117,7 +122,6 @@ public class FileDataStorageManager {
 		return content;
 
 	}
-
 	private static boolean isExternalStorageAvailable() {
 		boolean isAvailable = false;
 

@@ -246,7 +246,12 @@ public class AuditDefectDetailFragment extends Fragment {
 
 				
 				auditDefect.setDefectPicBefore(path);
+				auditDefect.setSync(0);
 				dbHandler.getAuditDefectDao().updateAuditDefect(auditDefect);
+				
+				LocalAudit audit = dbHandler.getAuditDao().getInternalAuditsById(auditId);
+				audit.setSyn(0);
+				dbHandler.getAuditDao().updateInternalAudit(audit);
 			}
 		}
 
@@ -270,7 +275,12 @@ public class AuditDefectDetailFragment extends Fragment {
 				}
 				
 				auditDefect.setDefectPicAfter(path);
+				auditDefect.setSync(0);
+				
 				dbHandler.getAuditDefectDao().updateAuditDefect(auditDefect);
+				LocalAudit audit = dbHandler.getAuditDao().getInternalAuditsById(auditId);
+				audit.setSyn(0);
+				dbHandler.getAuditDao().updateInternalAudit(audit);
 			}
 
 		}
@@ -503,5 +513,11 @@ public class AuditDefectDetailFragment extends Fragment {
 		auditDefect.setNote(mEditTextNote.getText().toString());
 		auditDefect.setAuditId(Long.parseLong(auditId));
 
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		Log.d(LOG_TAG, "......................");
 	}
 }

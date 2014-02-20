@@ -74,8 +74,8 @@ public class LocalAuditDefect extends AuditDefect {
 		auditDefect.setDefectId(this.defectId);
 		auditDefect.setDefectSeverity(this.defectSeverity);
 
-		auditDefect.setDefectPicAfteOnServer(this.defectPicAfter);
-		auditDefect.setDefectPicBeforeOnServer(defectPicBefore);
+		auditDefect.setDefectPicAfteOnServer(this.defectPicAfteOnServer);
+		auditDefect.setDefectPicBeforeOnServer(this.defectPicBeforeOnServer);
 
 		auditDefect.setFixed(fixed);
 		auditDefect.setNote(note);

@@ -16,10 +16,13 @@
 
 package com.versacomllc.audit.network.sync;
 
+import static com.versacomllc.audit.utils.Constants.FILE_UPLOAD_PATH;
 import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +30,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.accounts.Account;
@@ -38,6 +49,7 @@ import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.versacomllc.audit.data.DatabaseHandler;
@@ -58,6 +70,7 @@ import com.versacomllc.audit.spice.GenericPostRequest;
 import com.versacomllc.audit.spice.GenericSpiceCallback;
 import com.versacomllc.audit.spice.RestCall;
 import com.versacomllc.audit.spice.SpiceRestHelper;
+import com.versacomllc.audit.utils.Constants;
 import com.versacomllc.audit.utils.EndPoints;
 import com.versacomllc.audit.utils.Utils;
 
@@ -180,7 +193,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 				this.synchronizeAuditRecords(getContext());
 
-				////this.loadAuditList(getContext());
 			}
 
 		} catch (RuntimeException e) {
@@ -190,7 +202,56 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 		Log.i(TAG, "Network synchronization complete");
 	}
+	  private String uploadFile(String path) {
+		  	
 
+		  	String downloadPath = Constants.FILE_CONTENT_PATH;
+		   
+		    if(TextUtils.isEmpty(path)){
+		    	Log.d(LOG_TAG, "File path is empty.");
+		    	return null;
+		    }
+		
+		    HttpClient httpclient = new DefaultHttpClient();
+		    try {
+		    	File file = new File(path);
+		    
+		      HttpPost httppost = new HttpPost(FILE_UPLOAD_PATH);
+		      String mimeType = URLConnection.guessContentTypeFromName(path);
+		      FileBody bin = new FileBody(file, mimeType);
+
+		      MultipartEntity reqEntity = new MultipartEntity();
+		      reqEntity.addPart(file.getName(), bin);
+
+		      httppost.setEntity(reqEntity);
+
+		      Log.i(TAG, "executing request " + httppost.getRequestLine());
+		      HttpResponse response = httpclient.execute(httppost);
+		      HttpEntity resEntity = response.getEntity();
+
+		      if (resEntity != null) {
+		        Log.i(TAG, "Response content length: " + resEntity.getContentLength());
+		      }
+		      downloadPath = downloadPath  + file.getName();
+
+		    }
+		    catch (ClientProtocolException e) {
+
+		      e.printStackTrace();
+		    }
+		    catch (IOException e) {
+
+		      e.printStackTrace();
+		    }
+		    finally {
+		      try {
+		        httpclient.getConnectionManager().shutdown();
+		      }
+		      catch (Exception ignore) {
+		      }
+		    }
+		    return downloadPath;
+		  }
 	private void synchronizeAuditRecords(Context context) {
 		final List<LocalAudit> lAudits = dbHandler.getAuditDao()
 				.getAllPendingInternalAudits();
@@ -228,7 +289,28 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		List<LocalAuditDefect> auditDefects = dbHandler.getAuditDefectDao().getPendingAuditDefectsByAuditId(audit.getId());
 		audit.setLocalAuditDefects(auditDefects);
 		
+		uploadAuditDefectPictures(auditDefects);
+		
 	}
+	
+	private void uploadAuditDefectPictures(List<LocalAuditDefect> auditDefects){
+		
+		for(LocalAuditDefect defect: auditDefects){
+			
+			final String picBeforePath = defect.getDefectPicBefore();
+			
+			final String picAfterPath = defect.getDefectPicAfter();
+			
+			final String downloadPathB = uploadFile(picBeforePath);
+			
+			final String downloadPathA = uploadFile(picAfterPath);
+			
+			defect.setDefectPicBeforeOnServer(downloadPathB);
+			defect.setDefectPicAfteOnServer(downloadPathA);
+			
+		}
+	}
+	
 	private void addLocalAuditToServer(final LocalAudit audit, Context context){
 		String endPoint = EndPoints.REST_CALL_POST_AUDITS.getSimpleAddress();
 

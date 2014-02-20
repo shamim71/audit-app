@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -42,21 +41,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.versacomllc.audit.adapter.AuditDefectListAdapter;
-import com.versacomllc.audit.adapter.AuditListAdapter;
 import com.versacomllc.audit.adapter.ScopeOfWorkListAdapter;
 import com.versacomllc.audit.adapter.SimpleDropDownListAdapter;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalAuditDefect;
 import com.versacomllc.audit.data.LocalCustomer;
-import com.versacomllc.audit.data.LocalDefect;
 import com.versacomllc.audit.data.LocalScopeOfWork;
-
 import com.versacomllc.audit.dummy.DummyContent;
 import com.versacomllc.audit.fragment.ScopeOfWorkDialogFragement;
 import com.versacomllc.audit.model.AuthenticationResult;
 import com.versacomllc.audit.model.Customer;
-import com.versacomllc.audit.model.InternalAudit;
 import com.versacomllc.audit.utils.Constants;
 
 /**
@@ -91,6 +86,8 @@ public class InternalAuditDetailFragment extends Fragment {
 	SimpleDropDownListAdapter customerAdapter;
 	ScopeOfWorkListAdapter scopeOfWorkListAdapter;
 
+	AuditDefectListAdapter defectListAdapter;
+	
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
@@ -176,10 +173,10 @@ public class InternalAuditDetailFragment extends Fragment {
 		ListView listViewDefects = (ListView) rootView
 				.findViewById(R.id.lv_defect_list);
 
-		AuditDefectListAdapter adapter = new AuditDefectListAdapter(
+		defectListAdapter = new AuditDefectListAdapter(
 				getActivity(), R.layout.audit_defect_list_item,
 				localAuditDefects);
-		listViewDefects.setAdapter(adapter);
+		listViewDefects.setAdapter(defectListAdapter);
 
 		listViewDefects.setOnItemClickListener(new OnItemClickListener() {
 
@@ -663,6 +660,25 @@ public class InternalAuditDetailFragment extends Fragment {
 					Toast.LENGTH_LONG).show();
 		}
 
+	}
+
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		Log.d(LOG_TAG, "......................Reloading audit details"+ mItem.id);
+		if (mItem != null && mItem.id.equals("3")) {
+			//return getDefectListView(inflater, container, savedInstanceState);
+			if(defectListAdapter != null){
+				defectListAdapter.clear();
+				
+
+				List<LocalAuditDefect> localAuditDefects = dbHandler
+						.getAuditDefectDao().getAuditDefectByAuditId(auditId);
+				defectListAdapter.addAll(localAuditDefects);
+				defectListAdapter.notifyDataSetChanged();
+			}
+		}
 	}
 
 }
