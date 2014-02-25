@@ -1,7 +1,6 @@
 package com.versacomllc.audit.activity;
 
 import static com.versacomllc.audit.utils.Constants.ACTION_FINISH;
-import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
 import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -14,13 +13,22 @@ import android.widget.Button;
 import com.versacomllc.audit.InternalAuditListActivity;
 import com.versacomllc.audit.R;
 import com.versacomllc.audit.UserAuditListActivity;
-
 import com.versacomllc.audit.network.sync.SyncUtils;
 import com.versacomllc.audit.network.sync.accounts.GenericAccountService;
 import com.versacomllc.audit.network.sync.provider.FeedContract;
 import com.versacomllc.audit.utils.Constants;
 
 public class HomeActivity extends BaseActivity {
+
+	/**
+	 * Handle to a SyncObserver. The ProgressBar element is visible until the
+	 * SyncObserver reports that the sync is complete.
+	 * 
+	 * <p>
+	 * This allows us to delete our SyncObserver once the application is no
+	 * longer in the foreground.
+	 */
+	private Object mSyncObserverHandle;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,10 +45,10 @@ public class HomeActivity extends BaseActivity {
 
 		getApplicationState().setCurrentAudit(-1);
 		getApplicationState().setCurrentAuditDefect(-1);
-		
+
 		Intent intent = new Intent(this, InternalAuditListActivity.class);
 		startActivity(intent);
-		
+
 	}
 
 	public void launchShowAudits(View v) {
@@ -51,15 +59,24 @@ public class HomeActivity extends BaseActivity {
 
 	public void synchronizeData(View v) {
 		Log.i(Constants.LOG_TAG, "Synchronizing data...");
+
+		mSyncStatusObserver.onStatusChanged(0);
+
+		// Watch for sync state changes
+		final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING
+				| ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
+
+		mSyncObserverHandle = ContentResolver.addStatusChangeListener(mask,
+				mSyncStatusObserver);
+		
 		SyncUtils.TriggerRefresh();
+
 	}
+
 
 	public void signOut(View v) {
 
 		getApplicationState().saveAuthentication(null);
-
-
-		// getApplicationState().saveInventorySites(new InventorySite[0]);
 
 		sendBroadcast(new Intent(ACTION_FINISH));
 
@@ -77,21 +94,23 @@ public class HomeActivity extends BaseActivity {
 		// Watch for sync state changes
 		final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING
 				| ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
-		
-		// mSyncObserverHandle = ContentResolver.addStatusChangeListener(mask, mSyncStatusObserver);
+
+		mSyncObserverHandle = ContentResolver.addStatusChangeListener(mask,
+				mSyncStatusObserver);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		/*
-		 * if (mSyncObserverHandle != null) {
-		 * ContentResolver.removeStatusChangeListener(mSyncObserverHandle);
-		 * mSyncObserverHandle = null; }
-		 */
+
+		if (mSyncObserverHandle != null) {
+			ContentResolver.removeStatusChangeListener(mSyncObserverHandle);
+			mSyncObserverHandle = null;
+		}
+
 	}
 
-	public void setRefreshActionButtonState(boolean refreshing) {
+	private void setRefreshActionButtonState(boolean refreshing) {
 
 		Button btnSync = (Button) findViewById(R.id.btn_sysnchronize_data);
 		if (refreshing) {
@@ -141,7 +160,9 @@ public class HomeActivity extends BaseActivity {
 							FeedContract.CONTENT_AUTHORITY);
 					boolean syncPending = ContentResolver.isSyncPending(
 							account, FeedContract.CONTENT_AUTHORITY);
-					 setRefreshActionButtonState(syncActive || syncPending);
+
+					setRefreshActionButtonState(syncActive || syncPending);
+
 				}
 			});
 		}

@@ -32,6 +32,10 @@ public class InternalAudit {
 	
 	protected String siteId;
 	
+	protected String city;
+	
+	protected String state;
+	
 	protected List<ScopeOfWork> siteWorks;
 	
 	protected List<AuditDefect> auditDefects;
@@ -164,6 +168,22 @@ public class InternalAudit {
 
 	public void setAuditDefects(List<AuditDefect> auditDefects) {
 		this.auditDefects = auditDefects;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 

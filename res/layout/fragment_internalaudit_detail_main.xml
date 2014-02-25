@@ -44,28 +44,55 @@
                 android:id="@+id/sp_customer_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="6dp" />
 
             <TextView
                 android:id="@+id/tv_customerSiteAccess"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:text="@string/customer_site_id" />
 
             <EditText
                 android:id="@+id/et_customerSiteID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:hint="@string/hint_customer_site_id"
                 android:inputType="textCapCharacters" />
+            <TextView
+                android:id="@+id/tv_site_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="City:" />
 
+            <EditText
+                android:id="@+id/et_site_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:hint="Enter City"
+                android:inputType="textCapWords" />
+            <TextView
+                android:id="@+id/tv_site_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="State:" />
+
+            <EditText
+                android:id="@+id/et_site_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:hint="Enter State"
+                android:inputType="textCapCharacters" />            
             <TextView
                 android:id="@+id/tv_AuditDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:text="@string/audit_date" />
 
             <RelativeLayout
@@ -98,14 +125,14 @@
                 android:id="@+id/tv_auditHour"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:text="@string/label_audit_hours" />
 
             <EditText
                 android:id="@+id/et_auditHour"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:hint="@string/hint_audit_hours"
                 android:inputType="numberDecimal" />
 
@@ -113,27 +140,27 @@
                 android:id="@+id/tv_auditType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:text="@string/label_audit_type" />
 
             <Spinner
                 android:id="@+id/sp_auditType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="6dp" />
 
             <TextView
                 android:id="@+id/tv_auditStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:text="@string/label_audit_status" />
 
             <Spinner
                 android:id="@+id/sp_auditStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="6dp" />
 
             <TextView
                 android:id="@+id/tv_auditor"

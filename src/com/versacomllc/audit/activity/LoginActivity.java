@@ -38,7 +38,7 @@ public class LoginActivity extends BaseActivity {
 		setContentView(R.layout.activity_login);
 
 		dbHandler = new DatabaseHandler(this);
-		
+
 		// Create account, if needed
 		SyncUtils.CreateSyncAccount(this);
 
@@ -69,7 +69,6 @@ public class LoginActivity extends BaseActivity {
 
 		tvAppName.setTypeface(myTypeface);
 
-		etEmailAddress.setText("shamim71@gmail.com");
 	}
 
 	public void authenticateUser(View v) {
@@ -107,9 +106,9 @@ public class LoginActivity extends BaseActivity {
 				getApplicationState().saveAuthentication(response);
 
 				processResult();
-			}
-			else{
-				Toast.makeText(LoginActivity.this,
+			} else {
+				Toast.makeText(
+						LoginActivity.this,
 						"Invalid credential or User never logged in while connected with Internet.",
 						Toast.LENGTH_LONG).show();
 			}
@@ -139,10 +138,11 @@ public class LoginActivity extends BaseActivity {
 							Employee emp = dbHandler.getEmployeeDao()
 									.findEmployeeByEmail(
 											response.getResult().getEmail());
+							if (emp != null) {
+								emp.setPassword(request.getPassword());
 
-							emp.setPassword(request.getPassword());
-
-							dbHandler.getEmployeeDao().update(emp);
+								dbHandler.getEmployeeDao().update(emp);
+							}
 
 							processResult();
 						}

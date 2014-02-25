@@ -10,7 +10,7 @@ public interface AuditDao {
 
 	public static final String ID = "id";
 	public static final String RID = "rid";
-	
+
 	// INTERNAL AUDIT Table Columns names
 	public static final String AUDIT_TYPE = "type";
 	public static final String AUDIT_STATUS = "status";
@@ -21,34 +21,37 @@ public interface AuditDao {
 	public static final String AUDIT_SITE_ID = "site_id";
 	public static final String AUDIT_CUSTOMER = "customer_id";
 	public static final String AUDIT_CUSTOMER_NAME = "customer_NAME";
+	public static final String CITY = "city";
+	public static final String STATE = "state";
 	public static final String SYNC = "sync";
-	
+
 	// Create audit table
-	public static final String CREATE_TABLE_SCRIPT = "CREATE TABLE " + TABLE_INTERNAL_AUDITS
-			+ "(" + ID + " INTEGER PRIMARY KEY," + AUDIT_TYPE + " TEXT,"
-			+ AUDIT_STATUS + " TEXT, " + AUDIT_DATE + " INTEGER, "
-			+ AUDIT_HOUR + " TEXT, " + AUDIT_BY + " TEXT,"
+	public static final String CREATE_TABLE_SCRIPT = "CREATE TABLE "
+			+ TABLE_INTERNAL_AUDITS + "(" + ID + " INTEGER PRIMARY KEY,"
+			+ AUDIT_TYPE + " TEXT," + AUDIT_STATUS + " TEXT, " + AUDIT_DATE
+			+ " INTEGER, " + AUDIT_HOUR + " TEXT, " + AUDIT_BY + " TEXT,"
 			+ AUDIT_BY_EMPLOYEE + " TEXT," + AUDIT_SITE_ID + " TEXT,"
-			+ AUDIT_CUSTOMER + " TEXT," + AUDIT_CUSTOMER_NAME + " TEXT," + SYNC + " INTEGER, "
-			+ RID + " TEXT " + ")";
-	
-	public static final String DROP_TABLE_SCRIPT = "DROP TABLE IF EXISTS " + TABLE_INTERNAL_AUDITS;
-	
+			+ AUDIT_CUSTOMER + " TEXT," + AUDIT_CUSTOMER_NAME + " TEXT," + CITY
+			+ " TEXT," + STATE + " TEXT," + SYNC + " INTEGER, " + RID
+			+ " TEXT " + ")";
+
+	public static final String DROP_TABLE_SCRIPT = "DROP TABLE IF EXISTS "
+			+ TABLE_INTERNAL_AUDITS;
+
 	long addInternalAudit(LocalAudit audit);
-	
+
 	int updateInternalAudit(LocalAudit audit);
-	
+
 	int updateInternalAuditByRid(LocalAudit audit);
-	
+
 	void deleteInternalAudit(long id);
-	
+
 	List<LocalAudit> getAllInternalAudits();
-	
+
 	List<LocalAudit> getAllPendingInternalAudits();
-	
-	
+
 	LocalAudit getInternalAuditsById(final String id);
-	
+
 	List<LocalAudit> getAllInternalAuditsByEmployee(final String userId);
-	
+
 }

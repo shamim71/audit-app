@@ -73,6 +73,8 @@ public class InternalAuditDetailFragment extends Fragment {
 
 	DatabaseHandler dbHandler = null;
 	EditText mEditSiteId;
+	EditText mEditCity;
+	EditText mEditState;
 	EditText mEditAuditHour;
 	EditText mEditAuditDate;
 	Spinner auditTypeSpinner;
@@ -153,6 +155,10 @@ public class InternalAuditDetailFragment extends Fragment {
 				R.layout.fragment_internalaudit_detail_defects, container,
 				false);
 
+		if (TextUtils.isEmpty(auditId)) {
+			return rootView;
+		}
+		
 		Button btnAddDefect = (Button) rootView
 				.findViewById(R.id.btn_add_defect);
 		btnAddDefect.setOnClickListener(new OnClickListener() {
@@ -441,6 +447,9 @@ public class InternalAuditDetailFragment extends Fragment {
 		mEditAuditDate = (EditText) rootView.findViewById(R.id.et_audit_date);
 		mEditAuditHour = (EditText) rootView.findViewById(R.id.et_auditHour);
 		mEditSiteId = (EditText) rootView.findViewById(R.id.et_customerSiteID);
+		mEditCity = (EditText) rootView.findViewById(R.id.et_site_city);
+		mEditState = (EditText) rootView.findViewById(R.id.et_site_state);
+		
 		Button btnSave = (Button) rootView
 				.findViewById(R.id.btn_save_audit_master);
 		btnSave.setOnClickListener(new OnClickListener() {
@@ -499,6 +508,8 @@ public class InternalAuditDetailFragment extends Fragment {
 
 		customerSpinner.setSelection(getCustomerIndex(lAudit.getCustomer()));
 		mEditSiteId.setText(lAudit.getSiteId());
+		mEditCity.setText(lAudit.getCity());
+		mEditState.setText(lAudit.getState());
 
 		try {
 			Date auditDate = Constants.US_DATEFORMAT.parse(lAudit
@@ -643,6 +654,13 @@ public class InternalAuditDetailFragment extends Fragment {
 		if (!TextUtils.isEmpty(mEditSiteId.getText())) {
 			audit.setSiteId(mEditSiteId.getText().toString());
 		}
+		if (!TextUtils.isEmpty(mEditCity.getText())) {
+			audit.setCity(mEditCity.getText().toString());
+		}
+		if (!TextUtils.isEmpty(mEditState.getText())) {
+			audit.setState(mEditState.getText().toString());
+		}
+		
 		Log.d(LOG_TAG, audit.toString());
 
 		if (TextUtils.isEmpty(auditId)) {

@@ -186,11 +186,11 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 				// Add stie work types
 				 this.loadSiteWorkTypesList(getContext());
-
+	
 				 this.loadEmployeeList(getContext());
-
+				 
 				 this.loadDefectList(getContext());
-
+				
 				this.synchronizeAuditRecords(getContext());
 
 			}
@@ -264,7 +264,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 
 		for(LocalAudit audit: lAudits){
-			if(audit.getRid().equals("-1")){
+			if(TextUtils.isEmpty(audit.getRid()) || audit.getRid().equals("-1")){
 				
 				loadChildRecords(audit);
 				

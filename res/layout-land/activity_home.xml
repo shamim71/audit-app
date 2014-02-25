@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/PageContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/iv_home_logo"
+        style="@style/DefaultComponentMargin"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="25dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/icon_diagnosis" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2" >
+
+        <Button
+            android:id="@+id/btn_checkOut"
+            style="@style/DefaultComponentMargin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="launchCreateAudit"
+            android:text="@string/create_audit" />
+
+        <Button
+            android:id="@+id/btn_sysnchronize_data"
+            style="@style/DefaultComponentMargin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="synchronizeData"
+            android:text="@string/label_sync_data" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2" >
+
+        <Button
+            android:id="@+id/btn_checkIn"
+            style="@style/DefaultComponentMargin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="launchShowAudits"
+            android:text="@string/moddify_audit" />
+
+        <Button
+            android:id="@+id/btn_Signout"
+            style="@style/DefaultComponentMargin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="signOut"
+            android:text="@string/button_sign_out" />
+    </LinearLayout>
+
+</LinearLayout>

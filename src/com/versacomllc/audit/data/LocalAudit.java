@@ -41,6 +41,9 @@ public class LocalAudit extends InternalAudit{
 		this.customer = audit.getCustomer();
 		this.customerName = audit.getCustomerName();
 		this.siteId = audit.getSiteId();
+		this.city = audit.getCity();
+		this.state = audit.getState();
+		
 		this.syn = 1;
 		if(TextUtils.isEmpty(audit.getRid())){
 			this.syn = 0;
@@ -60,6 +63,8 @@ public class LocalAudit extends InternalAudit{
 		iAudit.setCustomerName(this.customerName);
 		iAudit.setRid(this.rid);
 		iAudit.setSiteId(this.siteId);
+		iAudit.setCity(this.getCity());
+		iAudit.setState(this.getState());
 		
 		if(this.works != null && this.works.size()>0){
 			iAudit.setSiteWorks(new ArrayList<ScopeOfWork>());

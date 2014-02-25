@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:hint="@string/hint_defect_note"
-                android:inputType="text" />
+                android:inputType="textMultiLine" />
 
             <TextView
                 android:id="@+id/tv_responsible_tech"
