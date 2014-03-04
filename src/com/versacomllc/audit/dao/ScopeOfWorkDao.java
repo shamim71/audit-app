@@ -14,20 +14,18 @@ public interface ScopeOfWorkDao {
 	
 	public static final String WORK_TYPE = "wtype";
 	public static final String DATE_OF_WORK = "dofw";
-	public static final String TECH_NAME = "t_name";
-	public static final String TECH_ID = "t_id";
+
 
 	// Create table
 	public static final String CREATE_TABLE_SCRIPT = "CREATE TABLE "
 			+ TABLE_NAME + "(" + ID + " INTEGER PRIMARY KEY," + WORK_TYPE
-			+ " TEXT ," + DATE_OF_WORK + " INTEGER ," + TECH_NAME + " TEXT, "
-			+ TECH_ID + " TEXT ," + AUDIT_ID + " INTEGER ," + SYNC + " INTEGER ,"+ RID + " TEXT "
+			+ " TEXT ," + DATE_OF_WORK + " INTEGER ," + AUDIT_ID + " INTEGER ," + SYNC + " INTEGER ,"+ RID + " TEXT "
 			+ ")";
 
 	public static final String DROP_TABLE_SCRIPT = "DROP TABLE IF EXISTS "
 			+ TABLE_NAME;
 
-	void addSOW(LocalScopeOfWork scopeOfWork);
+	long addSOW(LocalScopeOfWork scopeOfWork);
 	
 	void updateSOW(LocalScopeOfWork scopeOfWork);
 

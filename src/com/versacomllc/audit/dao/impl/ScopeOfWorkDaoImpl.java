@@ -29,8 +29,6 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 	
 		values.put(DATE_OF_WORK,
 				String.valueOf(getDateAsInt(work.getDateOfWork())));
-		values.put(TECH_NAME, work.getTechName());
-		values.put(TECH_ID, work.getTechId());
 		values.put(AUDIT_ID, work.getAuditId());
 		values.put(SYNC, work.getSync());
 		values.put(RID, work.getRid());
@@ -38,7 +36,7 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 	}
 	
 	@Override
-	public void addSOW(LocalScopeOfWork scopeOfWork) {
+	public long addSOW(LocalScopeOfWork scopeOfWork) {
 		scopeOfWork.setRid("-1");
 		SQLiteDatabase db = helper.getWritableDatabase();
 		ContentValues values = createContentValues(scopeOfWork);
@@ -46,6 +44,7 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 		long id = db.insert(TABLE_NAME, null, values);
 		scopeOfWork.setId(id);
 		db.close();
+		return id;
 	}
 	
 	public void updateSOW(LocalScopeOfWork scopeOfWork) {
@@ -82,8 +81,6 @@ public class ScopeOfWorkDaoImpl extends AbstractDaoImpl implements ScopeOfWorkDa
 				work.setId(cursor.getLong(index++));
 				work.setWorkType(cursor.getString(index++));
 				work.setDateOfWork(getLongAsDate(cursor.getLong(index++)));
-				work.setTechName(cursor.getString(index++));
-				work.setTechId(cursor.getString(index++));
 				work.setAuditId(cursor.getLong(index++));
 				work.setSync(cursor.getInt(index++));
 				work.setRid(cursor.getString(index++));

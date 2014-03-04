@@ -2,6 +2,7 @@ package com.versacomllc.audit;
 
 import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_DEFECT_ID;
 import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
+import static com.versacomllc.audit.utils.Constants.EXTRA_SOW_ID;
 import static com.versacomllc.audit.utils.Constants.LOG_TAG;
 
 import java.io.File;
@@ -45,6 +46,7 @@ import com.versacomllc.audit.data.Employee;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalAuditDefect;
 import com.versacomllc.audit.data.LocalDefect;
+import com.versacomllc.audit.data.LocalScopeOfWork;
 import com.versacomllc.audit.dummy.AuditDefectContent;
 import com.versacomllc.audit.utils.FileDataStorageManager;
 
@@ -68,7 +70,7 @@ public class AuditDefectDetailFragment extends Fragment {
 	private DatabaseHandler dbHandler;
 
 	private AutoCompleteTextView autoCompleteTextView;
-	private AutoCompleteTextView mATextViewTech;
+
 	private EditText mEditTextDefect;
 	private EditText mEditTextNote;
 	private TextView mTextViewDefectDetails;
@@ -77,8 +79,9 @@ public class AuditDefectDetailFragment extends Fragment {
 	ImageView mImageDefectAfter;
 	Spinner mSpinnerFixed;
 	
-	String auditId = null;
+	long auditId = -1;
 	long localId = -1;
+	long sowId =-1;
 
 	static final int REQUEST_IMAGE_CAPTURE_B = 1;
 	static final int REQUEST_IMAGE_CAPTURE_A = 2;
@@ -114,12 +117,21 @@ public class AuditDefectDetailFragment extends Fragment {
 		}
 
 		if (getArguments().containsKey(EXTRA_AUDIT_ID)) {
-			auditId = getArguments().getString(EXTRA_AUDIT_ID);
+			auditId = getArguments().getLong(EXTRA_AUDIT_ID);
 		} else {
 			if (getAppState().getCurrentAudit() != -1) {
-				auditId = String.valueOf(getAppState().getCurrentAudit());
+				auditId = getAppState().getCurrentAudit();
 			}
 		}
+		
+		if (getArguments().containsKey(EXTRA_SOW_ID)) {
+			sowId = getArguments().getLong(EXTRA_SOW_ID);
+		} else {
+			if (getAppState().getCurrentSowId() != -1) {
+				sowId = getAppState().getCurrentSowId();
+			}
+		}
+		
 		if (getArguments().containsKey(EXTRA_AUDIT_DEFECT_ID)) {
 			localId = getArguments().getLong(EXTRA_AUDIT_DEFECT_ID);
 		} else {
@@ -127,8 +139,12 @@ public class AuditDefectDetailFragment extends Fragment {
 				localId = getAppState().getCurrentAuditDefect();
 			}
 		}
-		auditDefect.setAuditId(Long.parseLong(auditId));
+
+		
+		auditDefect.setSowId(sowId);
 		auditDefect.setLocalId(localId);
+		auditDefect.setAuditId(auditId);
+		
 
 	}
 
@@ -249,7 +265,13 @@ public class AuditDefectDetailFragment extends Fragment {
 				auditDefect.setSync(0);
 				dbHandler.getAuditDefectDao().updateAuditDefect(auditDefect);
 				
-				LocalAudit audit = dbHandler.getAuditDao().getInternalAuditsById(auditId);
+				//update SOW
+				LocalScopeOfWork sow = dbHandler.getScopeOfWorkDao().getScopeOfWorkById(sowId);
+				sow.setSync(0);
+				dbHandler.getScopeOfWorkDao().updateSOW(sow);
+				
+				//Update Audit master
+				LocalAudit audit = dbHandler.getAuditDao().getInternalAuditsById(String.valueOf(auditId));
 				audit.setSyn(0);
 				dbHandler.getAuditDao().updateInternalAudit(audit);
 			}
@@ -276,9 +298,16 @@ public class AuditDefectDetailFragment extends Fragment {
 				
 				auditDefect.setDefectPicAfter(path);
 				auditDefect.setSync(0);
-				
 				dbHandler.getAuditDefectDao().updateAuditDefect(auditDefect);
-				LocalAudit audit = dbHandler.getAuditDao().getInternalAuditsById(auditId);
+				
+				//update SOW
+				LocalScopeOfWork sow = dbHandler.getScopeOfWorkDao().getScopeOfWorkById(sowId);
+				sow.setSync(0);
+				dbHandler.getScopeOfWorkDao().updateSOW(sow);
+				
+				//Update Audit master
+				
+				LocalAudit audit = dbHandler.getAuditDao().getInternalAuditsById(String.valueOf(auditId));
 				audit.setSyn(0);
 				dbHandler.getAuditDao().updateInternalAudit(audit);
 			}
@@ -412,29 +441,7 @@ public class AuditDefectDetailFragment extends Fragment {
 			}
 		});
 
-		mATextViewTech = (AutoCompleteTextView) rootView
-				.findViewById(R.id.atv_responsible_tech);
-		List<Employee> employess = dbHandler.getEmployeeDao().getAllEmployees();
 
-		final EmployeeAutocompleteListAdapter employeeAutocompleteListAdapter = new EmployeeAutocompleteListAdapter(
-				getActivity(), android.R.layout.simple_dropdown_item_1line,
-				employess);
-
-		mATextViewTech.setThreshold(2);
-		mATextViewTech.setAdapter(employeeAutocompleteListAdapter);
-		mATextViewTech.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
-
-				Employee employee = employeeAutocompleteListAdapter
-						.getItem(position);
-				auditDefect.setTechId(employee.getqBaseRef());
-				auditDefect.setTechName(employee.getName());
-
-			}
-		});
 		Button btnSave = (Button) rootView.findViewById(R.id.btn_save_defect);
 		btnSave.setOnClickListener(new OnClickListener() {
 
@@ -457,11 +464,18 @@ public class AuditDefectDetailFragment extends Fragment {
 					localId = id;
 					getAppState().setCurrentAuditDefect(localId);
 				}
+				
 				LocalAudit audit = dbHandler.getAuditDao().getInternalAuditsById(String.valueOf(auditId));
 				if(audit != null){
 					audit.setSyn(0);
 					dbHandler.getAuditDao().updateInternalAudit(audit);					
 				}
+				
+				//update scope of work
+				LocalScopeOfWork work = dbHandler.getScopeOfWorkDao().getScopeOfWorkById(sowId);
+				work.setSync(0);
+				dbHandler.getScopeOfWorkDao().updateSOW(work);
+				
 				
 
 			}
@@ -477,6 +491,8 @@ public class AuditDefectDetailFragment extends Fragment {
 		}
 		return rootView;
 	}
+
+
 	private int getItemIndex(String value, ArrayAdapter adapter) {
 		int size = adapter.getCount();
 		for (int i = 0; i < size; i++) {
@@ -498,7 +514,7 @@ public class AuditDefectDetailFragment extends Fragment {
 
 		mEditTextDefect.setText(defect.getCount());
 		mEditTextNote.setText(defect.getNote());
-		mATextViewTech.setText(defect.getTechName());
+
 		if(!TextUtils.isEmpty(defect.getFixed())){
 			int position = getItemIndex(defect.getFixed(), (ArrayAdapter)mSpinnerFixed.getAdapter());
 			mSpinnerFixed.setSelection(position);
@@ -511,13 +527,22 @@ public class AuditDefectDetailFragment extends Fragment {
 			auditDefect.setCount(mEditTextDefect.getText().toString());
 		}
 		auditDefect.setNote(mEditTextNote.getText().toString());
-		auditDefect.setAuditId(Long.parseLong(auditId));
+		auditDefect.setSowId(sowId);
 
 	}
-	
+
 	@Override
-	public void onStart() {
-		super.onStart();
-		Log.d(LOG_TAG, "......................");
+	public void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+		Log.d(LOG_TAG, "Saving state...");
 	}
+
+	@Override
+	public void onViewStateRestored(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewStateRestored(savedInstanceState);
+		Log.d(LOG_TAG, "Restoring state...");
+	}
+
 }

@@ -3,15 +3,14 @@ package com.versacomllc.audit;
 import static com.versacomllc.audit.AuditDefectDetailFragment.ARG_ITEM_ID;
 import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_DEFECT_ID;
 import static com.versacomllc.audit.utils.Constants.EXTRA_AUDIT_ID;
-
-import com.versacomllc.audit.utils.Constants;
-
+import static com.versacomllc.audit.utils.Constants.EXTRA_SOW_ID;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.MenuItem;
+
+import com.versacomllc.audit.utils.Constants;
 
 /**
  * An activity representing a list of AuditDefects. This activity has different
@@ -37,9 +36,9 @@ public class AuditDefectListActivity extends FragmentActivity implements
 	 * device.
 	 */
 	private boolean mTwoPane;
-	private String auditId;
+	private long auditId = -1;
 	private long localId = -1;
-	
+	private long sowId = -1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +51,17 @@ public class AuditDefectListActivity extends FragmentActivity implements
 		if (intent != null && intent.getExtras() != null
 				&& intent.getExtras().containsKey(EXTRA_AUDIT_ID)) {
 
-			auditId = intent.getExtras().getString(EXTRA_AUDIT_ID);
+			auditId = intent.getExtras().getLong(EXTRA_AUDIT_ID);
 		}
 		if (intent != null && intent.getExtras() != null
 				&& intent.getExtras().containsKey(EXTRA_AUDIT_DEFECT_ID)) {
 
 			localId = intent.getExtras().getLong(EXTRA_AUDIT_DEFECT_ID);
+		}
+		if (intent != null && intent.getExtras() != null
+				&& intent.getExtras().containsKey(EXTRA_SOW_ID)) {
+
+			sowId = intent.getExtras().getLong(EXTRA_SOW_ID);
 		}
 		
 		if (findViewById(R.id.auditdefect_detail_container) != null) {
@@ -108,12 +112,18 @@ public class AuditDefectListActivity extends FragmentActivity implements
 			// fragment transaction.
 			Bundle arguments = new Bundle();
 			arguments.putString(ARG_ITEM_ID, id);
-			if (auditId != null) {
-				arguments.putString(EXTRA_AUDIT_ID, auditId);
-			}
-			if(localId != -1){
+	
+			arguments.putLong(EXTRA_AUDIT_ID, auditId);
+			
+			if(localId != -1L){
 				arguments.putLong(EXTRA_AUDIT_DEFECT_ID, localId);
 			}
+			if(sowId != -1L){
+				arguments.putLong(EXTRA_SOW_ID, sowId);
+			}
+		
+		
+			
 			AuditDefectDetailFragment fragment = new AuditDefectDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
@@ -123,13 +133,17 @@ public class AuditDefectListActivity extends FragmentActivity implements
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
-			Intent detailIntent = new Intent(this,
-					AuditDefectDetailActivity.class);
-			if (auditId != null) {
-				detailIntent.putExtra(EXTRA_AUDIT_ID, auditId);
-			}
+			Intent detailIntent = new Intent(this,	AuditDefectDetailActivity.class);
+
+			detailIntent.putExtra(EXTRA_AUDIT_ID, auditId);
+			
+			
+			
 			if(localId != -1){
 				detailIntent.putExtra(EXTRA_AUDIT_DEFECT_ID, localId);
+			}
+			if(sowId != -1){
+				detailIntent.putExtra(EXTRA_SOW_ID, sowId);
 			}
 			
 			detailIntent.putExtra(ARG_ITEM_ID, id);

@@ -14,8 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.versacomllc.audit.R;
+import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.LocalScopeOfWork;
-
+import com.versacomllc.audit.data.LocalScopeOfWorkTech;
 import com.versacomllc.audit.utils.Constants;
 
 public class ScopeOfWorkListAdapter extends ArrayAdapter<LocalScopeOfWork> {
@@ -23,13 +24,14 @@ public class ScopeOfWorkListAdapter extends ArrayAdapter<LocalScopeOfWork> {
 	private Context mContext;
 	private int resourceId;
 	private List<LocalScopeOfWork> works;
-
+	DatabaseHandler dbHandler;
 	public ScopeOfWorkListAdapter(Context context, int resource,
 			List<LocalScopeOfWork> objects) {
 		super(context, resource, objects);
 		this.mContext = context;
 		this.resourceId = resource;
 		this.works = objects;
+		dbHandler = new DatabaseHandler(context);
 	}
 
 	@Override
@@ -59,11 +61,27 @@ public class ScopeOfWorkListAdapter extends ArrayAdapter<LocalScopeOfWork> {
 
 		LocalScopeOfWork item = works.get(position);
 
-		holder.workType.setText("Work Type: "+ item.getWorkType());
+		holder.workType.setText("Work Type: " + item.getWorkType());
+		List<LocalScopeOfWorkTech> techs = dbHandler.getScopeOfWorkTechDao().getScopeOfWorkTechBySOWId(item.getId());
+	
+		
+		String tNames = null;
 
-		holder.techName.setText("Tech Name: "+item.getTechName());
-		holder.workDate.setText("Work Date: "+ item.getDateOfWork());
-
+		if (techs != null) {
+			for (LocalScopeOfWorkTech t : techs) {
+				if(tNames == null){
+					tNames = t.getTechName();
+				}else{
+					tNames = tNames + ", " + t.getTechName();
+				}
+				
+			}
+		}
+		if(tNames != null){
+			holder.techName.setText("Tech Names: " + tNames);
+		}
+		
+		holder.workDate.setText("Work Date: " + item.getDateOfWork());
 
 		return convertView;
 	}

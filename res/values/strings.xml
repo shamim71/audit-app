@@ -24,6 +24,7 @@
     <string name="button_login">Login</string>
     <string name="label_select_site">Select customer: </string>
     <string name="label_select_customer">Select customer: </string>
+    <string name="label_select_project">Select project: </string>
     <string name="label_select_tech">Select Tech: </string>
     <string name="label_work_date">Work Date:</string>
     <string name="title_scope_of_work">Scope of Works </string>
@@ -67,6 +68,9 @@
     <string name="button_add_sow">Add SOW</string>
     <string name="button_add_defect">Add Defect</string>
 
+    <string name="info_dialog_title">Information</string>
+    <string name="button_ok">OK</string>
+    <string name="tech_add_confirmation">Do you like to add technician,%1$s in this SOW?</string>
     <string-array name="array_audit_status">
         <item>0/0</item>
         <item>conforming</item>
@@ -91,5 +95,7 @@
     <string name="title_internalaudit_detail">InternalAudit Detail</string>
     <string name="title_auditdefect_list">AuditDefects</string>
     <string name="title_auditdefect_detail">AuditDefect Detail</string>
+    <string name="title_scopeofwork_list">ScopeOfWorks</string>
+    <string name="title_scopeofwork_detail">ScopeOfWork Detail</string>
 
 </resources>

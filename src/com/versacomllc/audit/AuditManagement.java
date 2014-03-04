@@ -71,10 +71,18 @@ public class AuditManagement extends Application {
 		return currentAuditDefect;
 	}
 
-
-
 	public  void setCurrentAuditDefect(long currentAuditDefect) {
 		AuditManagement.currentAuditDefect = currentAuditDefect;
+	}
+	
+	private static long currentSowId = -1;
+
+	public long getCurrentSowId() {
+		return currentSowId;
+	}
+
+	public void setCurrentSowId(long currentSowId) {
+		AuditManagement.currentSowId = currentSowId;
 	}
 	
 

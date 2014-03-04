@@ -1,0 +1,11 @@
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scopeofwork_list"
+    android:name="com.versacomllc.audit.ScopeOfWorkListFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="0dp"
+    tools:context=".ScopeOfWorkListActivity"
+    tools:layout="@android:layout/list_content" />
+

@@ -23,6 +23,7 @@ import com.versacomllc.audit.adapter.AuditListAdapter;
 import com.versacomllc.audit.data.AuditListContent;
 import com.versacomllc.audit.data.DatabaseHandler;
 import com.versacomllc.audit.data.LocalAudit;
+import com.versacomllc.audit.data.LocalScopeOfWork;
 import com.versacomllc.audit.utils.Constants;
 
 
@@ -139,9 +140,21 @@ public class UserAuditDetailFragment extends Fragment {
 									if (item != null) {
 						
 										dbHandler.getAuditDao().deleteInternalAudit(item.getId());
-										dbHandler.getScopeOfWorkDao().deleteSOWByAuditId(String.valueOf(item.getId()));
-										dbHandler.getAuditDefectDao().deleteAuditDefectByAuditId(String.valueOf(item.getId()));
 										
+								
+										List<LocalScopeOfWork> sows = dbHandler.getScopeOfWorkDao().getScopeOfWorkByAuditId(item.getId());
+										if(sows != null && sows.size()> 0){
+											for(LocalScopeOfWork w: sows){
+												dbHandler.getScopeOfWorkTechDao().deleteSOWTechBySOWId(w.getId());
+											}
+										}
+
+										
+										dbHandler.getScopeOfWorkDao().deleteSOWByAuditId(String.valueOf(item.getId()));
+										
+										dbHandler.getAuditDefectDao().deleteAuditDefectByAuditId(item.getId());
+										
+
 										AuditListAdapter adapter = (AuditListAdapter) parent.getAdapter();
 										adapter.clear();
 										

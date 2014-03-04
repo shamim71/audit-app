@@ -30,15 +30,18 @@ public class InternalAudit {
 	
 	protected String customerName;
 	
+	protected String project;
+	
+	protected String projectName;
+	
 	protected String siteId;
 	
 	protected String city;
 	
 	protected String state;
 	
-	protected List<ScopeOfWork> siteWorks;
+	private List<ScopeOfWork> scopeOfWorks;
 	
-	protected List<AuditDefect> auditDefects;
 	
 	public String getAuditType() {
 		return auditType;
@@ -154,21 +157,8 @@ public class InternalAudit {
 		this.customerName = customerName;
 	}
 
-	public List<ScopeOfWork> getSiteWorks() {
-		return siteWorks;
-	}
 
-	public void setSiteWorks(List<ScopeOfWork> siteWorks) {
-		this.siteWorks = siteWorks;
-	}
 
-	public List<AuditDefect> getAuditDefects() {
-		return auditDefects;
-	}
-
-	public void setAuditDefects(List<AuditDefect> auditDefects) {
-		this.auditDefects = auditDefects;
-	}
 
 	public String getCity() {
 		return city;
@@ -184,6 +174,30 @@ public class InternalAudit {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public List<ScopeOfWork> getScopeOfWorks() {
+		return scopeOfWorks;
+	}
+
+	public void setScopeOfWorks(List<ScopeOfWork> scopeOfWorks) {
+		this.scopeOfWorks = scopeOfWorks;
+	}
+
+	public String getProject() {
+		return project;
+	}
+
+	public void setProject(String project) {
+		this.project = project;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 

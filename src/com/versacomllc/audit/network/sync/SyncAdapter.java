@@ -57,12 +57,16 @@ import com.versacomllc.audit.data.Employee;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalAuditDefect;
 import com.versacomllc.audit.data.LocalCustomer;
+import com.versacomllc.audit.data.LocalProject;
 import com.versacomllc.audit.data.LocalScopeOfWork;
+import com.versacomllc.audit.data.LocalScopeOfWorkTech;
 import com.versacomllc.audit.model.AuditDefect;
 import com.versacomllc.audit.model.Customer;
 import com.versacomllc.audit.model.Defect;
 import com.versacomllc.audit.model.InternalAudit;
+import com.versacomllc.audit.model.Project;
 import com.versacomllc.audit.model.ScopeOfWork;
+import com.versacomllc.audit.model.ScopeOfWorkTechnician;
 import com.versacomllc.audit.model.StringResponse;
 import com.versacomllc.audit.network.sync.provider.FeedContract;
 import com.versacomllc.audit.spice.GenericGetRequest;
@@ -182,14 +186,16 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 			if (Utils.isOnline(getContext())) {
 
 				// Sync customer
-				 this.loadCustomerList(getContext());
+				// this.loadCustomerList(getContext());
 
 				// Add stie work types
-				 this.loadSiteWorkTypesList(getContext());
+				 //this.loadSiteWorkTypesList(getContext());
 	
-				 this.loadEmployeeList(getContext());
+				 //this.loadEmployeeList(getContext());
 				 
-				 this.loadDefectList(getContext());
+				 //this.loadDefectList(getContext());
+				
+				//this.loadProjectList(getContext());
 				
 				this.synchronizeAuditRecords(getContext());
 
@@ -283,13 +289,25 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private void loadChildRecords(LocalAudit audit){
 		/** Scope of works */
 		List<LocalScopeOfWork> localScopeOfWorks = dbHandler.getScopeOfWorkDao().getPendingScopeOfWorkByAuditId(audit.getId());
+		
+		
+		for(LocalScopeOfWork sow: localScopeOfWorks){
+			
+			//Load Technician
+			List<LocalScopeOfWorkTech> lTechs = dbHandler.getScopeOfWorkTechDao().getPendingScopeOfWorkTechBySOWId(sow.getId());
+			sow.setlWorkTechs(lTechs);
+			
+			/** Audit defects */
+			List<LocalAuditDefect> lAuditDefects = dbHandler.getAuditDefectDao().getPendingAuditDefectsBySowId(sow.getId());
+			sow.setlAuditDefects(lAuditDefects);
+			
+			//TODO UNCOMMENTS
+			uploadAuditDefectPictures(lAuditDefects);
+		}
+		
 		audit.setWorks(localScopeOfWorks);
 		
-		/** Audit defects */
-		List<LocalAuditDefect> auditDefects = dbHandler.getAuditDefectDao().getPendingAuditDefectsByAuditId(audit.getId());
-		audit.setLocalAuditDefects(auditDefects);
-		
-		uploadAuditDefectPictures(auditDefects);
+
 		
 	}
 	
@@ -341,8 +359,11 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 			}
 
 		};
-		restHelper.execute(new GenericPostRequest<InternalAudit>(
-				InternalAudit.class, endPoint, audit.toInternalAudit()), callBackInterface);
+		
+		final String text = audit.toInternalAudit().toString();
+		Log.d(LOG_TAG, text);
+		
+		restHelper.execute(new GenericPostRequest<InternalAudit>(InternalAudit.class, endPoint, audit.toInternalAudit()), callBackInterface);
 		
 	}
 	private void updateResonse(final LocalAudit audit, InternalAudit response){
@@ -352,31 +373,47 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		dbHandler.getAuditDao().updateInternalAudit(audit);
 		
 		//Update Scope of works
-		if(audit.getWorks() != null && response.getSiteWorks() != null){
+		if(audit.getWorks() != null && response.getScopeOfWorks() != null){
 			for(int i=0; i< audit.getWorks().size() ; i++){
 				LocalScopeOfWork w = audit.getWorks().get(i);
-				ScopeOfWork work = response.getSiteWorks().get(i);
+				ScopeOfWork work = response.getScopeOfWorks().get(i);
 				w.setRid(work.getRid());
 				w.setSync(1);
 				dbHandler.getScopeOfWorkDao().updateSOW(w);
 
+				//Update sow techs
+				List<LocalScopeOfWorkTech> lTechs = w.getlWorkTechs();
+				if(lTechs != null){
+					for(int j=0; j<lTechs.size();j++){
+						LocalScopeOfWorkTech t = lTechs.get(j);
+						ScopeOfWorkTechnician tt = work.getTechnicians().get(j);
+						t.setRid(tt.getRid());
+						t.setSync(1);
+						dbHandler.getScopeOfWorkTechDao().updateSOWTech(t);
+					}
+				}
+				//Update audit defect
+				List<LocalAuditDefect> lDefects = w.getlAuditDefects();
+				if(lDefects != null){
+					for(int j=0; j<lDefects.size();j++){
+						LocalAuditDefect d = lDefects.get(j);
+						AuditDefect dd = work.getAuditDefects().get(j);
+					
+						d.setRid(dd.getRid());
+						d.setSync(1);
+						dbHandler.getAuditDefectDao().updateAuditDefect(d);
+					}
+				}
+				
 			}
+			
 			List<LocalScopeOfWork> works = 	dbHandler.getScopeOfWorkDao().getPendingScopeOfWorkByAuditId(audit.getId());
 			for(LocalScopeOfWork w: works){
 				Log.d(LOG_TAG, w.toString());
 			}
 		}
 		
-		//Update audit Defects
-		if(audit.getLocalAuditDefects() != null && response.getAuditDefects() != null){
-			for(int i=0; i< audit.getLocalAuditDefects().size() ; i++){
-				LocalAuditDefect d = audit.getLocalAuditDefects().get(i);
-				AuditDefect defect = response.getAuditDefects().get(i);
-				d.setRid(defect.getRid());
-				d.setSync(1);
-				dbHandler.getAuditDefectDao().updateAuditDefect(d);
-			}
-		}
+
 	}
 	private void updateLocalAuditToServer(final LocalAudit audit, Context context){
 		String endPoint = EndPoints.REST_CALL_POST_UPDATE_AUDIT.getAddress(audit.getRid());
@@ -407,8 +444,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 			}
 
 		};
-		restHelper.execute(new GenericPostRequest<InternalAudit>(
-				InternalAudit.class, endPoint, audit.toInternalAudit()), callBackInterface);
+		final String text = audit.toInternalAudit().toString();
+		Log.d(LOG_TAG, text);
+		
+		restHelper.execute(new GenericPostRequest<InternalAudit>(InternalAudit.class, endPoint, audit.toInternalAudit()), callBackInterface);
 		
 	}
 
@@ -480,7 +519,37 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		restHelper.execute(new GenericGetRequest<Employee[]>(Employee[].class,
 				endPoint), callBackInterface);
 	}
+	private void loadProjectList(Context context) {
+		String endPoint = EndPoints.REST_CALL_GET_QBASE_RPOJECTS
+				.getSimpleAddress();
+		Log.d(TAG, "Importing PROJECTS;");
+		
 
+		
+		GenericSpiceCallback<Project[]> callBackInterface = new GenericSpiceCallback<Project[]>(
+				context) {
+
+			@Override
+			public void onSpiceSuccess(Project[] response) {
+				if (response != null) {
+					dbHandler.getProjectDao().addProjectList(
+							Arrays.asList(response));
+				}
+			}
+
+			@Override
+			public void onSpiceError(RestCall<Project[]> restCall,
+					StringResponse response) {
+			}
+
+			@Override
+			public void onSpiceError(RestCall<Project[]> restCall, int reason,
+					Throwable exception) {
+			}
+		};
+		restHelper.execute(new GenericGetRequest<Project[]>(Project[].class,
+				endPoint), callBackInterface);
+	}
 	private void loadDefectList(Context context) {
 		String endPoint = EndPoints.REST_CALL_GET_QBASE_DEFECTS
 				.getSimpleAddress();

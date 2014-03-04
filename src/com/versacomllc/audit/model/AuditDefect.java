@@ -10,8 +10,6 @@ public class AuditDefect {
 
 	protected String rid;
 	
-	protected String techId;
-	
 	protected String defectCode;
 	
 	protected String defectSeverity;
@@ -75,13 +73,6 @@ public class AuditDefect {
 		this.defectDescription = defectDescription;
 	}
 
-	public String getTechId() {
-		return techId;
-	}
-
-	public void setTechId(String techId) {
-		this.techId = techId;
-	}
 
 	public String getFixed() {
 		return fixed;

@@ -20,9 +20,14 @@ public interface AuditDao {
 	public static final String AUDIT_BY_EMPLOYEE = "audited_by_employee";
 	public static final String AUDIT_SITE_ID = "site_id";
 	public static final String AUDIT_CUSTOMER = "customer_id";
-	public static final String AUDIT_CUSTOMER_NAME = "customer_NAME";
+	public static final String AUDIT_CUSTOMER_NAME = "customer_name";
+	
+	public static final String AUDIT_PROJECT = "project_id";
+	public static final String AUDIT_PROJECT_NAME = "project_name";
+	
 	public static final String CITY = "city";
 	public static final String STATE = "state";
+	
 	public static final String SYNC = "sync";
 
 	// Create audit table
@@ -32,7 +37,7 @@ public interface AuditDao {
 			+ " INTEGER, " + AUDIT_HOUR + " TEXT, " + AUDIT_BY + " TEXT,"
 			+ AUDIT_BY_EMPLOYEE + " TEXT," + AUDIT_SITE_ID + " TEXT,"
 			+ AUDIT_CUSTOMER + " TEXT," + AUDIT_CUSTOMER_NAME + " TEXT," + CITY
-			+ " TEXT," + STATE + " TEXT," + SYNC + " INTEGER, " + RID
+			+ " TEXT," + STATE + " TEXT," + AUDIT_PROJECT + " TEXT," + AUDIT_PROJECT_NAME + " TEXT," + SYNC + " INTEGER, " + RID
 			+ " TEXT " + ")";
 
 	public static final String DROP_TABLE_SCRIPT = "DROP TABLE IF EXISTS "

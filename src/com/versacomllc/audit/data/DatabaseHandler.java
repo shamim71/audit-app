@@ -13,13 +13,17 @@ import com.versacomllc.audit.dao.AuditDao;
 import com.versacomllc.audit.dao.AuditDefectDao;
 import com.versacomllc.audit.dao.DefectDao;
 import com.versacomllc.audit.dao.EmployeeDao;
+import com.versacomllc.audit.dao.ProjectDao;
 import com.versacomllc.audit.dao.ScopeOfWorkDao;
+import com.versacomllc.audit.dao.ScopeOfWorkTechDao;
 import com.versacomllc.audit.dao.SiteWorkTypeDao;
 import com.versacomllc.audit.dao.impl.AuditDaoImpl;
 import com.versacomllc.audit.dao.impl.AuditDefectDaoImpl;
 import com.versacomllc.audit.dao.impl.DefectDaoImpl;
 import com.versacomllc.audit.dao.impl.EmployeeDaoImpl;
+import com.versacomllc.audit.dao.impl.ProjectDaoImpl;
 import com.versacomllc.audit.dao.impl.ScopeOfWorkDaoImpl;
+import com.versacomllc.audit.dao.impl.ScopeOfWorkTechDaoImpl;
 import com.versacomllc.audit.dao.impl.SiteWorkTypeDaoImpl;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -65,6 +69,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(ScopeOfWorkDao.CREATE_TABLE_SCRIPT);
 		db.execSQL(DefectDao.CREATE_TABLE_SCRIPT);
 		db.execSQL(AuditDefectDao.CREATE_TABLE_SCRIPT);
+		db.execSQL(ScopeOfWorkTechDao.CREATE_TABLE_SCRIPT);
+		db.execSQL(ProjectDao.CREATE_TABLE_SCRIPT);
 	}
 
 	// Upgrading database
@@ -80,6 +86,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(ScopeOfWorkDao.DROP_TABLE_SCRIPT);
 		db.execSQL(DefectDao.DROP_TABLE_SCRIPT);
 		db.execSQL(AuditDefectDao.DROP_TABLE_SCRIPT);
+		db.execSQL(ScopeOfWorkTechDao.DROP_TABLE_SCRIPT);
+		db.execSQL(ProjectDao.DROP_TABLE_SCRIPT);
 		// Create tables again
 		onCreate(db);
 	}
@@ -189,6 +197,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		}
 		return auditDefectDao;
 	}
-
-
+	
+	ScopeOfWorkTechDao scopeOfWorkTechDao;
+	public ScopeOfWorkTechDao getScopeOfWorkTechDao(){
+		if(scopeOfWorkTechDao == null){
+			scopeOfWorkTechDao = new ScopeOfWorkTechDaoImpl(this);
+		}
+		return scopeOfWorkTechDao;
+	}
+	ProjectDao projectDao;
+	public ProjectDao getProjectDao(){
+		if(projectDao == null){
+			projectDao = new ProjectDaoImpl(this);
+		}
+		return projectDao;
+	}
 }

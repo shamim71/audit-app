@@ -6,6 +6,8 @@ public class LocalAuditDefect extends AuditDefect {
 
 	private long localId;
 
+	private long sowId;
+	
 	private long auditId;
 
 	private String techName;
@@ -56,13 +58,7 @@ public class LocalAuditDefect extends AuditDefect {
 		this.sync = sync;
 	}
 
-	public long getAuditId() {
-		return auditId;
-	}
 
-	public void setAuditId(long auditId) {
-		this.auditId = auditId;
-	}
 
 	public AuditDefect toAuditDefect() {
 
@@ -80,9 +76,25 @@ public class LocalAuditDefect extends AuditDefect {
 		auditDefect.setFixed(fixed);
 		auditDefect.setNote(note);
 		auditDefect.setRid(rid);
-		auditDefect.setTechId(techId);
+		//auditDefect.setTechId(techId);
 
 		return auditDefect;
+	}
+
+	public long getSowId() {
+		return sowId;
+	}
+
+	public void setSowId(long sowId) {
+		this.sowId = sowId;
+	}
+
+	public long getAuditId() {
+		return auditId;
+	}
+
+	public void setAuditId(long auditId) {
+		this.auditId = auditId;
 	}
 
 }

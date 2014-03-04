@@ -157,8 +157,8 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 				Log.d("AutocompleteContacts", "Position:" + position
 						+ " Employee :" + parent.getItemAtPosition(position));
 				Employee item = (Employee) parent.getItemAtPosition(position);
-				getScopeOfWork().setTechName(item.getName());
-				getScopeOfWork().setTechId(item.getqBaseRef());
+				//getScopeOfWork().setTechName(item.getName());
+				//getScopeOfWork().setTechId(item.getqBaseRef());
 			}
 		};
 		autoCompleteTextView.setOnItemClickListener(techChangeListener);
@@ -194,8 +194,8 @@ public abstract class ScopeOfWorkDialogFragement extends DialogFragment {
 		int position = getItemIndex(work.getWorkType(), (ArrayAdapter<?>) spWorkList.getAdapter());
 		spWorkList.setSelection(position);
 		
-		String empName = work.getTechName();
-		autoCompleteTextView.setText(empName);
+		//String empName = work.getTechName();
+		//autoCompleteTextView.setText(empName);
 		
 		try {
 			Date auditDate = Constants.US_DATEFORMAT.parse(work.getDateOfWork());

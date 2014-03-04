@@ -13,19 +13,20 @@ import android.widget.TextView;
 import com.versacomllc.audit.R;
 import com.versacomllc.audit.data.LocalAudit;
 import com.versacomllc.audit.data.LocalAuditDefect;
+import com.versacomllc.audit.data.LocalScopeOfWorkTech;
 
-public class AuditDefectListAdapter extends ArrayAdapter<LocalAuditDefect> {
+public class SowTechListAdapter extends ArrayAdapter<LocalScopeOfWorkTech> {
 
 	private Context mContext;
 	private int resourceId;
-	private List<LocalAuditDefect> audits;
+	private List<LocalScopeOfWorkTech> items;
 
-	public AuditDefectListAdapter(Context context, int resource,
-			List<LocalAuditDefect> objects) {
+	public SowTechListAdapter(Context context, int resource,
+			List<LocalScopeOfWorkTech> objects) {
 		super(context, resource, objects);
 		this.mContext = context;
 		this.resourceId = resource;
-		this.audits = objects;
+		this.items = objects;
 	}
 
 	@Override
@@ -39,44 +40,30 @@ public class AuditDefectListAdapter extends ArrayAdapter<LocalAuditDefect> {
 
 			holder = new ViewHolder();
 
-			holder.severity = (TextView) convertView
-					.findViewById(R.id.tv_defect_severity);
+			
 
-			holder.count = (TextView) convertView
-					.findViewById(R.id.tv_defect_count);
-
-
-			holder.code = (TextView) convertView
-					.findViewById(R.id.tv_defect_code);
-
-			holder.description = (TextView) convertView
-					.findViewById(R.id.tv_defect_description);
+			holder.tech = (TextView) convertView
+					.findViewById(R.id.tv_tech_name);
 
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		LocalAuditDefect item = audits.get(position);
+		LocalScopeOfWorkTech item = items.get(position);
 
-		holder.severity.setText("Severity: "+item.getDefectSeverity());
-		holder.count.setText("Found "+ item.getCount() + " time(s)");
+
 		
-		holder.description.setText(item.getDefectDescription());
-		holder.code.setText("Code: "+item.getDefectCode());
-
+		holder.tech.setText(item.getTechName());
 
 		return convertView;
 	}
-
+	public List<LocalScopeOfWorkTech> getAllItems(){
+		return this.items;
+	}
 	static class ViewHolder {
-		TextView severity;
-		TextView code;
-		TextView description;
-		
-		TextView count;
-		TextView notes;
 
+		TextView tech;
 
 	}
 

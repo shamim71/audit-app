@@ -24,6 +24,8 @@ public enum EndPoints {
 	
 	REST_CALL_GET_QBASE_EMPLOYEES("/qbase/employees"),
 	
+	REST_CALL_GET_QBASE_RPOJECTS("/qbase/projects"),
+	
 	REST_CALL_GET_ADJUSTMENT_CONF("/configurations"),
 
 	REST_CALL_GET_QBASE_AUDITS("/qbase/audits"),

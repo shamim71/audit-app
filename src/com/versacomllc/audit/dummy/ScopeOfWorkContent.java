@@ -11,26 +11,26 @@ import java.util.Map;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class DummyContent {
+public class ScopeOfWorkContent {
 
 	/**
 	 * An array of sample (dummy) items.
 	 */
-	public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+	public static List<Tab> ITEMS = new ArrayList<Tab>();
 
 	/**
 	 * A map of sample (dummy) items, by ID.
 	 */
-	public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
+	public static Map<String, Tab> ITEM_MAP = new HashMap<String, Tab>();
 
 	static {
 		// Add 3 sample items.
-		addItem(new DummyItem("1", "Audit Masterxxxxxxxxx"));
-
-
+		addItem(new Tab("1", "Scope Of Work"));
+		addItem(new Tab("2", "Defect List"));
+	
 	}
 
-	private static void addItem(DummyItem item) {
+	private static void addItem(Tab item) {
 		ITEMS.add(item);
 		ITEM_MAP.put(item.id, item);
 	}
@@ -38,11 +38,11 @@ public class DummyContent {
 	/**
 	 * A dummy item representing a piece of content.
 	 */
-	public static class DummyItem {
+	public static class Tab {
 		public String id;
 		public String content;
 
-		public DummyItem(String id, String content) {
+		public Tab(String id, String content) {
 			this.id = id;
 			this.content = content;
 		}

@@ -50,8 +50,13 @@ public class AuditDaoImpl implements AuditDao {
 		values.put(AUDIT_SITE_ID, audit.getSiteId());
 		values.put(AUDIT_CUSTOMER, audit.getCustomer());
 		values.put(AUDIT_CUSTOMER_NAME, audit.getCustomerName());
+		
 		values.put(CITY, audit.getCity());
 		values.put(STATE, audit.getState());
+		
+		values.put(AUDIT_PROJECT, audit.getProject());
+		values.put(AUDIT_PROJECT_NAME, audit.getProjectName());
+		
 		values.put(SYNC, audit.getSyn());
 		values.put(RID, audit.getRid());
 		return values;
@@ -152,6 +157,9 @@ public class AuditDaoImpl implements AuditDao {
 				
 				audit.setCity(cursor.getString(index++));
 				audit.setState(cursor.getString(index++));
+				
+				audit.setProject(cursor.getString(index++));
+				audit.setProjectName(cursor.getString(index++));
 				
 				audit.setSyn(cursor.getInt(index++));
 				audit.setRid(cursor.getString(index++));
