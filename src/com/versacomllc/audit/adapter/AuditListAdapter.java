@@ -73,8 +73,8 @@ public class AuditListAdapter extends ArrayAdapter<LocalAudit> {
 				R.string.label_audit_date)
 				+" "+ item.getAuditDate();
 		final String auditStatusText = getContext().getString(
-				R.string.label_status)
-				+" "+ item.getAuditStatus();
+				R.string.label_result)
+				+" "+ item.getAuditResult();
 
 		holder.customer.setText(customerText);
 		holder.siteId.setText(siteText);

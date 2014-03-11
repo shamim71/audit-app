@@ -42,6 +42,7 @@ public class AuditDaoImpl implements AuditDao {
 
 		values.put(AUDIT_TYPE, audit.getAuditType());
 		values.put(AUDIT_STATUS, audit.getAuditStatus());
+		values.put(AUDIT_RESULT, audit.getAuditResult());
 		values.put(AUDIT_DATE,
 				String.valueOf(getDateAsInt(audit.getAuditDate())));
 		values.put(AUDIT_HOUR, audit.getAuditHour());
@@ -53,6 +54,7 @@ public class AuditDaoImpl implements AuditDao {
 		
 		values.put(CITY, audit.getCity());
 		values.put(STATE, audit.getState());
+		values.put(ZIP, audit.getZip());
 		
 		values.put(AUDIT_PROJECT, audit.getProject());
 		values.put(AUDIT_PROJECT_NAME, audit.getProjectName());
@@ -144,7 +146,8 @@ public class AuditDaoImpl implements AuditDao {
 				audit.setId(cursor.getLong(index++));
 				audit.setAuditType(cursor.getString(index++));
 				audit.setAuditStatus(cursor.getString(index++));
-
+				audit.setAuditResult(cursor.getString(index++));
+				
 				long auditTime = Long.parseLong(cursor.getString(index++));
 				audit.setAuditDate(getLongAsDate(auditTime));
 
@@ -157,6 +160,7 @@ public class AuditDaoImpl implements AuditDao {
 				
 				audit.setCity(cursor.getString(index++));
 				audit.setState(cursor.getString(index++));
+				audit.setZip(cursor.getString(index++));
 				
 				audit.setProject(cursor.getString(index++));
 				audit.setProjectName(cursor.getString(index++));

@@ -186,16 +186,16 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 			if (Utils.isOnline(getContext())) {
 
 				// Sync customer
-				// this.loadCustomerList(getContext());
+				 this.loadCustomerList(getContext());
 
 				// Add stie work types
-				 //this.loadSiteWorkTypesList(getContext());
+				this.loadSiteWorkTypesList(getContext());
 	
-				 //this.loadEmployeeList(getContext());
-				 
-				 //this.loadDefectList(getContext());
+				this.loadEmployeeList(getContext());
 				
-				//this.loadProjectList(getContext());
+				this.loadDefectList(getContext());
+				
+				this.loadProjectList(getContext());
 				
 				this.synchronizeAuditRecords(getContext());
 

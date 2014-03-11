@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat;
 
 public final class Constants {
 
-	//public static final String SERVER_ROOT = "http://dalqbase1.versacomllc.com/quickbooks-gateway-server";
-	public static final String SERVER_ROOT = "http://d1mnzch1.versacomllc.com:9080/quickbooks-gateway-server";
+	public static final String SERVER_ROOT = "http://dalqbase1.versacomllc.com/quickbooks-gateway-server";
+	//public static final String SERVER_ROOT = "http://d1mnzch1.versacomllc.com:9080/quickbooks-gateway-server";
 
 	public static final String FILE_UPLOAD_PATH  = "http://daldoc1.versacomllc.com/document-server/FileUploadServlet?workspace=EasyECM&path=AuditAppPictures";
 	public static final String FILE_CONTENT_PATH = "http://daldoc1.versacomllc.com/document-server/service/file/content?path=/AuditAppPictures/";

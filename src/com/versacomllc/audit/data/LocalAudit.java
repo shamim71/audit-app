@@ -36,6 +36,8 @@ public class LocalAudit extends InternalAudit{
 		this.auditedByEmployee = audit.getAuditedByEmployee();
 		this.auditHour = audit.getAuditHour();
 		this.auditStatus = audit.getAuditStatus();
+		this.auditResult = audit.getAuditResult();
+		this.zip = audit.getZip();
 		this.auditType = audit.getAuditType();
 		this.customer = audit.getCustomer();
 		this.customerName = audit.getCustomerName();
@@ -58,6 +60,7 @@ public class LocalAudit extends InternalAudit{
 		iAudit.setAuditedByEmployee(this.auditedByEmployee);
 		iAudit.setAuditHour(this.auditHour);
 		iAudit.setAuditStatus(this.auditStatus);
+		iAudit.setAuditResult(this.auditResult);
 		iAudit.setAuditType(this.auditType);
 		iAudit.setCustomer(this.customer);
 		iAudit.setCustomerName(this.customerName);
@@ -67,6 +70,7 @@ public class LocalAudit extends InternalAudit{
 		iAudit.setSiteId(this.siteId);
 		iAudit.setCity(this.getCity());
 		iAudit.setState(this.getState());
+		iAudit.setZip(zip);
 		
 		if(this.works != null && this.works.size()>0){
 			iAudit.setScopeOfWorks(new ArrayList<ScopeOfWork>());

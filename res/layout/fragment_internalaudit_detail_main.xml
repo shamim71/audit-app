@@ -99,7 +99,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:hint="Enter State"
-                android:inputType="textCapCharacters" />            
+                android:inputType="textCapCharacters" />
+            
+            <TextView
+                android:id="@+id/tv_site_zip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Zip:" />
+
+            <EditText
+                android:id="@+id/et_site_zip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:hint="Enter zip code"
+                android:inputType="number" />   
+                            
             <TextView
                 android:id="@+id/tv_AuditDate"
                 android:layout_width="match_parent"
@@ -160,7 +176,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp" />
+            
+            <TextView
+                android:id="@+id/tv_auditResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/label_audit_result" />
 
+            <Spinner
+                android:id="@+id/sp_auditResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp" />
+            
             <TextView
                 android:id="@+id/tv_auditStatus"
                 android:layout_width="match_parent"

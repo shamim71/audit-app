@@ -40,6 +40,10 @@ public class InternalAudit {
 	
 	protected String state;
 	
+	protected String zip;
+	
+	protected String auditResult;
+	
 	private List<ScopeOfWork> scopeOfWorks;
 	
 	
@@ -198,6 +202,22 @@ public class InternalAudit {
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+
+	public String getAuditResult() {
+		return auditResult;
+	}
+
+	public void setAuditResult(String auditResult) {
+		this.auditResult = auditResult;
 	}
 
 

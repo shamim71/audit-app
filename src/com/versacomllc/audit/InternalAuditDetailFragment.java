@@ -73,10 +73,13 @@ public class InternalAuditDetailFragment extends Fragment {
 	EditText mEditSiteId;
 	EditText mEditCity;
 	EditText mEditState;
+	EditText mEditZip;
+	
 	EditText mEditAuditHour;
 	EditText mEditAuditDate;
 	Spinner auditTypeSpinner;
 	Spinner auditStatusSpinner;
+	Spinner auditResultSpinner;
 	Spinner customerSpinner;
 	Spinner projectSpinner;
 	TextView mTextAuditor;
@@ -294,7 +297,7 @@ public class InternalAuditDetailFragment extends Fragment {
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		};
-		OnItemSelectedListener statusListener = new OnItemSelectedListener() {
+		OnItemSelectedListener auditStatusListener = new OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
@@ -307,7 +310,19 @@ public class InternalAuditDetailFragment extends Fragment {
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		};
+		OnItemSelectedListener auditResultListener = new OnItemSelectedListener() {
 
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				Object item = parent.getAdapter().getItem(position);
+				audit.setAuditResult(item.toString());
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		};
 		auditTypeSpinner = (Spinner) rootView.findViewById(R.id.sp_auditType);
 		auditStatusSpinner = (Spinner) rootView
 				.findViewById(R.id.sp_auditStatus);
@@ -315,11 +330,15 @@ public class InternalAuditDetailFragment extends Fragment {
 				.findViewById(R.id.sp_customer_list);
 		projectSpinner = (Spinner) rootView
 				.findViewById(R.id.sp_project_list);
+		
+		auditResultSpinner = (Spinner) rootView.findViewById(R.id.sp_auditResult);
+		
 		mEditAuditDate = (EditText) rootView.findViewById(R.id.et_audit_date);
 		mEditAuditHour = (EditText) rootView.findViewById(R.id.et_auditHour);
 		mEditSiteId = (EditText) rootView.findViewById(R.id.et_customerSiteID);
 		mEditCity = (EditText) rootView.findViewById(R.id.et_site_city);
 		mEditState = (EditText) rootView.findViewById(R.id.et_site_state);
+		mEditZip = (EditText) rootView.findViewById(R.id.et_site_zip);
 		
 		Button btnSave = (Button) rootView
 				.findViewById(R.id.btn_save_audit_master);
@@ -343,8 +362,12 @@ public class InternalAuditDetailFragment extends Fragment {
 
 		populateSpinner(auditTypeSpinner, R.array.array_audit_type,
 				typeListener);
+		
 		populateSpinner(auditStatusSpinner, R.array.array_audit_status,
-				statusListener);
+				auditStatusListener);
+		
+		populateSpinner(auditResultSpinner, R.array.array_audit_result,
+				auditResultListener);
 
 		AuditManagement app = (AuditManagement) getActivity().getApplication();
 		AuthenticationResult user = app.getAuthentication().getResult();
@@ -385,7 +408,8 @@ public class InternalAuditDetailFragment extends Fragment {
 		mEditSiteId.setText(lAudit.getSiteId());
 		mEditCity.setText(lAudit.getCity());
 		mEditState.setText(lAudit.getState());
-
+		mEditZip.setText(lAudit.getZip());
+		
 		try {
 			Date auditDate = Constants.US_DATEFORMAT.parse(lAudit
 					.getAuditDate());
@@ -407,6 +431,10 @@ public class InternalAuditDetailFragment extends Fragment {
 				(ArrayAdapter) auditStatusSpinner.getAdapter());
 		auditStatusSpinner.setSelection(statusIndex);
 
+		int resultIndex = getItemIndex(lAudit.getAuditResult(),
+				(ArrayAdapter) auditResultSpinner.getAdapter());
+		auditResultSpinner.setSelection(statusIndex);
+		
 		mTextAuditor.setText(lAudit.getAuditedBy());
 
 	}
@@ -575,7 +603,9 @@ public class InternalAuditDetailFragment extends Fragment {
 		if (!TextUtils.isEmpty(mEditState.getText())) {
 			audit.setState(mEditState.getText().toString());
 		}
-		
+		if (!TextUtils.isEmpty(mEditZip.getText())) {
+			audit.setZip(mEditZip.getText().toString());
+		}
 		Log.d(LOG_TAG, audit.toString());
 
 		if (TextUtils.isEmpty(auditId)) {

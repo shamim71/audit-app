@@ -17,6 +17,7 @@
     <string name="hint_customer_site_id">Enter Site ID</string>
     <string name="hint_audit_hours">Enter audit hours</string>
     <string name="label_audit_type">Audit type</string>
+    <string name="label_audit_result">Audit result</string>
     <string name="label_audit_status">Audit status</string>
     <string name="button_next">Next</string>
     <string name="button_save">Save</string>
@@ -62,7 +63,7 @@
     <string name="label_customer">Customer: </string>
     <string name="label_site_id">Site ID: </string>
     <string name="label_audited_by">Audited by: </string>
-    <string name="label_status">Status: </string>
+    <string name="label_result">Result: </string>
     <string name="label_audit_date">Audited on: </string>
     <!-- Button labels -->
     <string name="button_add_sow">Add SOW</string>
@@ -72,10 +73,18 @@
     <string name="button_ok">OK</string>
     <string name="tech_add_confirmation">Do you like to add technician,%1$s in this SOW?</string>
     <string-array name="array_audit_status">
+        <item>Pending</item>
+        <item>External Audit Ready</item>
+        <item>Complete</item>
+    </string-array>
+    
+        <string-array name="array_audit_result">
         <item>0/0</item>
         <item>conforming</item>
         <item>non-conforming</item>
+        <item>observation</item>
     </string-array>
+    
     <string-array name="array_audit_type">
         <item>RBS</item>
         <item>Final</item>
